@@ -15,5 +15,5 @@ public class BookDTO {
 
     private BookStatus status;
 
-    private int price;
+    private Double price;
 }

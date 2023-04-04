@@ -27,5 +27,5 @@ public class Book {
     private BookStatus status;
 
     @Column
-    private int price;
+    private Double price;
 }
