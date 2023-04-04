@@ -1,10 +1,11 @@
 package com.andersentask.bookshop.user.facade;
 
-import com.andersentask.bookshop.user.model.Role;
+import static com.andersentask.bookshop.user.model.Role.ROLE_USER;
 import com.andersentask.bookshop.user.model.User;
 import com.andersentask.bookshop.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
 
 @Component
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class UserFacade {
                 .lastName(lastName)
                 .firstName(firstName)
                 .email(email)
-                .role(Role.ROLE_USER)
+                .role(ROLE_USER)
                 .password(password)
                 .build());
     }
