@@ -29,13 +29,17 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookDTO> getBooksSortedByName() {
         List<BookDTO> books = getAllBooks();
-        return books.stream().sorted(Comparator.comparing(BookDTO::getName)).collect(Collectors.toList());
+        return books.stream()
+                .sorted(Comparator.comparing(BookDTO::getName))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<BookDTO> getBooksSortedByPrice() {
         List<BookDTO> books = getAllBooks();
-        return books.stream().sorted(Comparator.comparingInt(BookDTO::getPrice)).collect(Collectors.toList());
+        return books.stream()
+                .sorted(Comparator.comparingInt(BookDTO::getPrice))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -49,7 +53,8 @@ public class BookServiceImpl implements BookService {
                 sortedBooksByAvailability.addLast(book);
             }
         }
-        return sortedBooksByAvailability.stream().toList();
+        return sortedBooksByAvailability.stream()
+                .toList();
     }
 }
 

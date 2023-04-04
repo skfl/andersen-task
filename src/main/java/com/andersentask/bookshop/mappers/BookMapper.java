@@ -26,10 +26,14 @@ public class BookMapper {
     }
 
     public static List<BookDTO> entityListToDtoList(List<Book> entities) {
-        return entities.stream().map(BookMapper::entityToDto).toList();
+        return entities.stream()
+                .map(BookMapper::entityToDto)
+                .toList();
     }
 
     public static List<Book> dtoListToEntityList(List<BookDTO> dtos) {
-        return dtos.stream().map(BookMapper::dtoToEntity).toList();
+        return dtos.stream()
+                .map(BookMapper::dtoToEntity)
+                .toList();
     }
 }
