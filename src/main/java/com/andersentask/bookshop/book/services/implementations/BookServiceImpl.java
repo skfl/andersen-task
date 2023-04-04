@@ -1,9 +1,9 @@
-package com.andersentask.bookshop.services.implementations;
+package com.andersentask.bookshop.book.services.implementations;
 
-import com.andersentask.bookshop.dtos.BookDTO;
-import com.andersentask.bookshop.mappers.BookMapper;
-import com.andersentask.bookshop.repositories.BookRepository;
-import com.andersentask.bookshop.services.interfaces.BookService;
+import com.andersentask.bookshop.book.services.interfaces.BookService;
+import com.andersentask.bookshop.book.dtos.BookDTO;
+import com.andersentask.bookshop.book.mappers.BookMapper;
+import com.andersentask.bookshop.book.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

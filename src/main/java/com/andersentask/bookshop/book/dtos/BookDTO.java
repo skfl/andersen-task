@@ -1,6 +1,6 @@
-package com.andersentask.bookshop.dtos;
+package com.andersentask.bookshop.book.dtos;
 
-import com.andersentask.bookshop.enums.BookStatus;
+import com.andersentask.bookshop.book.enums.BookStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

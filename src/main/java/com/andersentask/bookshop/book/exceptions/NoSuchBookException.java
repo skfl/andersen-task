@@ -1,4 +1,4 @@
-package com.andersentask.bookshop.exceptions;
+package com.andersentask.bookshop.book.exceptions;
 
 
 public class NoSuchBookException extends RuntimeException {

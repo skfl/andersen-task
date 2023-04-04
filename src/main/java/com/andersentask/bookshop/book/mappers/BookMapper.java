@@ -1,7 +1,7 @@
-package com.andersentask.bookshop.mappers;
+package com.andersentask.bookshop.book.mappers;
 
-import com.andersentask.bookshop.dtos.BookDTO;
-import com.andersentask.bookshop.entities.Book;
+import com.andersentask.bookshop.book.dtos.BookDTO;
+import com.andersentask.bookshop.book.entities.Book;
 
 import java.util.List;
 

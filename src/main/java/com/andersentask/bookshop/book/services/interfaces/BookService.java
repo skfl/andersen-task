@@ -1,6 +1,6 @@
-package com.andersentask.bookshop.services.interfaces;
+package com.andersentask.bookshop.book.services.interfaces;
 
-import com.andersentask.bookshop.dtos.BookDTO;
+import com.andersentask.bookshop.book.dtos.BookDTO;
 
 import java.util.List;
 

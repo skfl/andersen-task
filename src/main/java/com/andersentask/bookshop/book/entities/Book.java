@@ -1,6 +1,6 @@
-package com.andersentask.bookshop.entities;
+package com.andersentask.bookshop.book.entities;
 
-import com.andersentask.bookshop.enums.BookStatus;
+import com.andersentask.bookshop.book.enums.BookStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
