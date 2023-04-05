@@ -16,7 +16,7 @@ Implement bookstore console application according next requirements and function
 * Get the income for a certain period
 * Change the book status to be “in stock”. This should also close all requests for this book.
 
-
+### Technical stack: Spring Boot, PostgeSQL, Hibernate, Lombok, Maven
 ### This project was created during Andersen java course
 ## Contributors
 * <a href="https://github.com/nikiniki79" style="text-decoration: none;color: white"> Boiko Nikita </a>
