@@ -1,4 +1,4 @@
-package com.andersentask.bookshop.user.model;
+package com.andersentask.bookshop.user.domain.model;
 
 import com.andersentask.bookshop.general.AbstractIdentifiable;
 import jakarta.persistence.Column;
