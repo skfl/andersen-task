@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    void createOrder(UserDTO userDTO, List<BookDTO> booksDTO);
+    void createOrder(OrderDTO orderDTO);
 
     void createOrderFromRequest(RequestDTO requestDTO);
 
@@ -22,7 +22,8 @@ public interface OrderService {
 
     String getInfoAboutOrders();
 
-    List<OrderDTO> getOrdersSorted();
+    // Decided to delete this method
+//    List<OrderDTO> getOrdersSorted();
 
     List<OrderDTO> getOrdersSortedByCost();
 

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.awt.print.Book;
+import java.awt.print.Book;  // to delete
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class Order {
 
     @Column
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime timeOfCompletingOrder; // to agree with the team about class
+    private LocalDateTime timeOfCompletingOrder;
 
     @ManyToMany(cascade = CascadeType.ALL) // to agree
     @JoinTable(name = "name of table", // separate table for order id and book id

@@ -4,11 +4,10 @@ import com.andersentask.bookshop.order.entities.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface OrderRepository extends JpaRepository<Order,Long> {
-
-    void deleteById(Long id);
-
-    boolean existsById(Long id);
+    Optional<Order> findById(Long id);
 
 }

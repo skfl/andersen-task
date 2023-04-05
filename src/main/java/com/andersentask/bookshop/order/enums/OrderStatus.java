@@ -7,7 +7,9 @@ import lombok.Getter;
 @Getter
 public enum OrderStatus {
     IN_PROCESS("IN_PROCESS"),
-    COMPLETED("COMPLETED");
+    COMPLETED("COMPLETED"),
+    CANCELED("CANCELED");
+
     private String value;
 
     public int getOrdinalOfOrderEnum(){

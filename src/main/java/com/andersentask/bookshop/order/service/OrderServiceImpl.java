@@ -10,10 +10,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Book;
+import java.awt.print.Book; //to delete
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.andersentask.bookshop.order.mappers.OrderMapper.*;
 
 
 // To rewrite to DTO
@@ -27,47 +29,56 @@ public class OrderServiceImpl implements OrderService {
     // We should decide how to take data from console. Thus, parameters of method can be changed
     // The method creates an order and saves it to the database
     // Before creation, method finds out books, that are out_of_stock, and calls request method
+
+
+//        orderRepository.save(Order.builder()
+//                .user(user)
+//                .orderCost(orderCost)
+//                .orderStatus(OrderStatus.IN_PROCESS)
+//                .timeOfCompletingOrder(LocalDateTime.now())
+//                .booksInOrder(booksToOrder)
+//                .build());
+
+
     @Override
     @Transactional
-    public void createOrder(UserDTO userDTO, List<BookDTO> booksDTO) {
+    // In parameters should be object
+    public void createOrder(OrderDTO orderDTO) {
+        List<BookDTO> books = orderDTO.getBooksInOrder();
 
-        User user = dtoToEntity(userDTO);
-        List<Book> books = dtoToEntity(booksDTO);
-
-        List<Book> booksToOrder = books.stream()
+        List<BookDTO> booksDTOToOrder = books.stream()
                 .filter((x) -> x.getStatus().equals(BookStatus.AVAILABLE))
                 .toList();
-        List<Book> booksToRequest = books.stream()
+        List<BookDTO> booksDTOToRequest = books.stream()
                 .filter((x) -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
                 .toList();
 
-        Double orderCost = booksToOrder.stream()
+        Double orderCostDTO = booksToOrderDTO.stream()
                 .map(Book::getPrice)
-                .reduce(0D,Double::sum);
+                .reduce(0D, Double::sum);
 
-
-        orderRepository.save(Order.builder()
-                .user(user)
-                .orderCost(orderCost)
+        orderRepository.save(dtoToEntity(OrderDTO.builder()
+                .user(orderDTO.getUser())
+                .orderCost(orderCostDTO)
                 .orderStatus(OrderStatus.IN_PROCESS)
                 .timeOfCompletingOrder(LocalDateTime.now())
-                .booksInOrder(booksToOrder)
-                .build());
+                .booksInOrder(booksDTOToOrder)
+                .build()));
 
-        makeRequest(booksToRequest); // Method to create request from order
+        makeRequest(orderDTO.getUser(), booksDTOToRequest); // Method to create request from order
     }
+
 
     // The method takes request and adds it to the order with status "in process"
     // The method does not check, if books are available or not
     @Override
     @Transactional
-    public void createOrderFromRequest(RequestDTO requestDTO){
-
+    public void createOrderFromRequest(RequestDTO requestDTO) {
         Request request = dtoToEntity(requestDTO);
 
         double requestCost = request.getBooksInRequest().stream()
-                        .map(Book::getPrice)
-                        .reduce(0D,Double::sum);
+                .map(Book::getPrice)
+                .reduce(0D, Double::sum);
 
         orderRepository.save(Order.builder()
                 .user(request.getUser())
@@ -82,26 +93,22 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void completeOrder(Long id) {
-        if (!orderRepository.existsById(id)) {
-            throw new NoSuchOrderException();
-        }
-        Order order = orderRepository.findById(id).get();
+        Order order = orderRepository.findById(id).orElseThrow(NoSuchOrderException::new);
+
         order.setOrderStatus(OrderStatus.COMPLETED);
         order.setTimeOfCompletingOrder(LocalDateTime.now());
 
         // If the order is completed, books' status should be changed to out_of_stock
-        order.getBooksInOrder().stream().forEach((x) -> x.setBookStatus(BookStatus.OUT_OF_STOCK));
+        order.getBooksInOrder().forEach((x) -> x.setBookStatus(BookStatus.OUT_OF_STOCK));
 
         orderRepository.save(order);
     }
 
     @Override
     @Transactional
-    public void cancelOrder(Long id) throws NoSuchOrderException {
-        if (!orderRepository.existsById(id)) {
-            throw new NoSuchOrderException();
-        }
-        orderRepository.deleteById(id);
+    public void cancelOrder(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(NoSuchOrderException::new);
+        order.setOrderStatus(OrderStatus.CANCELED);
     }
 
     @Override
@@ -114,9 +121,9 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public String getInfoAboutOrders() {
         StringBuilder info = new StringBuilder();
-        List<OrderDTO> orders = getAllOrders().stream().toList();
+        List<OrderDTO> orders = getAllOrders();
         for (OrderDTO orderDTO : orders) {
-            info.append(orderDTO.getUserDTO().getId()).append(orderDTO.getBooksInOrder().toString()).append("/n");
+            info.append(orderDTO.getUser().getId()).append(orderDTO.getBooksInOrder().toString()).append("/n");
         }
         return info.toString();
     }
@@ -124,7 +131,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public double getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
-
         return getAllOrders().stream()
                 .filter((x) -> x.getOrderStatus().equals(OrderStatus.COMPLETED))
                 .filter((x) -> x.getTimeOfCompletingOrder().isAfter(startOfPeriod) &&
@@ -133,15 +139,16 @@ public class OrderServiceImpl implements OrderService {
                 .reduce(0D, Double::sum);
     }
 
-    @Override
-    @Transactional
-    public List<OrderDTO> getOrdersSorted() {
-        return getAllOrders().stream()
-                .sorted(Comparator.comparing(OrderDTO::getOrderCost, Comparator.reverseOrder())
-                        .thenComparing(OrderDTO::getTimeOfCompletingOrder, Comparator.reverseOrder())
-                        .thenComparing(OrderDTO::getOrderStatus))
-                .toList();
-    }
+    // Decided to delete this method
+//    @Override
+//    @Transactional
+//    public List<OrderDTO> getOrdersSorted() {
+//        return getAllOrders().stream()
+//                .sorted(Comparator.comparing(OrderDTO::getOrderCost, Comparator.reverseOrder())
+//                        .thenComparing(OrderDTO::getTimeOfCompletingOrder, Comparator.reverseOrder())
+//                        .thenComparing(OrderDTO::getOrderStatus))
+//                .toList();
+//    }
 
     @Override
     @Transactional

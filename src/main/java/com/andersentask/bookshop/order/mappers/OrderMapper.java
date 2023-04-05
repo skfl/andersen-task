@@ -12,7 +12,7 @@ public class OrderMapper {
     public static OrderDTO entityToDTO(Order order) {
         return OrderDTO.builder()
                 .id(order.getId())
-                .userDTO(order.getUser())
+                .user(order.getUser())
                 .orderCost(order.getOrderCost())
                 .orderStatus(order.getOrderStatus())
                 .timeOfCompletingOrder(order.getTimeOfCompletingOrder())
@@ -25,7 +25,7 @@ public class OrderMapper {
     public static Order dtoToEntity(OrderDTO orderDTO) {
         return Order.builder()
                 .id(orderDTO.getId())
-                .user(orderDTO.getUserDTO())
+                .user(orderDTO.getUser())
                 .orderCost(orderDTO.getOrderCost())
                 .orderStatus(orderDTO.getOrderStatus())
                 .timeOfCompletingOrder(orderDTO.getTimeOfCompletingOrder())
@@ -34,11 +34,15 @@ public class OrderMapper {
     }
 
     public static List<OrderDTO> entityListToDtoList(List<Order> orderList) {
-        return orderList.stream().map(OrderMapper::entityToDTO).toList();
+        return orderList.stream()
+                .map(OrderMapper::entityToDTO)
+                .toList();
     }
 
     public static List<Order> dtoListToEntityList(List<OrderDTO> orderDTOList){
-        return orderDTOList.stream().map(OrderMapper::dtoToEntity).toList();
+        return orderDTOList.stream()
+                .map(OrderMapper::dtoToEntity)
+                .toList();
     }
 
 }

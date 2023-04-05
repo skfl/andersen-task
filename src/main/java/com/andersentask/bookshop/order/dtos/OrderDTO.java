@@ -16,7 +16,7 @@ public class OrderDTO {
     private Long id;
 
     // to update
-    private UserDTO userDTO;
+    private UserDTO user;
 
     private double orderCost;
 
