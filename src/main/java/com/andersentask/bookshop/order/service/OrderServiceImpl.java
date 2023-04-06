@@ -86,9 +86,6 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.COMPLETED);
         order.setTimeOfCompletingOrder(LocalDateTime.now());
 
-        // If the order is completed, books' status should be changed to out_of_stock
-        order.getBooksInOrder().forEach((x) -> x.setBookStatus(BookStatus.OUT_OF_STOCK));
-
         orderRepository.save(order);
     }
 
