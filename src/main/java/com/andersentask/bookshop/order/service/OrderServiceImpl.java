@@ -26,20 +26,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
-    // We should decide how to take data from console. Thus, parameters of method can be changed
     // The method creates an order and saves it to the database
     // Before creation, method finds out books, that are out_of_stock, and calls request method
-
-
-//        orderRepository.save(Order.builder()
-//                .user(user)
-//                .orderCost(orderCost)
-//                .orderStatus(OrderStatus.IN_PROCESS)
-//                .timeOfCompletingOrder(LocalDateTime.now())
-//                .booksInOrder(booksToOrder)
-//                .build());
-
-
     @Override
     @Transactional
     // In parameters should be object
