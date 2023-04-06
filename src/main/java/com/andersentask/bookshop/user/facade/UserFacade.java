@@ -56,6 +56,8 @@ public class UserFacade {
             System.out.println("Enter your last name: ");
             String lastName = scanner.nextLine();
 
+            scanner.close();
+
             buildUserForRegistration(firstName, lastName, email, password);
 
             return userService.findByEmail(email);
