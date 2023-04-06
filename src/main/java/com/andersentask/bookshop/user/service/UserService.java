@@ -15,8 +15,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final UserMapper userMapper;
-
     @Transactional
     public boolean registration(User user) {
         if (userRepository.findByEmailIgnoreCase(user.getEmail()).isPresent()) {
@@ -30,7 +28,7 @@ public class UserService {
 
     @Transactional
     public UserDto findByEmail(String email) {
-        return userMapper.entityToDto(userRepository.findByEmailIgnoreCase(email)
+        return UserMapper.entityToDto(userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new EntityNotFoundException("User is missing with email:")));
     }
 

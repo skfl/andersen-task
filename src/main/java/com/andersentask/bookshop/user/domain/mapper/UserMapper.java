@@ -2,12 +2,10 @@ package com.andersentask.bookshop.user.domain.mapper;
 
 import com.andersentask.bookshop.user.domain.dto.UserDto;
 import com.andersentask.bookshop.user.domain.model.User;
-import org.springframework.stereotype.Component;
 
-@Component
 public class UserMapper {
 
-    public UserDto entityToDto(User user) {
+    public static UserDto entityToDto(User user) {
         if (user == null) {
             return new UserDto();
         }
@@ -19,7 +17,7 @@ public class UserMapper {
                 .build();
     }
 
-    public User dtoToEntity(UserDto userDto) {
+    public static User dtoToEntity(UserDto userDto) {
         if (userDto == null) {
             return new User();
         }
