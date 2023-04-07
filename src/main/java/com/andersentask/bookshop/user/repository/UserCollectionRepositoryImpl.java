@@ -1,6 +1,6 @@
 package com.andersentask.bookshop.user.repository;
 
-import com.andersentask.bookshop.user.domain.model.User;
+import com.andersentask.bookshop.user.entities.User;
 import com.andersentask.bookshop.user.repository.interfaces.UserCollectionRepository;
 
 import java.util.List;

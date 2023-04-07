@@ -1,13 +1,10 @@
 package com.andersentask.bookshop.user.facade;
 
-import com.andersentask.bookshop.user.domain.dto.UserDto;
-import com.andersentask.bookshop.user.domain.model.User;
+import com.andersentask.bookshop.user.entities.User;
 import com.andersentask.bookshop.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Scanner;
-
-import static com.andersentask.bookshop.user.domain.model.Role.ROLE_USER;
+import static com.andersentask.bookshop.user.enums.Role.ROLE_USER;
 
 
 @RequiredArgsConstructor
@@ -26,6 +23,7 @@ public class UserFacade {
      * @param password  - the user's password as a String
      * @return - true if the registration was successful, false otherwise
      */
+
     public boolean buildUserForRegistration(String firstName, String lastName, String email, String password) {
         return userService.registration(User.builder()
                 .lastName(lastName)
@@ -34,31 +32,6 @@ public class UserFacade {
                 .role(ROLE_USER)
                 .password(password)
                 .build());
-    }
-
-    public UserDto addUserIntoEntity(String email) {
-        try {
-            return userService.findByEmail(email);
-        } catch (Exception exception) {  //todo: to delete (EntityNotFoundException)
-            Scanner scanner = new Scanner(System.in);
-
-            System.out.println("You need to register.");
-
-            System.out.println("Enter your password: ");
-            String password = scanner.nextLine();
-
-            System.out.println("Enter your first name: ");
-            String firstName = scanner.nextLine();
-
-            System.out.println("Enter your last name: ");
-            String lastName = scanner.nextLine();
-
-            scanner.close();
-
-            buildUserForRegistration(firstName, lastName, email, password);
-
-            return userService.findByEmail(email);
-        }
     }
 
 }

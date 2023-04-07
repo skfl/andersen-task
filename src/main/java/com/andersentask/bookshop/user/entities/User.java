@@ -1,5 +1,6 @@
-package com.andersentask.bookshop.user.domain.model;
+package com.andersentask.bookshop.user.entities;
 
+import com.andersentask.bookshop.user.enums.Role;
 import lombok.*;
 
 @Getter
