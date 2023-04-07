@@ -1,4 +1,4 @@
-package com.andersentask.bookshop.book.common;
+package com.andersentask.bookshop.common;
 
 import java.util.List;
 import java.util.Optional;

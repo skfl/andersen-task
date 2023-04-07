@@ -3,19 +3,14 @@ package com.andersentask.bookshop.user.service;
 import com.andersentask.bookshop.user.domain.dto.UserDto;
 import com.andersentask.bookshop.user.domain.mapper.UserMapper;
 import com.andersentask.bookshop.user.domain.model.User;
-import jakarta.persistence.EntityNotFoundException;
+import com.andersentask.bookshop.user.repository.UserCollectionRepositoryImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.andersentask.bookshop.user.repository.UserRepository;
 
-@Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserCollectionRepositoryImpl userRepository;
 
-    @Transactional
     public boolean registration(User user) {
         if (userRepository.findByEmailIgnoreCase(user.getEmail()).isPresent()) {
             System.out.println("User already exist with email:" + user.getEmail());
@@ -26,10 +21,9 @@ public class UserService {
         return true;
     }
 
-    @Transactional
     public UserDto findByEmail(String email) {
         return UserMapper.entityToDto(userRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new EntityNotFoundException("User is missing with email:")));
+                .orElseThrow(() -> new RuntimeException("User is missing with email:")));
     }
 
 }

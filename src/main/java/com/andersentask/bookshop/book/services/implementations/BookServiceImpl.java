@@ -1,23 +1,20 @@
 package com.andersentask.bookshop.book.services.implementations;
 
-import com.andersentask.bookshop.book.entities.Book;
-import com.andersentask.bookshop.book.repositories.BookCollectionRepositoryImpl;
-import com.andersentask.bookshop.book.services.interfaces.BookService;
 import com.andersentask.bookshop.book.dtos.BookDTO;
+import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.mappers.BookMapper;
-import com.andersentask.bookshop.book.repositories.BookRepository;
+import com.andersentask.bookshop.book.repositories.interfaces.BookCollectionRepository;
+import com.andersentask.bookshop.book.services.interfaces.BookService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private final BookCollectionRepositoryImpl bookRepository;
+    private final BookCollectionRepository bookRepository;
 
     @Override
     public Book save(Book book) {

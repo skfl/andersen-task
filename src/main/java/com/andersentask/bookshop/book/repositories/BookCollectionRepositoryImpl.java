@@ -1,13 +1,13 @@
 package com.andersentask.bookshop.book.repositories;
 
-import com.andersentask.bookshop.book.common.AbstractCollectionRepository;
 import com.andersentask.bookshop.book.entities.Book;
+import com.andersentask.bookshop.book.repositories.interfaces.BookCollectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BookCollectionRepositoryImpl implements AbstractCollectionRepository<Book, Long> {
+public class BookCollectionRepositoryImpl implements BookCollectionRepository {
     private final List<Book> books;
 
     public BookCollectionRepositoryImpl() {

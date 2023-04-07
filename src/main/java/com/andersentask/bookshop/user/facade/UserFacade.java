@@ -1,18 +1,15 @@
 package com.andersentask.bookshop.user.facade;
 
-import static com.andersentask.bookshop.user.domain.model.Role.ROLE_USER;
-
 import com.andersentask.bookshop.user.domain.dto.UserDto;
 import com.andersentask.bookshop.user.domain.model.User;
 import com.andersentask.bookshop.user.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
+import static com.andersentask.bookshop.user.domain.model.Role.ROLE_USER;
 
-@Component
+
 @RequiredArgsConstructor
 public class UserFacade {
 
@@ -42,7 +39,7 @@ public class UserFacade {
     public UserDto addUserIntoEntity(String email) {
         try {
             return userService.findByEmail(email);
-        } catch (EntityNotFoundException exception) {
+        } catch (Exception exception) {  //todo: to delete (EntityNotFoundException)
             Scanner scanner = new Scanner(System.in);
 
             System.out.println("You need to register.");
