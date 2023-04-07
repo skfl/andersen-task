@@ -1,5 +1,7 @@
 package com.andersentask.bookshop.book.services.implementations;
 
+import com.andersentask.bookshop.book.entities.Book;
+import com.andersentask.bookshop.book.repositories.BookCollectionRepositoryImpl;
 import com.andersentask.bookshop.book.services.interfaces.BookService;
 import com.andersentask.bookshop.book.dtos.BookDTO;
 import com.andersentask.bookshop.book.mappers.BookMapper;
@@ -15,7 +17,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private final BookRepository bookRepository;
+    private final BookCollectionRepositoryImpl bookRepository;
+
+    @Override
+    public Book save(Book book) {
+        return bookRepository.save(book);
+    }
 
     @Override
     public List<BookDTO> getAllBooks() {

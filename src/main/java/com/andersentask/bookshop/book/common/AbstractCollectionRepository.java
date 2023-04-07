@@ -1,0 +1,14 @@
+package com.andersentask.bookshop.book.common;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface AbstractCollectionRepository<T, ID> {
+    T save(T obj);
+
+    void delete(ID id);
+
+    Optional<T> findById(ID id);
+
+    List<T> findAll();
+}
