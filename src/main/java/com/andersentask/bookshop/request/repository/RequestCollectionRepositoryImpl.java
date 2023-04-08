@@ -1,6 +1,5 @@
 package com.andersentask.bookshop.request.repository;
 
-import com.andersentask.bookshop.request.dtos.RequestDTO;
 import com.andersentask.bookshop.request.entities.Request;
 import com.andersentask.bookshop.request.repository.interfaces.RequestCollectionRepository;
 

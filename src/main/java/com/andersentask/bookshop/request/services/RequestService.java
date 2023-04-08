@@ -1,18 +1,12 @@
 package com.andersentask.bookshop.request.services;
 
-import com.andersentask.bookshop.request.dtos.RequestDTO;
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.request.exceptions.ErrorMessage;
-import com.andersentask.bookshop.request.exceptions.NoAnyRecordException;
-import com.andersentask.bookshop.request.exceptions.RequestNotExistsException;
-import com.andersentask.bookshop.request.mappers.RequestMapper;
-import com.andersentask.bookshop.request.repository.RequestCollectionRepositoryImpl;
 import com.andersentask.bookshop.request.repository.interfaces.RequestCollectionRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class RequestService {
@@ -22,7 +16,7 @@ public class RequestService {
         return requestRepository.save(request);
     }
 
-    public Request getRequestByID(Long id) {
+    public Optional<Request> getRequestByID(Long id) {
         return requestRepository.findById(id);
     }
 
@@ -30,22 +24,22 @@ public class RequestService {
         requestRepository.delete(id);
     }
 
-    @Override
     public List<Request> getAllRequests() {
         return requestRepository.findAll();
     }
 
-    @Override
-    public List<Request> getAllRequestsSortedByBook() {
-        List<Request> requests = getAllRequests();
-        return requests.stream()
-                .sorted(Comparator.comparing(Request::));
+    public List<Request> getAllRequestsSortedByAmountOfBooks() {
+        return getAllRequests().stream()
+                .sorted(Comparator.comparing(r -> r.getRequestedBooks().size())).toList();
     }
 
-    @Override
-    public List<RequestDTO> getAllRequestsSortedByTotalNumber() {
-        List<RequestDTO> requestDTOS = getRequestDTOS();
-        requestDTOS.sort(Comparator.comparing(Request::getRequestedBooks.getCounter()));
-        return requestDTOS;
+    public List<Request> getAllRequestsSortedByStatus() {
+        return getAllRequests().stream()
+                .sorted(Comparator.comparing(Request::getRequestStatus)).toList();
+    }
+
+    public List<Request> getAllRequestsSortedByCreationTime() {
+        return getAllRequests().stream()
+                .sorted(Comparator.comparing(Request::getCreatedAt)).toList();
     }
 }
