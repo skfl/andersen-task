@@ -4,6 +4,7 @@ package com.andersentask.bookshop.order.service;
 import com.andersentask.bookshop.book.entities.Book;
 
 import com.andersentask.bookshop.book.enums.BookStatus;
+import com.andersentask.bookshop.common.IdGeneration;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.order.repositories.OrderCollectionRepository;
@@ -29,7 +30,7 @@ public class OrderService {
                 .toList();
         // Method, that creates request
         if (booksToRequest.size() > 0) {
-            //makeRequest(orderDTO.getUser(), booksToRequest);
+            //RequestFacade.buildRequest(order.getUser(), booksToRequest);
         }
 
         List<Book> booksToOrder = books.stream()
@@ -38,18 +39,22 @@ public class OrderService {
         Double orderCost = booksToOrder.stream()
                 .map(Book::getPrice)
                 .reduce(0D, Double::sum);
-        orderRepository.save(Order.builder()
-                .user(order.getUser())
-                .orderCost(orderCost)
-                .orderStatus(OrderStatus.IN_PROCESS)
-                .timeOfCompletingOrder(LocalDateTime.now())
-                .booksInOrder(booksToOrder)
-                .build());
+
+        if (booksToOrder.size() > 0) {
+            orderRepository.save(Order.builder()
+                    .orderId(IdGeneration.generateOrderId())
+                    .user(order.getUser())
+                    .orderCost(orderCost)
+                    .orderStatus(OrderStatus.IN_PROCESS)
+                    .timeOfCompletingOrder(LocalDateTime.now())
+                    .booksInOrder(booksToOrder)
+                    .build());
+        }
+
     }
 
 
-    // The method takes request and adds it to the order with status "in process"
-    // The method does not check, if books are available or not
+    //toDo: to reconcile with Request class to resolve conflicts
 //    public void createOrderFromRequest(Request request) {
 //
 //        double requestCost = request.getBooksInRequest().stream()
@@ -57,6 +62,7 @@ public class OrderService {
 //                .reduce(0D, Double::sum);
 //
 //        orderRepository.save(Order.builder()
+//                .orderId(IdGeneration.incrementOrderId())
 //                .user(request.getUser())
 //                .orderCost(requestCost)
 //                .orderStatus(OrderStatus.IN_PROCESS)
