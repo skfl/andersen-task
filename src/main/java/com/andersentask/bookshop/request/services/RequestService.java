@@ -1,6 +1,8 @@
 package com.andersentask.bookshop.request.services;
 
+import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.request.entities.Request;
+import com.andersentask.bookshop.request.enums.RequestStatus;
 import com.andersentask.bookshop.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -11,6 +13,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RequestService {
     private final RequestRepository requestRepository;
+
+    private final BookService bookService;
 
     public Request saveNewRequest(Request request) {
         return requestRepository.save(request);
@@ -41,5 +45,15 @@ public class RequestService {
     public List<Request> getAllRequestsSortedByCreationTime() {
         return getAllRequests().stream()
                 .sorted(Comparator.comparing(Request::getCreatedAt)).toList();
+    }
+
+    public List<Request> getRequestsThatReadyToOrder() {
+        List<Request> requestList = getAllRequests().stream()
+                .filter(r -> r.getRequestStatus().equals(RequestStatus.IN_PROCESSING))
+                .filter(r -> bookService.checkListOfBooksOnAvailability(r.getRequestedBooks()))
+                .toList();
+
+        requestList.forEach(r -> r.setRequestStatus(RequestStatus.TO_ORDER));
+        return requestList;
     }
 }
