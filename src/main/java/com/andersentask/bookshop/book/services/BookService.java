@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -44,8 +45,13 @@ public class BookService {
     }
 
     public boolean checkListOfBooksOnAvailability(List<Book> books) {
-        return books.stream()
-                .allMatch((x -> x.getStatus().equals(BookStatus.AVAILABLE)));
+        for (Book book: books) {
+            Optional<Book> foundBook = bookRepository.findById(book.getId());
+            if (!foundBook.get().getStatus().equals(BookStatus.AVAILABLE)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
