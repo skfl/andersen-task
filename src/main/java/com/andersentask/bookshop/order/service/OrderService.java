@@ -27,10 +27,13 @@ public class OrderService {
 
 
     /**
-     * Initially order is created with List<Book>, that contains both available and out_of_stock books
-     * The method divides list of books into 2 lists: 1L => available, 2L => out_of_stock
-     * 1L is used to create order and save to DB
-     * 2L is used to build request
+     * <p> method saves order and request to DB </p>
+     * <p> list of books in order parameter contains both (1) available and (2) out_of_stock </p>
+     * <p> if list of books only contains (1), only order will be created</p>
+     * <p> if list of books only contains (2), only request will be created</p>
+     * <p> otherwise, both order and request will be created and saved </p>
+     * @author Ulad Sachkouski
+     * @param order order, that is taken from OrderFacade.buildOrder()
      */
     public void createOrderAndRequest(Order order) {
         List<Book> books = order.getBooksInOrder();
@@ -63,8 +66,10 @@ public class OrderService {
     }
 
     /**
-     * Method takes all requests and checks on books availability in each request
+     * <p>creates order from request</p>
+     * <p>Method takes all requests from DB and checks on books availability in each request</p>>
      * If request has all books available, the order is created
+     * @author Ulad Sachkouski
      */
     public void createOrderFromRequest() {
         List<Request> requestForOrder = requestService.checkRequestsToOrder();

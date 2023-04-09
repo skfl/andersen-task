@@ -20,7 +20,12 @@ public class OrderFacade {
 
 
     /**
-     * buildOrder collects data from
+     * <p>builds interim order from scanner information</p>>
+     * <p>order includes list of books, that both available and out_of_stock</p>
+     * <p>order next is processed by method createOrderAndRequest at OrderService</p>
+     * @author Ulad Sachkouski
+     * @param user user from scanner (UserService.createUser())
+     * @return Order, if the user enters books, that exist in DB. Otherwise, recursively return this method
      */
     public Order buildOrder(User user){
 
