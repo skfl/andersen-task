@@ -1,18 +1,20 @@
 package com.andersentask.bookshop.request.repository;
 
+import com.andersentask.bookshop.common.AbstractCollectionRepository;
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.request.repository.interfaces.RequestCollectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RequestCollectionRepositoryImpl implements RequestCollectionRepository {
+public class RequestRepository implements AbstractCollectionRepository<Request, Long> {
 
     private final List<Request> requests;
+    private Long id;
 
-    public RequestCollectionRepositoryImpl() {
+    public RequestRepository() {
         this.requests = new ArrayList<>();
+        this.id = 1L;
     }
 
     @Override
