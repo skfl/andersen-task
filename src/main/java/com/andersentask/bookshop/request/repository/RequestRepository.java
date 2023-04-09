@@ -1,35 +1,36 @@
 package com.andersentask.bookshop.request.repository;
 
+import com.andersentask.bookshop.common.AbstractCollectionRepository;
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.request.repository.interfaces.RequestCollectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RequestCollectionRepositoryImpl implements RequestCollectionRepository {
+public class RequestRepository implements AbstractCollectionRepository<Request, Long> {
 
     private final List<Request> requests;
 
-    public RequestCollectionRepositoryImpl() {
+    private Long id;
+
+    public RequestRepository() {
+        id = 1L;
         this.requests = new ArrayList<>();
     }
 
     @Override
     public Request save(Request obj) {
+        obj.setId(id++);
         requests.add(obj);
         return obj;
     }
 
     @Override
     public void delete(Long id) {
-        for (Request request : requests){
-            if (request.getId().equals(id)){
-                requests.remove(request);
-            }
-        }
+        requests.removeIf(request -> request.getId().equals(id));
     }
 
+    //todo
     @Override
     public Optional<Request> findById(Long id) {
         for (Request request : requests) {

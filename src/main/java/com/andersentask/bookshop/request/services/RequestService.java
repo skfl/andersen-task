@@ -1,7 +1,7 @@
 package com.andersentask.bookshop.request.services;
 
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.request.repository.interfaces.RequestCollectionRepository;
+import com.andersentask.bookshop.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Comparator;
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class RequestService {
-    private final RequestCollectionRepository requestRepository;
+    private final RequestRepository requestRepository;
 
     public Request saveNewRequest(Request request) {
         return requestRepository.save(request);
