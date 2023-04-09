@@ -38,7 +38,6 @@ public class OrderService {
     public void createOrderAndRequest(Order order) {
         List<Book> books = order.getBooksInOrder();
 
-        // build of request
         List<Book> booksToRequest = books.stream()
                 .filter(x -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
                 .toList();
@@ -46,7 +45,6 @@ public class OrderService {
             requestFacade.buildRequest(order.getUser(), booksToRequest);
         }
 
-        // Creation of order
         List<Book> booksToOrder = books.stream()
                 .filter(x -> x.getStatus().equals(BookStatus.AVAILABLE))
                 .toList();
