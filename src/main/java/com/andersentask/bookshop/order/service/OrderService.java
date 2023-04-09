@@ -2,15 +2,11 @@ package com.andersentask.bookshop.order.service;
 
 
 import com.andersentask.bookshop.book.entities.Book;
-
-import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.request.facade.RequestFacade;
-import com.andersentask.bookshop.request.service.RequestService;
-
+import com.andersentask.bookshop.user.entities.User;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -22,71 +18,35 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final RequestService requestService;
-    private final RequestFacade requestFacade;
 
-
-    /**
-     * <p> method saves order and request to DB </p>
-     * <p> list of books in order parameter contains both (1) available and (2) out_of_stock </p>
-     * <p> if list of books only contains (1), only order will be created</p>
-     * <p> if list of books only contains (2), only request will be created</p>
-     * <p> otherwise, both order and request will be created and saved </p>
-     * @author Ulad Sachkouski
-     * @param order order, that is taken from OrderFacade.buildOrder()
-     */
-    public void createOrderAndRequest(Order order) {
-        List<Book> books = order.getBooksInOrder();
-
-        List<Book> booksToRequest = books.stream()
-                .filter(x -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
-                .toList();
-        if (!booksToRequest.isEmpty()) {
-            requestFacade.buildRequest(order.getUser(), booksToRequest);
+    public void saveOrder(Order order) {
+        if (!order.getBooksInOrder().isEmpty()) {
+            orderRepository.save(order);
         }
+    }
 
-        List<Book> booksToOrder = books.stream()
-                .filter(x -> x.getStatus().equals(BookStatus.AVAILABLE))
-                .toList();
-        Double orderCost = booksToOrder.stream()
-                .map(Book::getPrice)
-                .reduce(0D, Double::sum);
-        if (!booksToOrder.isEmpty()) {
+
+    private void createOrder(User user, List<Book> books) {
+
+        //toDo: make method to calculate costOfBooksList to BookService
+        //toDo: bookService to filter books on available/out_of_stock
+            Double orderCost = books.stream()
+                    .map(Book::getPrice)
+                    .reduce(0D, Double::sum);
+
             orderRepository.save(Order.builder()
-                    .user(order.getUser())
+                    .user(user)
                     .orderCost(orderCost)
                     .orderStatus(OrderStatus.IN_PROCESS)
-                    .timeOfCompletingOrder(LocalDateTime.now())
-                    .booksInOrder(booksToOrder)
+                    .timeOfCompletingOrder(null)
+                    .booksInOrder(books)
                     .build());
-        }
-
     }
 
-    /**
-     * <p>creates order from request</p>
-     * <p>Method takes all requests from DB and checks on books availability in each request</p>>
-     * If request has all books available, the order is created
-     * @author Ulad Sachkouski
-     */
-    public void createOrderFromRequest() {
-        List<Request> requestForOrder = requestService.checkRequestsToOrder();
-        if (!requestForOrder.isEmpty()) {
-            for (Request request : requestForOrder) {
-                double requestCost = request.getRequestedBooks().stream()
-                        .map(Book::getPrice)
-                        .reduce(0D, Double::sum);
-
-                orderRepository.save(Order.builder()
-                        .user(request.getUser())
-                        .orderCost(requestCost)
-                        .orderStatus(OrderStatus.IN_PROCESS)
-                        .timeOfCompletingOrder(LocalDateTime.now())
-                        .booksInOrder(request.getRequestedBooks())
-                        .build());
-            }
-        }
+        public void createOrderFromRequest(List<Request> requestForOrder) {
+            requestForOrder.forEach(x -> createOrder(x.getUser(),x.getRequestedBooks()));
     }
+
 
     public void completeOrder(Long id) {
         orderRepository.findById(id)
