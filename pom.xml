@@ -18,7 +18,7 @@
             <artifactId>lombok</artifactId>
             <version>1.18.26</version>
         </dependency>
-
+        
         <!-- JUnit -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -26,7 +26,6 @@
             <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
-
         <!-- Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>

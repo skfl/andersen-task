@@ -43,6 +43,10 @@ public class BookService {
                 .toList();
     }
 
+    public Book changeBookToOutOfStock(Long id) {
+        return bookRepository.save(null);
+    }
+
     public boolean checkListOfBooksOnAvailability(List<Book> books) {
         for (Book book : books) {
             Optional<Book> foundBook = bookRepository.findById(book.getId());

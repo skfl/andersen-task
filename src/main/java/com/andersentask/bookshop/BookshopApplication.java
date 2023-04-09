@@ -1,8 +1,10 @@
 package com.andersentask.bookshop;
 
-public class BookshopApplication {
+import com.andersentask.bookshop.console.BookstoreConsoleAppController;
 
+public class BookshopApplication {
     public static void main(String[] args) {
-        System.out.println("Hello world");
+        BookstoreConsoleAppController controller = new BookstoreConsoleAppController();
+        controller.init();
     }
 }
