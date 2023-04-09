@@ -17,8 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Order {
 
-    //counter => добавить
-
     private Long orderId;
     private User user;
     private double orderCost;

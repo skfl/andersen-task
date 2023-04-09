@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Data
-public class OrderCollectionRepository implements AbstractCollectionRepository<Order,Long> {
+public class OrderRepository implements AbstractCollectionRepository<Order, Long> {
     private final List<Order> orders;
+    private Long id;
 
-    public OrderCollectionRepository() {
+    public OrderRepository() {
         this.orders = new ArrayList<>();
+        this.id = 1L;
     }
+
     @Override
     public Optional<Order> findById(Long id) {
         for (Order order : orders) {
@@ -33,19 +36,17 @@ public class OrderCollectionRepository implements AbstractCollectionRepository<O
 
     @Override
     public Order save(Order obj) {
+        obj.setOrderId(id++);
         orders.add(obj);
         return obj;
     }
 
-    // The method just changes the status of order, but keeps object in the list
+
     @Override
     public void delete(Long id) {
-        findById(id).ifPresentOrElse((x) -> x.setOrderStatus(OrderStatus.CANCELED), () -> {});
+        findById(id).ifPresentOrElse(x -> x.setOrderStatus(OrderStatus.CANCELED), () -> {
+        });
     }
-
-
-
-
 
 
 }

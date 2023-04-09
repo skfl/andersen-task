@@ -4,11 +4,13 @@ package com.andersentask.bookshop.order.service;
 import com.andersentask.bookshop.book.entities.Book;
 
 import com.andersentask.bookshop.book.enums.BookStatus;
-import com.andersentask.bookshop.common.IdGeneration;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
-import com.andersentask.bookshop.order.repositories.OrderCollectionRepository;
-import lombok.Data;
+import com.andersentask.bookshop.order.repositories.OrderRepository;
+import com.andersentask.bookshop.request.entities.Request;
+import com.andersentask.bookshop.request.facade.RequestFacade;
+import com.andersentask.bookshop.request.service.RequestService;
+
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -17,32 +19,39 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
-@Data
 public class OrderService {
 
-    private final OrderCollectionRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final RequestService requestService;
+    private final RequestFacade requestFacade;
 
-    public void createOrder(Order order) {
+
+    /**
+     * Initially order is created with List<Book>, that contains both available and out_of_stock books
+     * The method divides list of books into 2 lists: 1L => available, 2L => out_of_stock
+     * 1L is used to create order and save to DB
+     * 2L is used to build request
+     */
+    public void createOrderAndRequest(Order order) {
         List<Book> books = order.getBooksInOrder();
 
+        // build of request
         List<Book> booksToRequest = books.stream()
-                .filter((x) -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
+                .filter(x -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
                 .toList();
-        // Method, that creates request
-        if (booksToRequest.size() > 0) {
-            //RequestFacade.buildRequest(order.getUser(), booksToRequest);
+        if (!booksToRequest.isEmpty()) {
+            requestFacade.buildRequest(order.getUser(), booksToRequest);
         }
 
+        // Creation of order
         List<Book> booksToOrder = books.stream()
-                .filter((x) -> x.getStatus().equals(BookStatus.AVAILABLE))
+                .filter(x -> x.getStatus().equals(BookStatus.AVAILABLE))
                 .toList();
         Double orderCost = booksToOrder.stream()
                 .map(Book::getPrice)
                 .reduce(0D, Double::sum);
-
-        if (booksToOrder.size() > 0) {
+        if (!booksToOrder.isEmpty()) {
             orderRepository.save(Order.builder()
-                    .orderId(IdGeneration.generateOrderId())
                     .user(order.getUser())
                     .orderCost(orderCost)
                     .orderStatus(OrderStatus.IN_PROCESS)
@@ -53,37 +62,44 @@ public class OrderService {
 
     }
 
+    /**
+     * Method takes all requests and checks on books availability in each request
+     * If request has all books available, the order is created
+     */
+    public void createOrderFromRequest() {
+        List<Request> requestForOrder = requestService.checkRequestsToOrder();
+        if (!requestForOrder.isEmpty()) {
+            for (Request request : requestForOrder) {
+                double requestCost = request.getRequestedBooks().stream()
+                        .map(Book::getPrice)
+                        .reduce(0D, Double::sum);
 
-    //toDo: to reconcile with Request class to resolve conflicts
-//    public void createOrderFromRequest(Request request) {
-//
-//        double requestCost = request.getBooksInRequest().stream()
-//                .map(Book::getPrice)
-//                .reduce(0D, Double::sum);
-//
-//        orderRepository.save(Order.builder()
-//                .orderId(IdGeneration.incrementOrderId())
-//                .user(request.getUser())
-//                .orderCost(requestCost)
-//                .orderStatus(OrderStatus.IN_PROCESS)
-//                .timeOfCompletingOrder(LocalDateTime.now())
-//                .booksInOrder(request.getBooksInRequest())
-//                .build());
-//    }
+                orderRepository.save(Order.builder()
+                        .user(request.getUser())
+                        .orderCost(requestCost)
+                        .orderStatus(OrderStatus.IN_PROCESS)
+                        .timeOfCompletingOrder(LocalDateTime.now())
+                        .booksInOrder(request.getRequestedBooks())
+                        .build());
+            }
+        }
+    }
 
     public void completeOrder(Long id) {
         orderRepository.findById(id)
-                .ifPresentOrElse((x) -> {
-                            x.setOrderStatus(OrderStatus.COMPLETED);
-                            x.setTimeOfCompletingOrder(LocalDateTime.now());
-                        },() -> {});
+                .ifPresentOrElse(x -> {
+                    x.setOrderStatus(OrderStatus.COMPLETED);
+                    x.setTimeOfCompletingOrder(LocalDateTime.now());
+                }, () -> {
+                });
     }
 
 
     public void cancelOrder(Long id) {
         orderRepository.findById(id)
-                        .ifPresentOrElse((x) -> x.setOrderStatus(OrderStatus.CANCELED)
-                                ,() -> {});
+                .ifPresentOrElse(x -> x.setOrderStatus(OrderStatus.CANCELED)
+                        , () -> {
+                        });
     }
 
 
@@ -97,8 +113,8 @@ public class OrderService {
 
     public double getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
         return getAllOrders().stream()
-                .filter((x) -> x.getOrderStatus().equals(OrderStatus.COMPLETED))
-                .filter((x) -> x.getTimeOfCompletingOrder().isAfter(startOfPeriod) &&
+                .filter(x -> x.getOrderStatus().equals(OrderStatus.COMPLETED))
+                .filter(x -> x.getTimeOfCompletingOrder().isAfter(startOfPeriod) &&
                         x.getTimeOfCompletingOrder().isBefore(endOfPeriod))
                 .map(Order::getOrderCost)
                 .reduce(0D, Double::sum);
