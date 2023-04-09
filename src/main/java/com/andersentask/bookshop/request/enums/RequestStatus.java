@@ -1,4 +1,4 @@
-package com.andersentask.bookshop.request.entities.enums;
+package com.andersentask.bookshop.request.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.andersentask.bookshop.request.entities;
 
 import com.andersentask.bookshop.book.entities.Book;
-import com.andersentask.bookshop.request.entities.enums.RequestStatus;
+import com.andersentask.bookshop.request.enums.RequestStatus;
 import com.andersentask.bookshop.user.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
