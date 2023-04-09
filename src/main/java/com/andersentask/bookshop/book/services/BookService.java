@@ -1,6 +1,7 @@
 package com.andersentask.bookshop.book.services;
 
 import com.andersentask.bookshop.book.entities.Book;
+import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.book.repositories.interfaces.BookCollectionRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -41,5 +42,11 @@ public class BookService {
                 .sorted(Comparator.comparingInt(x -> x.getStatus().getOrdinal()))
                 .collect(Collectors.toList());
     }
+
+    public boolean checkListOfBooksOnAvailability(List<Book> books) {
+        return books.stream()
+                .allMatch((x -> x.getStatus().equals(BookStatus.AVAILABLE)));
+    }
+
 }
 
