@@ -91,7 +91,7 @@ public class OrderService {
 
     public List<Order> getOrdersSortedByStatus() {
         return getAllOrders().stream()
-                .sorted(Comparator.comparingInt(x -> x.getOrderStatus().getOrdinalOfOrderEnum()))
+                .sorted(Comparator.comparingInt(x -> x.getOrderStatus().ordinal()))
                 .toList();
     }
 

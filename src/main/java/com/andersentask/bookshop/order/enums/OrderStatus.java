@@ -11,8 +11,4 @@ public enum OrderStatus {
     CANCELED("CANCELED");
 
     private String value;
-
-    public int getOrdinalOfOrderEnum(){
-        return this.ordinal();
-    }
 }
