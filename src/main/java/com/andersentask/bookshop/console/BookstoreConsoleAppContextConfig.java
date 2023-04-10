@@ -2,8 +2,12 @@ package com.andersentask.bookshop.console;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookStatus;
-import com.andersentask.bookshop.book.repositories.BookCollectionRepositoryImpl;
+import com.andersentask.bookshop.book.repositories.BookRepository;
 import com.andersentask.bookshop.book.services.BookService;
+import com.andersentask.bookshop.order.repositories.OrderRepository;
+import com.andersentask.bookshop.order.service.OrderService;
+import com.andersentask.bookshop.request.repository.RequestRepository;
+import com.andersentask.bookshop.request.services.RequestService;
 import com.andersentask.bookshop.user.entities.User;
 import com.andersentask.bookshop.user.enums.Role;
 import com.andersentask.bookshop.user.repository.UserRepository;
@@ -12,12 +16,16 @@ import com.andersentask.bookshop.user.service.UserService;
 public class BookstoreConsoleAppContextConfig {
     private final BookService bookService;
     private final UserService userService;
+    private final OrderService orderService;
+    private final RequestService requestService;
 
     public BookstoreConsoleAppContextConfig() {
-        this.bookService = new BookService(new BookCollectionRepositoryImpl());
+        this.bookService = new BookService(new BookRepository());
         this.userService = new UserService(new UserRepository());
         setupBookService();
         setupUserService();
+        this.orderService = new OrderService(new OrderRepository(), bookService);
+        this.requestService = new RequestService(new RequestRepository(), this.bookService);
     }
 
     private void setupBookService() {
@@ -60,5 +68,13 @@ public class BookstoreConsoleAppContextConfig {
 
     public UserService getUserService() {
         return this.userService;
+    }
+
+    public OrderService getOrderService() {
+        return orderService;
+    }
+
+    public RequestService getRequestService() {
+        return requestService;
     }
 }
