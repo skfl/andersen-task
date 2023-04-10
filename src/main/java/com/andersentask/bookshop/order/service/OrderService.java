@@ -25,7 +25,7 @@ public class OrderService {
         }
     }
 
-
+    //toDo: merge to one method
     private void createOrder(User user, List<Book> books) {
 
         //toDo: make method to calculate costOfBooksList to BookService
@@ -43,6 +43,7 @@ public class OrderService {
                     .build());
     }
 
+    //toDo: merge to one method
         public void createOrderFromRequest(List<Request> requestForOrder) {
             requestForOrder.forEach(x -> createOrder(x.getUser(),x.getRequestedBooks()));
     }
@@ -70,6 +71,7 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    //toDo: to delete
     public String getInfoAboutOrders() {
         return orderRepository.findAll().toString();
     }

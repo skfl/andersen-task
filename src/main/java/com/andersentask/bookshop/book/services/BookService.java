@@ -53,6 +53,21 @@ public class BookService {
         }
         return true;
     }
+    public double getCostOfListOfBooks (List<Book> books) {
+        return books.stream()
+                .map(Book::getPrice)
+                .reduce(0D, Double::sum);
+    }
+    public List<Book> getOnlyAvailableBooks (List<Book> books) {
+        return books.stream()
+                .filter(x -> x.getStatus().equals(BookStatus.AVAILABLE))
+                .toList();
+    }
+    public List<Book> getOnlyOutOfStockBooks (List<Book> books) {
+        return books.stream()
+                .filter(x -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
+                .toList();
+    }
 
 }
 
