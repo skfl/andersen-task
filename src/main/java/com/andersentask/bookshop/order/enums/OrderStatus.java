@@ -10,5 +10,5 @@ public enum OrderStatus {
     COMPLETED("COMPLETED"),
     CANCELED("CANCELED");
 
-    private String value;
+    private final String value;
 }

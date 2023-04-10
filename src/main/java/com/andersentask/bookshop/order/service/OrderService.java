@@ -2,11 +2,11 @@ package com.andersentask.bookshop.order.service;
 
 
 import com.andersentask.bookshop.book.entities.Book;
+import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.user.entities.User;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final BookService bookService;
 
     public void saveOrder(Order order) {
         if (!order.getBooksInOrder().isEmpty()) {
@@ -24,14 +25,12 @@ public class OrderService {
         }
     }
 
-    public void saveOrdersFromListOfRequests (List<Request> requestForOrder) {
-        for (Request request: requestForOrder) {
+    public void saveOrdersFromListOfRequests(List<Request> requestForOrder) {
+        for (Request request : requestForOrder) {
 
             List<Book> booksInRequest = request.getRequestedBooks();
 
-            Double orderCost = booksInRequest.stream()
-                    .map(Book::getPrice)
-                    .reduce(0D, Double::sum);
+            double orderCost = bookService.getCostOfListOfBooks(booksInRequest);
 
             orderRepository.save(Order.builder()
                     .user(request.getUser())
