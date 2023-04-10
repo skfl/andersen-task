@@ -2,18 +2,17 @@ package com.andersentask.bookshop.book.services;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookStatus;
-import com.andersentask.bookshop.book.repositories.interfaces.BookCollectionRepository;
+import com.andersentask.bookshop.book.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class BookService {
 
-    private final BookCollectionRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public Book save(Book book) {
         return bookRepository.save(book);
@@ -27,25 +26,25 @@ public class BookService {
         List<Book> books = getAllBooks();
         return books.stream()
                 .sorted(Comparator.comparing(x -> x.getName().toLowerCase()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Book> getBooksSortedByPrice() {
         List<Book> books = getAllBooks();
         return books.stream()
                 .sorted(Comparator.comparing(Book::getPrice))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Book> getBooksSortedByAvailability() {
         List<Book> books = getAllBooks();
         return books.stream()
-                .sorted(Comparator.comparingInt(x -> x.getStatus().getOrdinal()))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(x -> x.getStatus().ordinal()))
+                .toList();
     }
 
     public boolean checkListOfBooksOnAvailability(List<Book> books) {
-        for (Book book: books) {
+        for (Book book : books) {
             Optional<Book> foundBook = bookRepository.findById(book.getId());
             if (!foundBook.get().getStatus().equals(BookStatus.AVAILABLE)) {
                 return false;
@@ -53,17 +52,20 @@ public class BookService {
         }
         return true;
     }
-    public double getCostOfListOfBooks (List<Book> books) {
+
+    public double getCostOfListOfBooks(List<Book> books) {
         return books.stream()
                 .map(Book::getPrice)
                 .reduce(0D, Double::sum);
     }
-    public List<Book> getOnlyAvailableBooks (List<Book> books) {
+
+    public List<Book> getOnlyAvailableBooks(List<Book> books) {
         return books.stream()
                 .filter(x -> x.getStatus().equals(BookStatus.AVAILABLE))
                 .toList();
     }
-    public List<Book> getOnlyOutOfStockBooks (List<Book> books) {
+
+    public List<Book> getOnlyOutOfStockBooks(List<Book> books) {
         return books.stream()
                 .filter(x -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
                 .toList();

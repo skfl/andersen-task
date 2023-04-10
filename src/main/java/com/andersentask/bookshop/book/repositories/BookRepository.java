@@ -1,16 +1,16 @@
 package com.andersentask.bookshop.book.repositories;
 
 import com.andersentask.bookshop.book.entities.Book;
-import com.andersentask.bookshop.book.repositories.interfaces.BookCollectionRepository;
+import com.andersentask.bookshop.common.AbstractCollectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BookCollectionRepositoryImpl implements BookCollectionRepository {
+public class BookRepository implements AbstractCollectionRepository<Book, Long> {
     private final List<Book> books;
 
-    public BookCollectionRepositoryImpl() {
+    public BookRepository() {
         this.books = new ArrayList<>();
     }
 
@@ -22,8 +22,8 @@ public class BookCollectionRepositoryImpl implements BookCollectionRepository {
 
     @Override
     public void delete(Long id) {
-        for (Book book : books){
-            if (book.getId().equals(id)){
+        for (Book book : books) {
+            if (book.getId().equals(id)) {
                 books.remove(book);
             }
         }
