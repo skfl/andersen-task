@@ -10,9 +10,6 @@ public enum BookStatus {
     NOT_AVAILABLE("NOT_AVAILABLE"),
     OUT_OF_STOCK("OUT_OF_STOCK");
 
-    public int getOrdinal() {
-        return this.ordinal();
-    }
 
     private String value;
 }
