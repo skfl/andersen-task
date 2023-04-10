@@ -2,6 +2,7 @@ package com.andersentask.bookshop.request.repository;
 
 import com.andersentask.bookshop.common.AbstractCollectionRepository;
 import com.andersentask.bookshop.request.entities.Request;
+import com.andersentask.bookshop.request.enums.RequestStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,8 @@ public class RequestRepository implements AbstractCollectionRepository<Request, 
     private Long id;
 
     public RequestRepository() {
-        id = 1L;
         this.requests = new ArrayList<>();
+        id = 1L;
     }
 
     @Override
@@ -27,7 +28,9 @@ public class RequestRepository implements AbstractCollectionRepository<Request, 
 
     @Override
     public void delete(Long id) {
-        requests.removeIf(request -> request.getId().equals(id));
+       findById(id)
+                .ifPresentOrElse(x -> x.setRequestStatus(RequestStatus.CANCELED), () -> {
+                });
     }
 
     //todo

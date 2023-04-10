@@ -26,9 +26,7 @@ public class RequestService {
     }
 
     public void cancelRequest(Long id) {
-        requestRepository.findById(id)
-                .ifPresentOrElse(x -> x.setRequestStatus(RequestStatus.CANCELED), () -> {
-                });
+        requestRepository.delete(id);
     }
 
     public List<Request> getAllRequests() {
@@ -37,17 +35,20 @@ public class RequestService {
 
     public List<Request> getAllRequestsSortedByAmountOfBooks() {
         return getAllRequests().stream()
-                .sorted(Comparator.comparing(r -> r.getRequestedBooks().size())).toList();
+                .sorted(Comparator.comparing(r -> r.getRequestedBooks().size()))
+                .toList();
     }
 
     public List<Request> getAllRequestsSortedByStatus() {
         return getAllRequests().stream()
-                .sorted(Comparator.comparing(Request::getRequestStatus)).toList();
+                .sorted(Comparator.comparing(r -> r.getRequestStatus().ordinal()))
+                .toList();
     }
 
     public List<Request> getAllRequestsSortedByCreationTime() {
         return getAllRequests().stream()
-                .sorted(Comparator.comparing(Request::getCreatedAt)).toList();
+                .sorted(Comparator.comparing(Request::getCreatedAt))
+                .toList();
     }
 
     public List<Request> getRequestsThatReadyToOrder() {
