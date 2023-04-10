@@ -16,7 +16,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
 
     public void saveOrder(Order order) {
@@ -25,29 +24,24 @@ public class OrderService {
         }
     }
 
-    //toDo: merge to one method
-    private void createOrder(User user, List<Book> books) {
+    public void saveOrdersFromListOfRequests (List<Request> requestForOrder) {
+        for (Request request: requestForOrder) {
 
-        //toDo: make method to calculate costOfBooksList to BookService
-        //toDo: bookService to filter books on available/out_of_stock
-            Double orderCost = books.stream()
+            List<Book> booksInRequest = request.getRequestedBooks();
+
+            Double orderCost = booksInRequest.stream()
                     .map(Book::getPrice)
                     .reduce(0D, Double::sum);
 
             orderRepository.save(Order.builder()
-                    .user(user)
+                    .user(request.getUser())
                     .orderCost(orderCost)
                     .orderStatus(OrderStatus.IN_PROCESS)
                     .timeOfCompletingOrder(null)
-                    .booksInOrder(books)
+                    .booksInOrder(booksInRequest)
                     .build());
+        }
     }
-
-    //toDo: merge to one method
-        public void createOrderFromRequest(List<Request> requestForOrder) {
-            requestForOrder.forEach(x -> createOrder(x.getUser(),x.getRequestedBooks()));
-    }
-
 
     public void completeOrder(Long id) {
         orderRepository.findById(id)
@@ -69,11 +63,6 @@ public class OrderService {
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
-    }
-
-    //toDo: to delete
-    public String getInfoAboutOrders() {
-        return orderRepository.findAll().toString();
     }
 
     public double getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
