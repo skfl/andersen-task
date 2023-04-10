@@ -3,13 +3,12 @@ package com.andersentask.bookshop.order.repositories;
 import com.andersentask.bookshop.common.AbstractCollectionRepository;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
-import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Data
+
 public class OrderRepository implements AbstractCollectionRepository<Order, Long> {
     private final List<Order> orders;
     private Long id;
