@@ -10,9 +10,5 @@ public enum OrderStatus {
     COMPLETED("COMPLETED"),
     CANCELED("CANCELED");
 
-    private String value;
-
-    public int getOrdinalOfOrderEnum(){
-        return this.ordinal();
-    }
+    private final String value;
 }

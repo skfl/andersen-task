@@ -13,19 +13,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RequestService {
     private final RequestRepository requestRepository;
-
     private final BookService bookService;
 
-    public Request saveNewRequest(Request request) {
-        return requestRepository.save(request);
+    public void saveRequest(Request request) {
+        if (!request.getRequestedBooks().isEmpty()) {
+            requestRepository.save(request);
+        }
     }
 
     public Optional<Request> getRequestByID(Long id) {
         return requestRepository.findById(id);
     }
 
-    public void deleteRequest(Long id) {
-        requestRepository.delete(id);
+    public void cancelRequest(Long id) {
+        requestRepository.findById(id)
+                .ifPresentOrElse(x -> x.setRequestStatus(RequestStatus.CANCELED), () -> {
+                });
     }
 
     public List<Request> getAllRequests() {
@@ -49,7 +52,7 @@ public class RequestService {
 
     public List<Request> getRequestsThatReadyToOrder() {
         List<Request> requestList = getAllRequests().stream()
-                .filter(r -> r.getRequestStatus().equals(RequestStatus.IN_PROCESSING))
+                .filter(r -> r.getRequestStatus().equals(RequestStatus.IN_PROCESS))
                 .filter(r -> bookService.checkListOfBooksOnAvailability(r.getRequestedBooks()))
                 .toList();
 

@@ -2,11 +2,11 @@ package com.andersentask.bookshop.order.service;
 
 
 import com.andersentask.bookshop.book.entities.Book;
+import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.user.entities.User;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -16,8 +16,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
+    private final BookService bookService;
 
     public void saveOrder(Order order) {
         if (!order.getBooksInOrder().isEmpty()) {
@@ -25,29 +25,22 @@ public class OrderService {
         }
     }
 
-    //toDo: merge to one method
-    private void createOrder(User user, List<Book> books) {
+    public void saveOrdersFromListOfRequests(List<Request> requestForOrder) {
+        for (Request request : requestForOrder) {
 
-        //toDo: make method to calculate costOfBooksList to BookService
-        //toDo: bookService to filter books on available/out_of_stock
-            Double orderCost = books.stream()
-                    .map(Book::getPrice)
-                    .reduce(0D, Double::sum);
+            List<Book> booksInRequest = request.getRequestedBooks();
+
+            double orderCost = bookService.getCostOfListOfBooks(booksInRequest);
 
             orderRepository.save(Order.builder()
-                    .user(user)
+                    .user(request.getUser())
                     .orderCost(orderCost)
                     .orderStatus(OrderStatus.IN_PROCESS)
                     .timeOfCompletingOrder(null)
-                    .booksInOrder(books)
+                    .booksInOrder(booksInRequest)
                     .build());
+        }
     }
-
-    //toDo: merge to one method
-        public void createOrderFromRequest(List<Request> requestForOrder) {
-            requestForOrder.forEach(x -> createOrder(x.getUser(),x.getRequestedBooks()));
-    }
-
 
     public void completeOrder(Long id) {
         orderRepository.findById(id)
@@ -69,11 +62,6 @@ public class OrderService {
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
-    }
-
-    //toDo: to delete
-    public String getInfoAboutOrders() {
-        return orderRepository.findAll().toString();
     }
 
     public double getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
@@ -102,7 +90,7 @@ public class OrderService {
 
     public List<Order> getOrdersSortedByStatus() {
         return getAllOrders().stream()
-                .sorted(Comparator.comparingInt(x -> x.getOrderStatus().getOrdinalOfOrderEnum()))
+                .sorted(Comparator.comparingInt(x -> x.getOrderStatus().ordinal()))
                 .toList();
     }
 

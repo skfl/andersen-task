@@ -6,5 +6,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum RequestStatus {
-    SENT, IN_PROCESSING, TO_ORDER
+    IN_PROCESS("IN_PROCESS"),
+    TO_ORDER("TO_ORDER"),
+    CANCELED("CANCELED");
+
+    private final String value;
 }
+
+
