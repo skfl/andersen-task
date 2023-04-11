@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,10 +20,11 @@ public class Request {
 
     private User user;
 
-    private List<Book> requestedBooks;
+    private Book book;
 
+    //toDo: to delete (discuss). Specification has no request status
     private RequestStatus requestStatus;
-
+    //toDo: to delete (discuss). Specification has no request date
     private LocalDateTime createdAt;
 
 }

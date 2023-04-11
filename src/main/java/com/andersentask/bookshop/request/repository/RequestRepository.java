@@ -30,7 +30,6 @@ public class RequestRepository implements AbstractCollectionRepository<Request, 
         requests.removeIf(request -> request.getId().equals(id));
     }
 
-    //todo
     @Override
     public Optional<Request> findById(Long id) {
         for (Request request : requests) {

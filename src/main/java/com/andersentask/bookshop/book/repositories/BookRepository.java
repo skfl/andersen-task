@@ -43,4 +43,13 @@ public class BookRepository implements AbstractCollectionRepository<Book, Long> 
     public List<Book> findAll() {
         return this.books;
     }
+
+    public Optional<Book> findByName(String name) {
+        for (Book book : books) {
+            if (book.getName().equals(name)) {
+                return Optional.of(book);
+            }
+        }
+        return Optional.empty();
+    }
 }

@@ -22,53 +22,12 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public List<Book> getBooksSortedByName() {
-        List<Book> books = getAllBooks();
-        return books.stream()
-                .sorted(Comparator.comparing(x -> x.getName().toLowerCase()))
-                .toList();
+    public Optional<Book> getBookById(Long id) {
+        return bookRepository.findById(id);
     }
 
-    public List<Book> getBooksSortedByPrice() {
-        List<Book> books = getAllBooks();
-        return books.stream()
-                .sorted(Comparator.comparing(Book::getPrice))
-                .toList();
-    }
-
-    public List<Book> getBooksSortedByAvailability() {
-        List<Book> books = getAllBooks();
-        return books.stream()
-                .sorted(Comparator.comparingInt(x -> x.getStatus().ordinal()))
-                .toList();
-    }
-
-    public boolean checkListOfBooksOnAvailability(List<Book> books) {
-        for (Book book : books) {
-            Optional<Book> foundBook = bookRepository.findById(book.getId());
-            if (!foundBook.get().getStatus().equals(BookStatus.AVAILABLE)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public double getCostOfListOfBooks(List<Book> books) {
-        return books.stream()
-                .map(Book::getPrice)
-                .reduce(0D, Double::sum);
-    }
-
-    public List<Book> getOnlyAvailableBooks(List<Book> books) {
-        return books.stream()
-                .filter(x -> x.getStatus().equals(BookStatus.AVAILABLE))
-                .toList();
-    }
-
-    public List<Book> getOnlyOutOfStockBooks(List<Book> books) {
-        return books.stream()
-                .filter(x -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
-                .toList();
+    public Optional<Book> getBookByName(String name) {
+        return bookRepository.findByName(name);
     }
 
 }
