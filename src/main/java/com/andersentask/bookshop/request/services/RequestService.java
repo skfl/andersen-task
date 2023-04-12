@@ -35,7 +35,17 @@ public class RequestService {
         getAllRequests().removeIf(x -> x.equals(book));
     }
 
+    public List<Book> getAllBooksFromRequests(){
+        return getAllRequests().stream()
+                .map(Request::getBook)
+                .toList();
+    }
 
+    public Long getNumberOfRequestsOnBook(Long id) {
+        return getAllBooksFromRequests().stream()
+                .filter(x -> x.getId().equals(id))
+                .count();
+    }
 
 
 }
