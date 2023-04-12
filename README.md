@@ -21,6 +21,13 @@ Implement bookstore console application according next requirements and function
 * Write tests for your existing solution. Optionally, add some integration tests.
 * Configure a CI pipeline for your repository.
 
+## Task 3
+* Replace loops with Stream API where it makes sense
+* Serialize/deserialize the state of the application and store it on disk.
+* Add a configuration using external file:
+    * Turn on/off the ability to create a request for a book when creating an order for “out of stock” book
+
+
 ### Technical stack: Lombok, Maven
 ### This project was created during Andersen java course
 ## Contributors
