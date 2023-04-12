@@ -1,26 +1,21 @@
 package com.andersentask.bookshop.console;
 
-import com.andersentask.bookshop.book.services.BookService;
-import com.andersentask.bookshop.user.entities.User;
-import com.andersentask.bookshop.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
 public class ConsoleAppController {
-    private final BookService bookService;
-    private final UserService userService;
+
     private final Scanner scanner;
-    private User user;
     private String input;
+    UserCommunication userCommunication;
 
     public ConsoleAppController() {
-        ConsoleAppContextConfig context = new ConsoleAppContextConfig();
-        this.bookService = context.getBookService();
-        this.userService = context.getUserService();
         this.scanner = new Scanner(System.in);
+        userCommunication = new UserCommunication(new Commands());
     }
 
     public void init() {
@@ -45,14 +40,12 @@ public class ConsoleAppController {
     }
 
     private void handleConsoleInput(String input) {
-        String[] commandArr = input.split(" ");
-        String command = commandArr[0];  //todo: find better workaround
-        String option = "";
-        if (commandArr.length > 1) {
-            option = commandArr[1];
-        }
+        List<String> userInput = Arrays.stream(input.split(" ")).toList();
+        String command = userInput.remove(0);
+
         switch (command) {
-//            case "help" -> handleHelpCommand();
+            case "help" -> userCommunication.help(userInput);
+            case "get-books" -> userCommunication.getBooks(userInput);
             case "" -> waitForCommand();
 //            default -> handleUnknownCommand();
         }
