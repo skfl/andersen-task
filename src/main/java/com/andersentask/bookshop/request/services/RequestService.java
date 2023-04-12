@@ -1,16 +1,14 @@
 package com.andersentask.bookshop.request.services;
 
 import com.andersentask.bookshop.book.entities.Book;
-import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.request.enums.RequestStatus;
 import com.andersentask.bookshop.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Comparator;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @RequiredArgsConstructor
 public class RequestService {
@@ -32,7 +30,7 @@ public class RequestService {
     }
 
     public void deleteRequest(Book book){
-        getAllRequests().removeIf(x -> x.equals(book));
+        getAllRequests().removeIf(x -> x.getBook().equals(book));
     }
 
     public List<Book> getAllBooksFromRequests(){

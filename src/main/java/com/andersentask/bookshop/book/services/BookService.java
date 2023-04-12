@@ -69,7 +69,7 @@ public class BookService {
     }
 
     public boolean allBooksAreAvailable(List<Book> books) {
-        return getAllBooks().stream()
+        return books.stream()
                 .allMatch(x -> x.getStatus().equals(BookStatus.AVAILABLE));
     }
 

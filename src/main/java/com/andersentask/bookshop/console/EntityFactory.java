@@ -1,11 +1,9 @@
 package com.andersentask.bookshop.console;
 
 import com.andersentask.bookshop.book.entities.Book;
-import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.request.entities.Request;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 

@@ -2,13 +2,10 @@ package com.andersentask.bookshop.order.service;
 
 
 import com.andersentask.bookshop.book.entities.Book;
-import com.andersentask.bookshop.book.enums.BookStatus;
-import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
-import com.andersentask.bookshop.request.entities.Request;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -28,22 +25,6 @@ public class OrderService {
 
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
-    }
-
-    public void completeOrder(Long id) {
-        orderRepository.findById(id)
-                .ifPresentOrElse(x -> {
-                    x.setOrderStatus(OrderStatus.COMPLETED);
-                    x.setTimeOfCompletingOrder(LocalDateTime.now());
-                }, () -> {
-                });
-    }
-
-    public void cancelOrder(Long id) {
-        orderRepository.findById(id)
-                .ifPresentOrElse(x -> x.setOrderStatus(OrderStatus.CANCELED)
-                        , () -> {
-                        });
     }
 
     public List<Order> getAllOrders() {
