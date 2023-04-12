@@ -13,6 +13,8 @@ public class ConsoleAppController {
     private String input;
     UserCommunication userCommunication;
 
+    private String parameter, parameter2;
+
     public ConsoleAppController() {
         this.scanner = new Scanner(System.in);
         userCommunication = new UserCommunication(new Commands());
@@ -24,11 +26,13 @@ public class ConsoleAppController {
     }
 
     private void waitForCommand() {
-        input = scanner.nextLine();
-        if (input.equals("exit")) {
-            init();
+        while (true) {
+            input = scanner.nextLine();
+            if (input.equals("exit")) {
+                init();
+            }
+            handleConsoleInput(input.trim());
         }
-        handleConsoleInput(input.trim());
     }
 
     private String waitForInput() {
@@ -39,18 +43,32 @@ public class ConsoleAppController {
         return input;
     }
 
-    private void handleConsoleInput(String input) {
+    public void handleConsoleInput(String input) {
         List<String> userInput = Arrays.stream(input.split(" ")).toList();
-        String command = userInput.remove(0);
-
+        String command = userInput.get(0);
+        if (userInput.size() > 1) {
+            this.parameter = userInput.get(1);
+        }
+        if (userInput.size() > 2) {
+            this.parameter2 = userInput.get(2);
+        }
         switch (command) {
-            case "help" -> userCommunication.help(userInput);
-            case "get-books" -> userCommunication.getBooks(userInput);
+            case "help" -> userCommunication.help();
+            case "getSortedBooks" -> userCommunication.getSortedBooks(parameter);
+            case "setStatusToBookAndDeleteCorrespondingRequests" ->
+                    userCommunication.setStatusToBookAndDeleteCorrespondingRequests(parameter, parameter2);
+            case "createRequest" -> userCommunication.createRequest(parameter);
+            case "createOrder" -> userCommunication.createOrder(input);
+            case "changeStatusOfOrder" -> userCommunication.changeStatusOfOrder(parameter, parameter2);
+            case "getOrders" -> userCommunication.getOrders(parameter);
+            case "getNumberOfRequestsOnBook" -> userCommunication.getNumberOfRequestsOnBook(parameter);
+            case "getBooksAndNumberOfRequests" -> userCommunication.getBooksAndNumberOfRequests();
+            case "getIncomeForPeriod" -> userCommunication.getIncomeForPeriod(parameter, parameter2);
+            case "getAllBooksFromOrder" -> userCommunication.getAllBooksFromOrder(parameter);
             case "" -> waitForCommand();
-//            default -> handleUnknownCommand();
+            default -> waitForInput();
         }
     }
-
 
 
     private <T> void printListData(List<T> list) {
@@ -60,8 +78,6 @@ public class ConsoleAppController {
             counter++;
         }
     }
-
-
 
 
 }

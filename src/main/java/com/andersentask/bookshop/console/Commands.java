@@ -7,9 +7,11 @@ import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.request.entities.Request;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.*;
+
 
 public class Commands {
 
@@ -25,6 +27,7 @@ public class Commands {
      * @param bookStatus bookStatus of the book and got from user
      */
     public void setStatusToBookAndDeleteCorrespondingRequests(Long id, BookStatus bookStatus) {
+
         Optional<Book> optionalBook = appContextConfig.getBookService().setStatusToBook(id,bookStatus);
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
@@ -33,18 +36,6 @@ public class Commands {
             }
         }
     }
-
-
-    /**
-     * return list of books, sorted by param bookSort
-     *
-     * @param bookSort can be name, price or status and should be got from user
-     * @return new list of books, sorted by entered param
-     */
-    public List<Book> getBooks(BookSort bookSort) {
-         return appContextConfig.getBookService().getSortedBooks(bookSort);
-    }
-
 
     /**
      * Create and save request from a book (doesn't matter, what status)
@@ -60,6 +51,14 @@ public class Commands {
         }
     }
 
+    /**
+     * return list of books, sorted by param bookSort
+     * @param bookSort can be name, price or status and should be got from user
+     * @return new list of books, sorted by entered param
+     */
+    public List<Book> getSortedBooks(BookSort bookSort) {
+        return appContextConfig.getBookService().getSortedBooks(bookSort);
+    }
 
     /**
      * Create and save order from a list of id of books
@@ -165,6 +164,7 @@ public class Commands {
     public List<Book> getAllBooksFromOrder(Long id) {
         return appContextConfig.getOrderService().getAllBooksFromOrder(id);
     }
+
 
 
 }
