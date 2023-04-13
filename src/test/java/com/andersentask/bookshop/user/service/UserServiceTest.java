@@ -60,7 +60,9 @@ class UserServiceTest {
     void findByEmailExistingUser() {
         when(userRepository.findByEmailIgnoreCase(user.getEmail())).thenReturn(Optional.of(user));
 
-        assertEquals(user, userService.findByEmail(user.getEmail()));
+        Optional<User> foundUser = userService.findByEmail(user.getEmail());
+        assertTrue(foundUser.isPresent());
+        assertEquals(user, foundUser.get());
         verify(userRepository, times(1)).findByEmailIgnoreCase(user.getEmail());
     }
 
@@ -68,12 +70,6 @@ class UserServiceTest {
     void findByEmailMissingUser() {
         when(userRepository.findByEmailIgnoreCase(user.getEmail())).thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> userService.findByEmail(user.getEmail()));
-        String expectedMessage = "User is missing with email:" + user.getEmail();
-        String actualMessage = exception.getMessage();
-
-        assertEquals(expectedMessage, actualMessage);
-
-        verify(userRepository, times(1)).findByEmailIgnoreCase(user.getEmail());
+        assertFalse(userService.findByEmail(user.getEmail()).isPresent());
     }
 }
