@@ -31,7 +31,6 @@ Implement bookstore console application according next requirements and function
 ### Technical stack: Lombok, Maven
 ### This project was created during Andersen java course
 ## Contributors
-* <a href="https://github.com/nikiniki79" style="text-decoration: none;color: white"> Boiko Nikita </a>
 * <a href="https://github.com/DenisBratuh/" style="text-decoration: none;color: white"> Bratukh Denys </a>
 * <a href="https://github.com/antonklyuchnikov1990" style="text-decoration: none;color: white"> Kliuchnikau Anton </a>
 * <a href="https://github.com/skfl" style="text-decoration: none;color: white"> Rogachkov Eduard </a>
