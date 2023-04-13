@@ -3,11 +3,11 @@ package com.andersentask.bookshop.console;
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookSort;
 import com.andersentask.bookshop.book.enums.BookStatus;
+import com.andersentask.bookshop.console.enums.ResultOfOperation;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.request.entities.Request;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -26,15 +26,25 @@ public class Commands {
      * @param id         the id of the book and should be got from user
      * @param bookStatus bookStatus of the book and got from user
      */
-    public void setStatusToBookAndDeleteCorrespondingRequests(Long id, BookStatus bookStatus) {
+    public ResultOfOperation.SetBookStatus setStatusToBookAndDeleteCorrespondingRequests(Long id, BookStatus bookStatus) {
+        Optional<Book> optionalBook = appContextConfig.getBookService().getBookById(id);
+        ResultOfOperation.SetBookStatus resultOfMethod = ResultOfOperation.SetBookStatus.WRONG_BOOK_ID;
 
-        Optional<Book> optionalBook = appContextConfig.getBookService().setStatusToBook(id,bookStatus);
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
-            if (book.getStatus().equals(BookStatus.OUT_OF_STOCK) && bookStatus.equals(BookStatus.AVAILABLE)) {
-                appContextConfig.getRequestService().deleteRequest(book);
+            resultOfMethod = ResultOfOperation.SetBookStatus.BOOK_ALREADY_HAS_THIS_STATUS;
+
+            if (!book.getStatus().equals(bookStatus)) {
+
+                if (book.getStatus().equals(BookStatus.OUT_OF_STOCK) && bookStatus.equals(BookStatus.AVAILABLE)) {
+                    appContextConfig.getRequestService().deleteRequest(book);
+                }
+
+                appContextConfig.getBookService().setStatusToBook(id, bookStatus);
+                resultOfMethod = ResultOfOperation.SetBookStatus.BOOK_STATUS_UPDATED;
             }
         }
+        return resultOfMethod;
     }
 
     /**
@@ -42,17 +52,21 @@ public class Commands {
      *
      * @param id book object and should be got from user
      */
-    public void createRequest(Long id) {
+    public ResultOfOperation.CreateRequest createRequest(Long id) {
         Optional<Book> optionalBook = appContextConfig.getBookService().getBookById(id);
+        ResultOfOperation.CreateRequest resultOfMethod = ResultOfOperation.CreateRequest.WRONG_BOOK_ID;
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
             Request request = appContextConfig.getEntityFactory().buildRequest(book);
             appContextConfig.getRequestService().saveRequest(request);
+            resultOfMethod = ResultOfOperation.CreateRequest.REQUEST_CREATED;
         }
+        return resultOfMethod;
     }
 
     /**
      * return list of books, sorted by param bookSort
+     *
      * @param bookSort can be name, price or status and should be got from user
      * @return new list of books, sorted by entered param
      */
@@ -66,17 +80,30 @@ public class Commands {
      * if any id is invalid, the order and request are not created
      *
      * @param ids list of id of books and should be got from user
+     * @return Optional<Order> returns empty optional empty, if order is not created
      */
-    public void createOrder(List<Long> ids) {
+    public ResultOfOperation.CreateOrder createOrder(List<Long> ids) {
         List<Book> booksToOrder = appContextConfig.getBookService().getBooksByIds(ids);
+
+        ResultOfOperation.CreateOrder resultOfMethod = ResultOfOperation.CreateOrder.WRONG_BOOK_ID;
 
         if (booksToOrder.size() == ids.size()) {
             Order order = appContextConfig.getEntityFactory().buildOrder(booksToOrder);
             appContextConfig.getOrderService().saveOrder(order);
+            resultOfMethod = ResultOfOperation.CreateOrder.ORDER_CREATED;
 
             List<Book> booksToRequest = appContextConfig.getBookService().getBooksOutOfStock(booksToOrder);
-            booksToRequest.forEach(x -> appContextConfig.getEntityFactory().buildRequest(x));
+
+            if (!booksToRequest.isEmpty()) {
+
+                for (Book book : booksToRequest) {
+                    Request request = appContextConfig.getEntityFactory().buildRequest(book);
+                    appContextConfig.getRequestService().saveRequest(request);
+                    resultOfMethod = ResultOfOperation.CreateOrder.ORDER_AND_REQUESTS_CREATED;
+                }
+            }
         }
+        return resultOfMethod;
     }
 
     /**
@@ -87,21 +114,27 @@ public class Commands {
      *
      * @param id          id of order and should be got from user
      * @param orderStatus can be completed, cancelled or in_proccesing and should be got from user
+     * @return ENUM       returns status of operation
      */
-    public void changeStatusOfOrder(Long id, OrderStatus orderStatus) {
+    public ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck changeStatusOfOrderIncludingBooksCheck(Long id, OrderStatus orderStatus) {
         Optional<Order> optionalOrder = appContextConfig.getOrderService().getOrderById(id);
+        ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck resultOfMethod
+                = ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.WRONG_ORDER_ID;
+
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
-
+            OrderStatus previousStatus = order.getOrderStatus();
             if (orderStatus.equals(OrderStatus.COMPLETED)) {
-                boolean allBooksAreAvailable = appContextConfig.getBookService().allBooksAreAvailable(order.getBooksInOrder());
-                if (allBooksAreAvailable){
-                    appContextConfig.getOrderService().changeStatusOfOrder(id,orderStatus);
+                if (appContextConfig.getBookService().allBooksAreAvailable(order.getBooksInOrder())) {
+                    appContextConfig.getOrderService().changeStatusOfOrder(id, orderStatus);
                 }
-            } else {
-                appContextConfig.getOrderService().changeStatusOfOrder(id, orderStatus);
-            }
+            } else appContextConfig.getOrderService().changeStatusOfOrder(id, orderStatus);
+
+            if (previousStatus.equals(order.getOrderStatus())) {
+                resultOfMethod = ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.ORDER_STATUS_CAN_NOT_BE_UPDATED;
+            } else resultOfMethod = ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.STATUS_UPDATED;
         }
+        return resultOfMethod;
     }
 
 
@@ -121,8 +154,11 @@ public class Commands {
      * @param id id of the book and should be got from user
      * @return Long number of the request on the precise book
      */
-    public Long getNumberOfRequestsOnBook(Long id) {
-        return appContextConfig.getRequestService().getNumberOfRequestsOnBook(id);
+    public Optional<Long> getNumberOfRequestsOnBook(Long id) {
+        Optional<Book> optionalBook = appContextConfig.getBookService().getBookById(id);
+        if (optionalBook.isPresent()) {
+            return Optional.of(appContextConfig.getRequestService().getNumberOfRequestsOnBook(id));
+        } else return Optional.empty();
     }
 
     /**
@@ -133,12 +169,9 @@ public class Commands {
     public Map<Long, Long> getBooksAndNumberOfRequests() {
         Map<Long, Long> map = new HashMap<>();
         List<Book> books = appContextConfig.getRequestService().getAllBooksFromRequests();
-        List<Book> booksDistinctSortedByNumber = books.stream()
-                .distinct()
-                .sorted(Comparator.comparing(x -> getNumberOfRequestsOnBook(x.getId()), Comparator.reverseOrder()))
-                .toList();
+        List<Book> booksDistinctSortedByNumber = books.stream().distinct().sorted(Comparator.comparing(x -> getNumberOfRequestsOnBook(x.getId()).get(), Comparator.reverseOrder())).toList();
         for (Book book : booksDistinctSortedByNumber) {
-            map.put(book.getId(), getNumberOfRequestsOnBook(book.getId()));
+            map.put(book.getId(), getNumberOfRequestsOnBook(book.getId()).get());
         }
         return map;
     }
@@ -152,7 +185,7 @@ public class Commands {
      * @return double income for the chosen period
      */
     public double getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
-        return appContextConfig.getOrderService().getIncomeForPeriod(startOfPeriod,endOfPeriod);
+        return appContextConfig.getOrderService().getIncomeForPeriod(startOfPeriod, endOfPeriod);
     }
 
     /**
@@ -161,10 +194,17 @@ public class Commands {
      * @param id id of the order and should be got from user
      * @return List<BooK> list of books
      */
-    public List<Book> getAllBooksFromOrder(Long id) {
-        return appContextConfig.getOrderService().getAllBooksFromOrder(id);
+    public Optional<List<Book>> getAllBooksFromOrder(Long id) {
+        Optional<Order> optionalOrder = appContextConfig.getOrderService().getOrderById(id);
+        if (optionalOrder.isPresent()) {
+            return Optional.of(appContextConfig.getOrderService().getAllBooksFromOrder(id));
+        } else return Optional.empty();
+
     }
 
+    public List<Request> getAllRequests() {
+        return appContextConfig.getRequestService().getAllRequests();
+    }
 
 
 }

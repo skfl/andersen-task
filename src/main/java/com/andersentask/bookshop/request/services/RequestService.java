@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -17,23 +16,16 @@ public class RequestService {
     public void saveRequest(Request request) {
         requestRepository.save(request);
     }
-    public void deleteRequest(Long id) {
-        requestRepository.delete(id);
-    }
-
-    public Optional<Request> getRequestById(Long id) {
-        return requestRepository.findById(id);
-    }
 
     public List<Request> getAllRequests() {
         return requestRepository.findAll();
     }
 
-    public void deleteRequest(Book book){
+    public void deleteRequest(Book book) {
         getAllRequests().removeIf(x -> x.getBook().equals(book));
     }
 
-    public List<Book> getAllBooksFromRequests(){
+    public List<Book> getAllBooksFromRequests() {
         return getAllRequests().stream()
                 .map(Request::getBook)
                 .toList();

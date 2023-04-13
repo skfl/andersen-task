@@ -50,6 +50,9 @@ public class BookService {
             case STATUS -> booksToReturn = books.stream()
                     .sorted(Comparator.comparing(x -> x.getStatus().ordinal()))
                     .toList();
+            case ID -> booksToReturn = books.stream()
+                    .sorted(Comparator.comparing(Book::getId))
+                    .toList();
         }
         return booksToReturn;
     }
@@ -57,7 +60,8 @@ public class BookService {
     public List<Book> getBooksByIds(List<Long> ids) {
         List<Book> books = new ArrayList<>();
         for (Long id : ids) {
-            getBookById(id).ifPresent(books::add);
+            Optional<Book> optionalBook = getBookById(id);
+            optionalBook.ifPresent(books::add);
         }
         return books;
     }

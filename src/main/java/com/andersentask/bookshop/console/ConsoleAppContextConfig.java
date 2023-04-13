@@ -50,18 +50,6 @@ public class ConsoleAppContextConfig {
                 .build());
     }
 
-    //toDo: we don't neet to setup user. Propose to delete
-//    private void setupUserService() {
-//        User admin = User.builder()
-//                .email("a")
-//                .firstName("admin")
-//                .lastName("admin")
-//                .password("a")
-//                .role(Role.ROLE_ADMIN)
-//                .build();
-//        this.userService.registration(admin);
-//    }
-
     public BookService getBookService() {
         return this.bookService;
     }

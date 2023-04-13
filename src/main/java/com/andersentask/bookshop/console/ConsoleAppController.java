@@ -11,13 +11,13 @@ public class ConsoleAppController {
 
     private final Scanner scanner;
     private String input;
-    UserCommunication userCommunication;
-
-    private String parameter, parameter2;
+    private final UserCommunication userCommunication;
+    private final ConsoleAppContextConfig appContextConfig;
 
     public ConsoleAppController() {
         this.scanner = new Scanner(System.in);
         userCommunication = new UserCommunication(new Commands());
+        appContextConfig = new ConsoleAppContextConfig();
     }
 
     public void init() {
@@ -29,7 +29,8 @@ public class ConsoleAppController {
         while (true) {
             input = scanner.nextLine();
             if (input.equals("exit")) {
-                init();
+                System.exit(0);
+                break;
             }
             handleConsoleInput(input.trim());
         }
@@ -37,47 +38,32 @@ public class ConsoleAppController {
 
     private String waitForInput() {
         input = scanner.nextLine();
-        if (input.trim().equals("exit")) {   //todo:try to get workaround with states
+        if (input.trim().equals("exit")) {
             init();
         }
         return input;
     }
 
     public void handleConsoleInput(String input) {
-        List<String> userInput = Arrays.stream(input.split(" ")).toList();
-        String command = userInput.get(0);
-        if (userInput.size() > 1) {
-            this.parameter = userInput.get(1);
-        }
-        if (userInput.size() > 2) {
-            this.parameter2 = userInput.get(2);
-        }
+        List<String> userInput = new java.util.ArrayList<>(Arrays.stream(input.split(" ")).toList());
+        String command = userInput.remove(0);
         switch (command) {
             case "help" -> userCommunication.help();
-            case "getSortedBooks" -> userCommunication.getSortedBooks(parameter);
-            case "setStatusToBookAndDeleteCorrespondingRequests" ->
-                    userCommunication.setStatusToBookAndDeleteCorrespondingRequests(parameter, parameter2);
-            case "createRequest" -> userCommunication.createRequest(parameter);
-            case "createOrder" -> userCommunication.createOrder(input);
-            case "changeStatusOfOrder" -> userCommunication.changeStatusOfOrder(parameter, parameter2);
-            case "getOrders" -> userCommunication.getOrders(parameter);
-            case "getNumberOfRequestsOnBook" -> userCommunication.getNumberOfRequestsOnBook(parameter);
-            case "getBooksAndNumberOfRequests" -> userCommunication.getBooksAndNumberOfRequests();
-            case "getIncomeForPeriod" -> userCommunication.getIncomeForPeriod(parameter, parameter2);
-            case "getAllBooksFromOrder" -> userCommunication.getAllBooksFromOrder(parameter);
+            case "get-books" -> userCommunication.getBooks(userInput);
+            case "get-orders" -> userCommunication.getOrders(userInput);
+            case "get-requests" -> userCommunication.getRequests();
+            case "get-number-of-requests" -> userCommunication.getNumberOfRequestsOnBook(userInput);
+            case "get-books-and-requests" -> userCommunication.getBooksAndNumberOfRequests();
+            case "get-income" -> userCommunication.getIncomeForPeriod(userInput);
+            case "get-books-from-order" -> userCommunication.getAllBooksFromOrder(userInput);
+            case "create-request" -> userCommunication.createRequest(userInput);
+            case "create-order" -> userCommunication.createOrder(userInput);
+            case "change-book-status" -> userCommunication.changeBookStatus(userInput);
+            case "change-order-status" -> userCommunication.changeOrderStatus(userInput);
+
             case "" -> waitForCommand();
             default -> waitForInput();
         }
     }
-
-
-    private <T> void printListData(List<T> list) {
-        int counter = 1;
-        for (T element : list) {
-            log.info(counter + ") " + element.toString());
-            counter++;
-        }
-    }
-
 
 }

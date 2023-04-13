@@ -14,27 +14,22 @@ public enum DefaultMessages {
     HELP_MESSAGE("""
             There is a list of possible commands:
             * help -- to see that message
-            * getSortedBooks <option> -- to see all books sorted by <option>. Possible options: NAME, PRICE, STATUS
-            * setStatusToBookAndDeleteCorrespondingRequests <id> <status> -- to set status on certain book and also delete requests which corresponding with this book. Possible status: AVAILABLE, NOT_AVAILABLE, OUT_OF_STOCK
-            * createRequest <book.id> -- to create and save request from a book (doesn't matter, what status)
-            * createOrder <id1> <id2> ... -- Create and save order from a list of id of books. If book is out_of_stock, also created ans saves request. If any id is invalid, the order and request are not created.
-            * changeStatusOfOrder <order.id> <status> -- to set status of the order to chosen by the user. Possible status: IN_PROCESS, COMPLETED, CANCELLED
-            * getNumberOfRequestsOnBook <book.id> -- to see number of the requests on the book.
-            * getBooksAndNumberOfRequests -- to see id of books and the number of requests on these books in descending order.
-            * getIncomeForPeriod <LocalDateTime> <LocalDateTime> -- to see the income for the chosen period (order should have completed status).
-            * getAllBooksFromOrder <order.id> -- to see all books from the certain order.
+            * get-books <option> -- to see all books sorted by <option>. Possible options: name, price, status, id
+            * get-orders <option> -- to see all orders sorted by <option>. Possible options: cost, completion_date, status, id
+            * get-requests -- to see all requests. No options needed
+            * get-number-of-requests <book.id> -- to see number of the requests on the book
+            * get-books-and-requests -- to see id of books and the number of requests on these books in descending order. No options needed
+            * get-books-from-order <order.id> -- to see all books from the certain order
+            * get-income <LocalDateTime> <LocalDateTime> -- to see the income for the chosen period
+            * create-request <book.id> -- to create and save request from a book.id
+            * create_order <id1> <id2> ... -- to create and save order from a list of id of books. If book is out_of_stock, also creates ans saves request
+            * change-book-status <id> <status> -- to set status on certain book and also delete requests which corresponding with this book. Possible status: available, out_of_stock
+            * change-order-status <order.id> <status> -- to set status of the order to chosen by the user. Possible status: in_process, completed, canceled  
             """),
-    UNKNOWN_COMMAND_MESSAGE("""
-            This command is unknown.
-            Try again.
-            Type help to see all possible commands.
-            """),
-    SUCCESSFUL_LOGIN("""
-            You've been successfully logged in
-            """),
-    UNSUCCESSFUL_LOGIN("""
-            Invalid email or password.
-            """),
+
+
+
+
     SUGGEST_EXIT("""
             You could leave by typing exit
             """);

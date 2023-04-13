@@ -70,6 +70,9 @@ public class OrderService {
             case STATUS -> ordersToReturn = orders.stream()
                     .sorted(Comparator.comparing(x -> x.getOrderStatus().ordinal()))
                     .toList();
+            case ID -> ordersToReturn = orders.stream()
+                    .sorted(Comparator.comparing(Order::getOrderId))
+                    .toList();
         }
         return ordersToReturn;
     }
