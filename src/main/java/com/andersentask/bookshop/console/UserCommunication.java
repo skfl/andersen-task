@@ -35,27 +35,7 @@ public class UserCommunication {
 
     public UserCommunication(Commands commands) {
         this.commands = commands;
-        initialize();
-    }
-
-    private void initialize() {
-        try {
-            readPropertyFile();
-        } catch (RuntimeException e) {
-            try {
-                createPropertyFile();
-                readPropertyFile();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
-    private void createPropertyFile() throws IOException {
-        try (FileWriter fileWriter = new FileWriter(FILE_NAME)) {
-            fileWriter.write(PROPERTY_NAME + " = true");
-            fileWriter.flush();
-        }
+        readPropertyFile();
     }
 
     private void readPropertyFile() {
