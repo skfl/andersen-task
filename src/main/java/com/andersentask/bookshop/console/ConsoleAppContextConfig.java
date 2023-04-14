@@ -10,6 +10,7 @@ import com.andersentask.bookshop.request.repository.RequestRepository;
 import com.andersentask.bookshop.request.services.RequestService;
 import com.andersentask.bookshop.user.repository.UserRepository;
 import com.andersentask.bookshop.user.service.UserService;
+import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
 
 public class ConsoleAppContextConfig {
     private final BookService bookService;
@@ -19,35 +20,38 @@ public class ConsoleAppContextConfig {
     private final EntityFactory entityFactory;
 
     public ConsoleAppContextConfig() {
-        this.bookService = new BookService(new BookRepository());
+        RepositoryDeserializer deserializer = new RepositoryDeserializer();
+        this.bookService = new BookService(deserializer.deserializeAndWriteToBookRepository("books.json"));
         this.userService = new UserService(new UserRepository());
-        this.orderService = new OrderService(new OrderRepository());
-        this.requestService = new RequestService(new RequestRepository());
+        this.orderService = new OrderService(deserializer.deserializeAndWriteToOrderRepository("orders.json"));
+        this.requestService = new RequestService(deserializer.deserializeAndWriteToRequestRepository("requests.json"));
         this.entityFactory = new EntityFactory();
         setupBookService();
     }
 
     private void setupBookService() {
-        this.bookService.save(Book.builder()
-                .price(123.0)
-                .name("Book")
-                .status(BookStatus.AVAILABLE)
-                .build());
-        this.bookService.save(Book.builder()
-                .price(23.0)
-                .name("aBook")
-                .status(BookStatus.AVAILABLE)
-                .build());
-        this.bookService.save(Book.builder()
-                .price(1123.0)
-                .name("zook")
-                .status(BookStatus.NOT_AVAILABLE)
-                .build());
-        this.bookService.save(Book.builder()
-                .price(923.0)
-                .name("zwook")
-                .status(BookStatus.NOT_AVAILABLE)
-                .build());
+        if (bookService.getAllBooks().isEmpty()) {
+            this.bookService.save(Book.builder()
+                    .price(123.0)
+                    .name("Gone with the Wind")
+                    .status(BookStatus.AVAILABLE)
+                    .build());
+            this.bookService.save(Book.builder()
+                    .price(264.0)
+                    .name("Jane Eyre")
+                    .status(BookStatus.AVAILABLE)
+                    .build());
+            this.bookService.save(Book.builder()
+                    .price(1128.0)
+                    .name("Pride and Prejudice")
+                    .status(BookStatus.NOT_AVAILABLE)
+                    .build());
+            this.bookService.save(Book.builder()
+                    .price(923.0)
+                    .name("To Kill a Mockingbird")
+                    .status(BookStatus.NOT_AVAILABLE)
+                    .build());
+        }
     }
 
     public BookService getBookService() {
