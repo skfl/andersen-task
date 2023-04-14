@@ -1,13 +1,13 @@
 package com.andersentask.bookshop.request.repository;
 
-import com.andersentask.bookshop.common.AbstractCollectionRepository;
+import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.request.entities.Request;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RequestRepository implements AbstractCollectionRepository<Request, Long> {
+public class RequestRepository implements CollectionRepository<Request, Long> {
 
     private final List<Request> requests;
 

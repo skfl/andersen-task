@@ -1,6 +1,6 @@
 package com.andersentask.bookshop.order.repositories;
 
-import com.andersentask.bookshop.common.AbstractCollectionRepository;
+import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class OrderRepository implements AbstractCollectionRepository<Order, Long> {
+public class OrderRepository implements CollectionRepository<Order, Long> {
     private final List<Order> orders;
     private Long id;
 
