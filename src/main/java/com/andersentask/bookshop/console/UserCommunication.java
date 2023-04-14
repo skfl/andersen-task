@@ -44,6 +44,7 @@ public class UserCommunication {
             properties.load(fileReader);
             enableCreateRequest = Boolean.parseBoolean(properties.getProperty(PROPERTY_NAME));
         } catch (IOException e) {
+            log.error("Properties not found");
             throw new RuntimeException();
         }
     }
