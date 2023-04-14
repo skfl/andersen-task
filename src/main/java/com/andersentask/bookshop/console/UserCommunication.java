@@ -25,14 +25,13 @@ public class UserCommunication {
         log.info(DefaultMessages.HELP_MESSAGE.getValue());
     }
 
-
     public void getBooks(List<String> input) {
         BookSort bookSort;
         try {
             bookSort = BookSort.valueOf(input.get(0).toUpperCase());
-            log.info(commands.getSortedBooks(bookSort).toString());
+            printList(commands.getSortedBooks(bookSort));
         } catch (RuntimeException e) {
-            log.info(commands.getSortedBooks(BookSort.ID).toString());
+            printList(commands.getSortedBooks(BookSort.ID));
         }
     }
 
@@ -40,17 +39,16 @@ public class UserCommunication {
         OrderSort orderSort;
         try {
             orderSort = OrderSort.valueOf(input.get(0).toUpperCase());
-            log.info(commands.getOrders(orderSort).toString());
+            printList(commands.getOrders(orderSort));
         } catch (RuntimeException e) {
-            log.info(commands.getOrders(OrderSort.ID).toString());
+            printList(commands.getOrders(OrderSort.ID));
         }
     }
 
     public void getRequests() {
         List<Request> requests = commands.getAllRequests();
-        log.info(requests.toString());
+        printList(requests);
     }
-
 
     public void changeBookStatus(List<String> input) {
         long id;
@@ -102,7 +100,6 @@ public class UserCommunication {
         }
     }
 
-
     public void getNumberOfRequestsOnBook(List<String> input) {
         long id;
         try {
@@ -144,7 +141,7 @@ public class UserCommunication {
             id = Long.parseLong(input.get(0));
             Optional<List<Book>> optionalBooks = commands.getAllBooksFromOrder(id);
             if (optionalBooks.isPresent()) {
-                log.info(optionalBooks.get().toString());
+                printList(optionalBooks.get());
             } else {
                 log.info(ResultOfOperation.GetAllBooksFromOrder.WRONG_ORDER_ID.toString());
             }
@@ -153,6 +150,11 @@ public class UserCommunication {
         }
     }
 
-
-
+    private <T> void printList(List<T> list) {
+        int count = 1;
+        for (T el : list) {
+            System.out.println(count + ") " + el.toString());
+            count++;
+        }
+    }
 }
