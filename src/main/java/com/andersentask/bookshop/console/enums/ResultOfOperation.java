@@ -24,28 +24,28 @@ public enum ResultOfOperation {
         INCORRECT_ENTRANCE_OF_BOOK_ID
     }
 
-    public enum ChangeStatusOfOrderIncludingBooksCheck{
+    public enum ChangeStatusOfOrderIncludingBooksCheck {
         WRONG_ORDER_ID,
         ORDER_STATUS_CAN_NOT_BE_UPDATED,
         STATUS_UPDATED,
         INCORRECT_ENTRANCE_OF_ORDER_ID_OR_BOOK_STATUS
     }
 
-    public enum GetNumberOfRequestsOnBook{
+    public enum GetNumberOfRequestsOnBook {
         WRONG_BOOK_ID,
         INCORRECT_ENTRANCE_OF_BOOK_ID
     }
 
-    public enum GetAllBooksFromOrder{
+    public enum GetAllBooksFromOrder {
         WRONG_ORDER_ID,
         THE_LIST_OF_BOOKS_BELOW,
     }
 
-    public enum getIncomeForPeriod{
+    public enum getIncomeForPeriod {
         WRONG_DATE
     }
 
-    public enum GetBooksAndNumberOfRequests{
+    public enum GetBooksAndNumberOfRequests {
         NO_REQUESTS
     }
 

@@ -8,6 +8,7 @@ import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.request.entities.Request;
+import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -15,6 +16,7 @@ import java.util.*;
 
 public class Commands {
     private final ConsoleAppContextConfig appContextConfig = new ConsoleAppContextConfig();
+    private final RepositorySerializer serializer = new RepositorySerializer();
 
     /**
      * Set status of book
@@ -200,5 +202,12 @@ public class Commands {
 
     public List<Request> getAllRequests() {
         return appContextConfig.getRequestService().getAllRequests();
+    }
+
+    public void exit() {
+        serializer.serializeAndWriteToFile(appContextConfig.getBookService().getAllBooks(), "books.json");
+        serializer.serializeAndWriteToFile(appContextConfig.getOrderService().getAllOrders(), "orders.json");
+        serializer.serializeAndWriteToFile(appContextConfig.getRequestService().getAllRequests(), "requests.json");
+        System.exit(0);
     }
 }

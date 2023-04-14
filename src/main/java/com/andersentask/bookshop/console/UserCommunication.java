@@ -150,6 +150,10 @@ public class UserCommunication {
         }
     }
 
+    public void exit() {
+        commands.exit();
+    }
+
     private <T> void printList(List<T> list) {
         int count = 1;
         for (T el : list) {
