@@ -26,5 +26,4 @@ public class Request {
     private RequestStatus requestStatus;
     //toDo: to delete (discuss). Specification has no request date
     private LocalDateTime createdAt;
-
 }

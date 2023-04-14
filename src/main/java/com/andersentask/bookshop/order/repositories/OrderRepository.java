@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 public class OrderRepository implements CollectionRepository<Order, Long> {
     private final List<Order> orders;
     private Long id;
@@ -40,12 +39,8 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         return obj;
     }
 
-
     @Override
     public void delete(Long id) {
-        findById(id).ifPresentOrElse(x -> x.setOrderStatus(OrderStatus.CANCELED), () -> {
-        });
+        findById(id).ifPresent(x -> x.setOrderStatus(OrderStatus.CANCELED));
     }
-
-
 }

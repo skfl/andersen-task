@@ -10,6 +10,7 @@ import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.request.entities.Request;
 import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -182,7 +183,7 @@ public class Commands {
      * @param endOfPeriod   end of the period
      * @return double income for the chosen period
      */
-    public double getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
+    public BigDecimal getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
         return appContextConfig.getOrderService().getIncomeForPeriod(startOfPeriod, endOfPeriod);
     }
 

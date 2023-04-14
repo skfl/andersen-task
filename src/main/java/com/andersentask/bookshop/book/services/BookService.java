@@ -29,12 +29,9 @@ public class BookService {
     }
 
     public Optional<Book> setStatusToBook(Long id, BookStatus bookStatus) {
-        Optional<Book> optionalBook = getBookById(id);
-        if (optionalBook.isPresent()) {
-            Book book = optionalBook.get();
-            book.setStatus(bookStatus);
-        }
-        return optionalBook;
+        Optional<Book> book = getBookById(id);
+        book.ifPresent(value -> value.setStatus(bookStatus));
+        return book;
     }
 
     public List<Book> getSortedBooks(BookSort bookSort) {

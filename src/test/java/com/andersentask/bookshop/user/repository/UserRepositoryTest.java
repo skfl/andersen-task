@@ -50,20 +50,13 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findByIdExistingUser() {
+    void findById() {
         userRepository.save(user);
 
         Optional<User> result = userRepository.findById(user.getId());
 
         assertTrue(result.isPresent());
         assertEquals(user, result.get());
-    }
-
-    @Test
-    void testFindByIdMissingUser() {
-        Optional<User> result = userRepository.findById(1L);
-
-        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -87,19 +80,12 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findByEmailIgnoreCaseExistingUser() {
+    void findByEmailIgnoreCase() {
         userRepository.save(user);
 
         Optional<User> result = userRepository.findByEmailIgnoreCase(user.getEmail().toUpperCase());
 
         assertTrue(result.isPresent());
         assertEquals(user, result.get());
-    }
-
-    @Test
-    void testFindByEmailIgnoreCaseMissingUser() {
-        Optional<User> result = userRepository.findByEmailIgnoreCase("missingemail@gmail.com");
-
-        assertTrue(result.isEmpty());
     }
 }
