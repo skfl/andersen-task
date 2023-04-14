@@ -1,13 +1,13 @@
 package com.andersentask.bookshop.user.repository;
 
-import com.andersentask.bookshop.common.AbstractCollectionRepository;
+import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.user.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserRepository implements AbstractCollectionRepository<User, Long> {
+public class UserRepository implements CollectionRepository<User, Long> {
 
     private final List<User> users;
 

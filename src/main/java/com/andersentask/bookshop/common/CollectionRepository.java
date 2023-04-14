@@ -3,7 +3,7 @@ package com.andersentask.bookshop.common;
 import java.util.List;
 import java.util.Optional;
 
-public interface AbstractCollectionRepository<T, ID> {
+public interface CollectionRepository<T, ID> {
     T save(T obj);
 
     void delete(ID id);
