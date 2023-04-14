@@ -14,9 +14,7 @@ import java.util.*;
 
 
 public class Commands {
-
     private final ConsoleAppContextConfig appContextConfig = new ConsoleAppContextConfig();
-
 
     /**
      * Set status of book
@@ -137,7 +135,6 @@ public class Commands {
         return resultOfMethod;
     }
 
-
     /**
      * return list of orders, sorted by param orderSort
      *
@@ -176,7 +173,6 @@ public class Commands {
         return map;
     }
 
-
     /**
      * return the income for the chosen period (order should have completed status)
      *
@@ -205,6 +201,4 @@ public class Commands {
     public List<Request> getAllRequests() {
         return appContextConfig.getRequestService().getAllRequests();
     }
-
-
 }
