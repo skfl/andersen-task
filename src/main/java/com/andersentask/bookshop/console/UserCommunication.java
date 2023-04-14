@@ -150,7 +150,7 @@ public class UserCommunication {
         }
     }
 
-    public void exit(){
+    public void exit() {
         commands.exit();
     }
 
