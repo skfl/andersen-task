@@ -5,6 +5,7 @@ import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.request.entities.Request;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -23,10 +24,10 @@ public class EntityFactory {
                 .build();
     }
 
-    private double getCostOfListOfBooks(List<Book> books) {
+    private BigDecimal getCostOfListOfBooks(List<Book> books) {
         return books.stream()
                 .map(Book::getPrice)
-                .reduce(0D, Double::sum);
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
 
