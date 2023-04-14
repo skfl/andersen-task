@@ -1,8 +1,12 @@
 package com.andersentask.bookshop;
 
+import com.andersentask.bookshop.console.ConsoleAppController;
+
+
 public class BookshopApplication {
 
     public static void main(String[] args) {
-        System.out.println("Hello world");
+        ConsoleAppController consoleAppController = new ConsoleAppController();
+        consoleAppController.run();
     }
 }

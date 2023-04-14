@@ -9,24 +9,23 @@ import java.util.Optional;
 
 public class BookRepository implements AbstractCollectionRepository<Book, Long> {
     private final List<Book> books;
+    private Long id;
 
     public BookRepository() {
         this.books = new ArrayList<>();
+        this.id = 1L;
     }
 
     @Override
     public Book save(Book obj) {
+        obj.setId(id++);
         books.add(obj);
         return obj;
     }
 
     @Override
     public void delete(Long id) {
-        for (Book book : books) {
-            if (book.getId().equals(id)) {
-                books.remove(book);
-            }
-        }
+        books.removeIf(book -> book.getId().equals(id));
     }
 
     @Override
@@ -43,4 +42,5 @@ public class BookRepository implements AbstractCollectionRepository<Book, Long> 
     public List<Book> findAll() {
         return this.books;
     }
+
 }
