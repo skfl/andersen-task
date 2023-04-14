@@ -208,5 +208,6 @@ public class Commands {
         serializer.serializeAndWriteToFile(appContextConfig.getBookService().getAllBooks(), "books.json");
         serializer.serializeAndWriteToFile(appContextConfig.getOrderService().getAllOrders(), "orders.json");
         serializer.serializeAndWriteToFile(appContextConfig.getRequestService().getAllRequests(), "requests.json");
+        System.exit(0);
     }
 }
