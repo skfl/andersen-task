@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class BookRepository implements CollectionRepository<Book, Long> {
+
     private final List<Book> books;
+
     private Long id;
 
     public BookRepository() {
@@ -42,5 +44,4 @@ public class BookRepository implements CollectionRepository<Book, Long> {
     public List<Book> findAll() {
         return this.books;
     }
-
 }

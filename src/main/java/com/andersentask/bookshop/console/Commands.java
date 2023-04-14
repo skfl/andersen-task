@@ -15,7 +15,9 @@ import java.util.*;
 
 
 public class Commands {
+
     private final ConsoleAppContextConfig appContextConfig = new ConsoleAppContextConfig();
+
     private final RepositorySerializer serializer = new RepositorySerializer();
 
     /**
