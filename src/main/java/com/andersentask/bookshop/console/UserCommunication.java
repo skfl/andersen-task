@@ -10,16 +10,63 @@ import com.andersentask.bookshop.request.entities.Request;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 
 @AllArgsConstructor
 @Slf4j
 public class UserCommunication {
 
     private final Commands commands;
+
+    private boolean enableCreateRequest;
+
+    private final static String FILE_NAME = "console.properties";
+
+    private final static String PROPERTY_NAME = "enableRequestCreating";
+
+
+
+    public UserCommunication(Commands commands) {
+        this.commands = commands;
+        initialize();
+    }
+
+    private void initialize() {
+        try {
+            readPropertyFile();
+        } catch (RuntimeException e) {
+            try {
+                createPropertyFile();
+                readPropertyFile();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    private void createPropertyFile() throws IOException {
+        try (FileWriter fileWriter = new FileWriter(FILE_NAME)) {
+            fileWriter.write(PROPERTY_NAME + " = true");
+            fileWriter.flush();
+        }
+    }
+
+    private void readPropertyFile() {
+        Properties properties = new Properties();
+        try (FileReader fileReader = new FileReader(FILE_NAME)){
+            properties.load(fileReader);
+            enableCreateRequest = Boolean.parseBoolean(properties.getProperty(PROPERTY_NAME));
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
 
     public void help() {
         log.info(DefaultMessages.HELP_MESSAGE.getValue());
@@ -64,13 +111,15 @@ public class UserCommunication {
     }
 
     public void createRequest(List<String> input) {
-        long id;
-        try {
-            id = Long.parseLong(input.get(0));
-            ResultOfOperation.CreateRequest result = commands.createRequest(id);
-            log.info(result.toString());
-        } catch (Exception e) {
-            log.info(ResultOfOperation.CreateRequest.INCORRECT_ENTRANCE_OF_BOOK_ID.toString());
+        if (enableCreateRequest) {
+            long id;
+            try {
+                id = Long.parseLong(input.get(0));
+                ResultOfOperation.CreateRequest result = commands.createRequest(id);
+                log.info(result.toString());
+            } catch (Exception e) {
+                log.info(ResultOfOperation.CreateRequest.INCORRECT_ENTRANCE_OF_BOOK_ID.toString());
+            }
         }
     }
 
