@@ -1,9 +1,13 @@
 ![logo](https://static.andersenlab.com/andersenlab/new-andersensite/logo-social.png)
-# Andersen Traineeship Project 
+
+# Andersen Traineeship Project
+
 # Bookstore
 
 ## Task 1
+
 Implement bookstore console application according next requirements and functionality:
+
 * All possible book should be known beforehand. No need to change it.
 * List books sorted by name, price, availability
 * Leave a request for a book
@@ -18,20 +22,31 @@ Implement bookstore console application according next requirements and function
 * Change the book status to be “in stock”. This should also close all requests for this book.
 
 ## Task 2
+
 * Write tests for your existing solution. Optionally, add some integration tests.
 * Configure a CI pipeline for your repository.
 
 ## Task 3
+
 * Replace loops with Stream API where it makes sense
 * Serialize/deserialize the state of the application and store it on disk.
 * Add a configuration using external file:
     * Turn on/off the ability to create a request for a book when creating an order for “out of stock” book
 
+## Task 4
 
-### Technical stack: Lombok, Maven
+* Migrate your application from console interface to web interface using Servlet API and Servlet container (e.g., Apache
+  Tomcat)
+* Try to follow ReST guidelines
+* Do not use Spring Framework yet
+
+### Technical stack: JUnit, Mockito,Jackson, Logback, Lombok, Maven
+
 ### This project was created during Andersen java course
+
 ## Contributors
+
 * <a href="https://github.com/DenisBratuh/" style="text-decoration: none;color: white"> Bratukh Denys </a>
 * <a href="https://github.com/antonklyuchnikov1990" style="text-decoration: none;color: white"> Kliuchnikau Anton </a>
 * <a href="https://github.com/skfl" style="text-decoration: none;color: white"> Rogachkov Eduard </a>
-* <a href="https://github.com/ulad-sachkovski" style="text-decoration: none;color: white">Sachkouski Uladzislau	</a>
+* <a href="https://github.com/ulad-sachkovski" style="text-decoration: none;color: white">Sachkouski Uladzislau    </a>
