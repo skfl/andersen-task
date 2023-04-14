@@ -24,7 +24,7 @@ public class ConsoleAppController {
         while (true) {
             input = scanner.nextLine();
             if (input.equals("exit")) {
-                System.exit(0);
+                userCommunication.exit();
                 break;
             }
             handleConsoleInput(input.trim());
