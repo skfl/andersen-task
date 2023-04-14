@@ -1,31 +1,26 @@
 package com.andersentask.bookshop.console;
 
-import lombok.extern.slf4j.Slf4j;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-@Slf4j
 public class ConsoleAppController {
-
     private final Scanner scanner;
-    private String input;
     private final UserCommunication userCommunication;
-    private final ConsoleAppContextConfig appContextConfig;
 
     public ConsoleAppController() {
         this.scanner = new Scanner(System.in);
         userCommunication = new UserCommunication(new Commands());
-        appContextConfig = new ConsoleAppContextConfig();
     }
 
-    public void init() {
-        log.info(DefaultMessages.HELLO_MESSAGE.getValue());
+    public void run() {
+        System.out.println(DefaultMessages.HELLO_MESSAGE.getValue());
         waitForCommand();
     }
 
     private void waitForCommand() {
+        String input;
         while (true) {
             input = scanner.nextLine();
             if (input.equals("exit")) {
@@ -36,16 +31,8 @@ public class ConsoleAppController {
         }
     }
 
-    private String waitForInput() {
-        input = scanner.nextLine();
-        if (input.trim().equals("exit")) {
-            init();
-        }
-        return input;
-    }
-
     public void handleConsoleInput(String input) {
-        List<String> userInput = new java.util.ArrayList<>(Arrays.stream(input.split(" ")).toList());
+        List<String> userInput = new ArrayList<>(Arrays.stream(input.split(" ")).toList());
         String command = userInput.remove(0);
         switch (command) {
             case "help" -> userCommunication.help();
@@ -60,10 +47,13 @@ public class ConsoleAppController {
             case "create-order" -> userCommunication.createOrder(userInput);
             case "change-book-status" -> userCommunication.changeBookStatus(userInput);
             case "change-order-status" -> userCommunication.changeOrderStatus(userInput);
-
             case "" -> waitForCommand();
-            default -> waitForInput();
+            default -> handleUnknownCommand();
         }
     }
 
+    public void handleUnknownCommand() {
+        System.out.println(DefaultMessages.UNKNOWN_COMMAND.getValue());
+        waitForCommand();
+    }
 }
