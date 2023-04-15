@@ -74,6 +74,3 @@ public class BookService {
                 .allMatch(x -> x.getStatus().equals(BookStatus.AVAILABLE));
     }
 }
-
-
-

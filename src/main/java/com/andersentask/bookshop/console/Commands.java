@@ -18,11 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
 public class Commands {
 
     private final ConsoleAppContextConfig appContextConfig = new ConsoleAppContextConfig();
-
 
     /**
      * Method set new status to book

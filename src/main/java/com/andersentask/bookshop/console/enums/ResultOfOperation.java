@@ -1,6 +1,5 @@
 package com.andersentask.bookshop.console.enums;
 
-
 public enum ResultOfOperation {
     ;
 

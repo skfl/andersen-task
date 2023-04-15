@@ -8,7 +8,6 @@ import com.andersentask.bookshop.request.entities.Request;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 public class EntityFactory {
 
     public Request buildRequest(Book book) {

@@ -23,15 +23,12 @@ import java.util.Properties;
 @Slf4j
 public class UserCommunication {
 
+    private static final String FILE_NAME = "console.properties";
+    private static final String PROPERTY_NAME = "enableRequestCreating";
+
     private final Commands commands;
 
     private boolean enableCreateRequest;
-
-    private final static String FILE_NAME = "console.properties";
-
-    private final static String PROPERTY_NAME = "enableRequestCreating";
-
-
 
     public UserCommunication(Commands commands) {
         this.commands = commands;
@@ -40,7 +37,7 @@ public class UserCommunication {
 
     private void readPropertyFile() {
         Properties properties = new Properties();
-        try (FileReader fileReader = new FileReader(FILE_NAME)){
+        try (FileReader fileReader = new FileReader(FILE_NAME)) {
             properties.load(fileReader);
             enableCreateRequest = Boolean.parseBoolean(properties.getProperty(PROPERTY_NAME));
         } catch (IOException e) {
