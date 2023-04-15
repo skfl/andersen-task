@@ -8,6 +8,7 @@ import com.andersentask.bookshop.request.services.RequestService;
 import com.andersentask.bookshop.user.repository.UserRepository;
 import com.andersentask.bookshop.user.service.UserService;
 import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
+import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
 
 import java.math.BigDecimal;
 
@@ -23,6 +24,8 @@ public class ConsoleAppContextConfig {
 
     private final EntityFactory entityFactory;
 
+    private final RepositorySerializer serializer;
+
     public ConsoleAppContextConfig() {
         RepositoryDeserializer deserializer = new RepositoryDeserializer();
         this.bookService = new BookService(deserializer.deserializeAndWriteToBookRepository("books.json"));
@@ -30,6 +33,7 @@ public class ConsoleAppContextConfig {
         this.orderService = new OrderService(deserializer.deserializeAndWriteToOrderRepository("orders.json"));
         this.requestService = new RequestService(deserializer.deserializeAndWriteToRequestRepository("requests.json"));
         this.entityFactory = new EntityFactory();
+        this.serializer = new RepositorySerializer();
         setupBookService();
     }
 
@@ -77,4 +81,6 @@ public class ConsoleAppContextConfig {
     public EntityFactory getEntityFactory() {
         return entityFactory;
     }
+
+    public RepositorySerializer getSerializer() {return serializer; }
 }
