@@ -12,6 +12,8 @@ import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
 
 import java.math.BigDecimal;
 
+import java.math.BigDecimal;
+
 public class ConsoleAppContextConfig {
 
     private final BookService bookService;
