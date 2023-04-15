@@ -40,9 +40,7 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         return obj;
     }
 
-
-    @Override
-    public void delete(Long id) {
+    public void cancelOrder(Long id) {
         findById(id).ifPresent(x -> x.setOrderStatus(OrderStatus.CANCELED));
     }
 }

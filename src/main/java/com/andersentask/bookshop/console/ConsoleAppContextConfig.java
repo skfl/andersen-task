@@ -48,12 +48,12 @@ public class ConsoleAppContextConfig {
             this.bookService.save(Book.builder()
                     .price(BigDecimal.valueOf(1128.0))
                     .name("Pride and Prejudice")
-                    .status(BookStatus.NOT_AVAILABLE)
+                    .status(BookStatus.OUT_OF_STOCK)
                     .build());
             this.bookService.save(Book.builder()
                     .price(BigDecimal.valueOf(923.0))
                     .name("To Kill a Mockingbird")
-                    .status(BookStatus.NOT_AVAILABLE)
+                    .status(BookStatus.OUT_OF_STOCK)
                     .build());
         }
     }

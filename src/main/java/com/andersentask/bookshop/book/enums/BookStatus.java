@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 public enum BookStatus {
     AVAILABLE,
-    NOT_AVAILABLE,
     OUT_OF_STOCK
 
 }
