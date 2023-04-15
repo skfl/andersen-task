@@ -40,7 +40,7 @@ class UserServiceTest {
     }
 
     @Test
-    void registration() {
+    void registrationNewUser() {
         when(userRepository.findByEmailIgnoreCase(user.getEmail())).thenReturn(Optional.empty());
 
         assertTrue(userService.registration(user));
@@ -49,12 +49,27 @@ class UserServiceTest {
     }
 
     @Test
-    void findByEmail() {
+    void registrationExistingUser() {
+        when(userRepository.findByEmailIgnoreCase(user.getEmail())).thenReturn(Optional.of(user));
+
+        assertFalse(userService.registration(user));
+        verify(userRepository, times(1)).findByEmailIgnoreCase(user.getEmail());
+    }
+
+    @Test
+    void findByEmailExistingUser() {
         when(userRepository.findByEmailIgnoreCase(user.getEmail())).thenReturn(Optional.of(user));
 
         Optional<User> foundUser = userService.findByEmail(user.getEmail());
         assertTrue(foundUser.isPresent());
         assertEquals(user, foundUser.get());
         verify(userRepository, times(1)).findByEmailIgnoreCase(user.getEmail());
+    }
+
+    @Test
+    void findByEmailMissingUser() {
+        when(userRepository.findByEmailIgnoreCase(user.getEmail())).thenReturn(Optional.empty());
+
+        assertFalse(userService.findByEmail(user.getEmail()).isPresent());
     }
 }
