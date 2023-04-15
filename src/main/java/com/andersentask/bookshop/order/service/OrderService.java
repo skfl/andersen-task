@@ -8,6 +8,7 @@ import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -77,13 +78,13 @@ public class OrderService {
         return ordersToReturn;
     }
 
-    public double getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
+    public BigDecimal getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
         return getAllOrders().stream()
                 .filter(x -> x.getOrderStatus().equals(OrderStatus.COMPLETED))
                 .filter(x -> x.getTimeOfCompletingOrder().isAfter(startOfPeriod) &&
                         x.getTimeOfCompletingOrder().isBefore(endOfPeriod))
                 .map(Order::getOrderCost)
-                .reduce(0D, Double::sum);
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<Book> getAllBooksFromOrder(Long id) {

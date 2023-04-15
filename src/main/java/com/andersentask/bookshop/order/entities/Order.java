@@ -7,6 +7,7 @@ import com.andersentask.bookshop.user.entities.User;
 import lombok.*;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,11 +22,12 @@ public class Order {
 
     private User user;
 
-    private double orderCost;
+    private BigDecimal orderCost;
 
     private OrderStatus orderStatus;
 
     private LocalDateTime timeOfCompletingOrder;
 
     private List<Book> booksInOrder;
+    
 }

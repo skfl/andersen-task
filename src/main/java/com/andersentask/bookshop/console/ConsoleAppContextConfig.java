@@ -9,6 +9,8 @@ import com.andersentask.bookshop.user.repository.UserRepository;
 import com.andersentask.bookshop.user.service.UserService;
 import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
 
+import java.math.BigDecimal;
+
 public class ConsoleAppContextConfig {
 
     private final BookService bookService;
@@ -34,22 +36,22 @@ public class ConsoleAppContextConfig {
     private void setupBookService() {
         if (bookService.getAllBooks().isEmpty()) {
             this.bookService.save(Book.builder()
-                    .price(123.0)
+                    .price(BigDecimal.valueOf(123.0))
                     .name("Gone with the Wind")
                     .status(BookStatus.AVAILABLE)
                     .build());
             this.bookService.save(Book.builder()
-                    .price(264.0)
+                    .price(BigDecimal.valueOf(264.0))
                     .name("Jane Eyre")
                     .status(BookStatus.AVAILABLE)
                     .build());
             this.bookService.save(Book.builder()
-                    .price(1128.0)
+                    .price(BigDecimal.valueOf(1128.0))
                     .name("Pride and Prejudice")
                     .status(BookStatus.NOT_AVAILABLE)
                     .build());
             this.bookService.save(Book.builder()
-                    .price(923.0)
+                    .price(BigDecimal.valueOf(923.0))
                     .name("To Kill a Mockingbird")
                     .status(BookStatus.NOT_AVAILABLE)
                     .build());

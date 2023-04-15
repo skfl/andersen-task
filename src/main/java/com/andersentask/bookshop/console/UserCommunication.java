@@ -11,8 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -158,8 +158,8 @@ public class UserCommunication {
         try {
             ltd1 = LocalDateTime.parse(input.get(0));
             ldt2 = LocalDateTime.parse(input.get(1));
-            double income = commands.getIncomeForPeriod(ltd1, ldt2);
-            log.info(Double.toString(income));
+            BigDecimal income = commands.getIncomeForPeriod(ltd1, ldt2);
+            log.info(income.toString());
         } catch (RuntimeException e) {
             log.info(ResultOfOperation.getIncomeForPeriod.WRONG_DATE.toString());
         }
