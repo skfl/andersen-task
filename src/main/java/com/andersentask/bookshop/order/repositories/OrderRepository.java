@@ -2,7 +2,6 @@ package com.andersentask.bookshop.order.repositories;
 
 import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.order.entities.Order;
-import com.andersentask.bookshop.order.enums.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.List;
