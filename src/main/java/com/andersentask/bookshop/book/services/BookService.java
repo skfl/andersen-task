@@ -73,7 +73,6 @@ public class BookService {
         return books.stream()
                 .allMatch(x -> x.getStatus().equals(BookStatus.AVAILABLE));
     }
-
 }
 
 

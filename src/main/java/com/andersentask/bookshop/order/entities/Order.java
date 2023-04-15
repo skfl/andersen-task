@@ -1,5 +1,6 @@
 package com.andersentask.bookshop.order.entities;
 
+
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.user.entities.User;
@@ -9,6 +10,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 @Data
 @Builder
@@ -27,4 +29,5 @@ public class Order {
     private LocalDateTime timeOfCompletingOrder;
 
     private List<Book> booksInOrder;
+    
 }

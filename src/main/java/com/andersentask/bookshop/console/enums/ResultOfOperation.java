@@ -48,5 +48,4 @@ public enum ResultOfOperation {
     public enum GetBooksAndNumberOfRequests {
         NO_REQUESTS
     }
-
 }

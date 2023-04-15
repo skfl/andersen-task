@@ -8,15 +8,25 @@ import com.andersentask.bookshop.request.services.RequestService;
 import com.andersentask.bookshop.user.repository.UserRepository;
 import com.andersentask.bookshop.user.service.UserService;
 import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
+import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
+
+import java.math.BigDecimal;
 
 import java.math.BigDecimal;
 
 public class ConsoleAppContextConfig {
+
     private final BookService bookService;
+
     private final UserService userService;
+
     private final OrderService orderService;
+
     private final RequestService requestService;
+
     private final EntityFactory entityFactory;
+
+    private final RepositorySerializer serializer;
 
     public ConsoleAppContextConfig() {
         RepositoryDeserializer deserializer = new RepositoryDeserializer();
@@ -25,6 +35,7 @@ public class ConsoleAppContextConfig {
         this.orderService = new OrderService(deserializer.deserializeAndWriteToOrderRepository("orders.json"));
         this.requestService = new RequestService(deserializer.deserializeAndWriteToRequestRepository("requests.json"));
         this.entityFactory = new EntityFactory();
+        this.serializer = new RepositorySerializer();
         setupBookService();
     }
 
@@ -43,12 +54,12 @@ public class ConsoleAppContextConfig {
             this.bookService.save(Book.builder()
                     .price(BigDecimal.valueOf(1128.0))
                     .name("Pride and Prejudice")
-                    .status(BookStatus.NOT_AVAILABLE)
+                    .status(BookStatus.OUT_OF_STOCK)
                     .build());
             this.bookService.save(Book.builder()
                     .price(BigDecimal.valueOf(923.0))
                     .name("To Kill a Mockingbird")
-                    .status(BookStatus.NOT_AVAILABLE)
+                    .status(BookStatus.OUT_OF_STOCK)
                     .build());
         }
     }
@@ -72,4 +83,6 @@ public class ConsoleAppContextConfig {
     public EntityFactory getEntityFactory() {
         return entityFactory;
     }
+
+    public RepositorySerializer getSerializer() {return serializer; }
 }

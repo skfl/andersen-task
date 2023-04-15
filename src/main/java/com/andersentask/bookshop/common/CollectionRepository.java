@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CollectionRepository<T, ID> {
-    T save(T obj);
 
-    void delete(ID id);
+    T save(T obj);
 
     Optional<T> findById(ID id);
 

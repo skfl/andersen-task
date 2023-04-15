@@ -2,11 +2,11 @@ package com.andersentask.bookshop.order.repositories;
 
 import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.order.entities.Order;
-import com.andersentask.bookshop.order.enums.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 public class OrderRepository implements CollectionRepository<Order, Long> {
     private final List<Order> orders;
@@ -37,10 +37,5 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         obj.setOrderId(id++);
         orders.add(obj);
         return obj;
-    }
-
-    @Override
-    public void delete(Long id) {
-        findById(id).ifPresent(x -> x.setOrderStatus(OrderStatus.CANCELED));
     }
 }

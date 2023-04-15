@@ -26,11 +26,6 @@ public class RequestRepository implements CollectionRepository<Request, Long> {
     }
 
     @Override
-    public void delete(Long id) {
-        requests.removeIf(request -> request.getId().equals(id));
-    }
-
-    @Override
     public Optional<Request> findById(Long id) {
         for (Request request : requests) {
             if (request.getId().equals(id)) {
@@ -43,5 +38,9 @@ public class RequestRepository implements CollectionRepository<Request, Long> {
     @Override
     public List<Request> findAll() {
         return this.requests;
+    }
+
+    public void delete(Long id) {
+        requests.removeIf(request -> request.getId().equals(id));
     }
 }

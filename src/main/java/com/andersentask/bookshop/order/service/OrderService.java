@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class OrderService {
+
     private final OrderRepository orderRepository;
 
     public void saveOrder(Order order) {
@@ -31,7 +32,6 @@ public class OrderService {
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
-
 
     public void changeStatusOfOrder(Long id, OrderStatus orderStatus) {
         Optional<Order> optionalOrder = getOrderById(id);
@@ -84,8 +84,7 @@ public class OrderService {
                 .filter(x -> x.getTimeOfCompletingOrder().isAfter(startOfPeriod) &&
                         x.getTimeOfCompletingOrder().isBefore(endOfPeriod))
                 .map(Order::getOrderCost)
-                .reduce(BigDecimal::add)
-                .orElseThrow();
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<Book> getAllBooksFromOrder(Long id) {
@@ -96,5 +95,4 @@ public class OrderService {
         }
         return books;
     }
-
 }

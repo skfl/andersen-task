@@ -7,10 +7,10 @@ import com.andersentask.bookshop.request.entities.Request;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 
 public class EntityFactory {
+
     public Request buildRequest(Book book) {
         return Request.builder()
                 .book(book)
@@ -28,8 +28,7 @@ public class EntityFactory {
     private BigDecimal getCostOfListOfBooks(List<Book> books) {
         return books.stream()
                 .map(Book::getPrice)
-                .reduce(BigDecimal::add)
-                .orElseThrow();
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
 
