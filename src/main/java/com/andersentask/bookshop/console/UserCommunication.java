@@ -169,12 +169,8 @@ public class UserCommunication {
         long id;
         try {
             id = Long.parseLong(input.get(0));
-            Optional<List<Book>> optionalBooks = commands.getAllBooksFromOrder(id);
-            if (optionalBooks.isPresent()) {
-                printList(optionalBooks.get());
-            } else {
-                log.info(ResultOfOperation.GetAllBooksFromOrder.WRONG_ORDER_ID.toString());
-            }
+            List<Book> optionalBooks = commands.getAllBooksFromOrder(id);
+            printList(optionalBooks);
         } catch (RuntimeException e) {
             log.info(ResultOfOperation.GetAllBooksFromOrder.WRONG_ORDER_ID.toString());
         }
