@@ -26,11 +26,6 @@ public class BookRepository implements CollectionRepository<Book, Long> {
     }
 
     @Override
-    public void delete(Long id) {
-        books.removeIf(book -> book.getId().equals(id));
-    }
-
-    @Override
     public Optional<Book> findById(Long id) {
         for (Book book : books) {
             if (book.getId().equals(id)) {

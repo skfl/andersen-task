@@ -26,11 +26,6 @@ public class UserRepository implements CollectionRepository<User, Long> {
     }
 
     @Override
-    public void delete(Long id) {
-        users.removeIf(user -> user.getId().equals(id));
-    }
-
-    @Override
     public Optional<User> findById(Long id) {
         return users.stream()
                 .filter(user -> user.getId().equals(id))

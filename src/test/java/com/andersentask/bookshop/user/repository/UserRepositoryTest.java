@@ -41,15 +41,6 @@ class UserRepositoryTest {
     }
 
     @Test
-    void delete() {
-        userRepository.save(user);
-
-        userRepository.delete(user.getId());
-
-        assertTrue(userRepository.findAll().isEmpty());
-    }
-
-    @Test
     void findByIdExistingUser() {
         userRepository.save(user);
 
