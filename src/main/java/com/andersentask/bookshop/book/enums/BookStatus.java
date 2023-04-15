@@ -8,5 +8,4 @@ import lombok.Getter;
 public enum BookStatus {
     AVAILABLE,
     OUT_OF_STOCK
-
 }

@@ -1,6 +1,5 @@
 package com.andersentask.bookshop.order.service;
 
-
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
 
 @RequiredArgsConstructor
 public class OrderService {

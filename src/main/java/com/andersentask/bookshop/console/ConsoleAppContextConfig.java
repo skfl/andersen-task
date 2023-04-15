@@ -82,5 +82,7 @@ public class ConsoleAppContextConfig {
         return entityFactory;
     }
 
-    public RepositorySerializer getSerializer() {return serializer; }
+    public RepositorySerializer getSerializer() {
+        return serializer;
+    }
 }

@@ -5,9 +5,7 @@ import com.andersentask.bookshop.request.entities.Request;
 import com.andersentask.bookshop.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 
-
 import java.util.List;
-
 
 @RequiredArgsConstructor
 public class RequestService {

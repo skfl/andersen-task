@@ -21,9 +21,8 @@ import java.util.List;
 @Slf4j
 public class RepositoryDeserializer {
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private static final String ERROR_MESSAGE = "Something went wrong file parsing ";
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public BookRepository deserializeAndWriteToBookRepository(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
