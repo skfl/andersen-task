@@ -23,7 +23,6 @@ public class Commands {
 
     private final ConsoleAppContextConfig appContextConfig = new ConsoleAppContextConfig();
 
-    private final RepositorySerializer serializer = new RepositorySerializer();
 
     /**
      * Set status of book
@@ -212,6 +211,7 @@ public class Commands {
     }
 
     public void exit() {
+        RepositorySerializer serializer = appContextConfig.getSerializer();
         serializer.serializeAndWriteToFile(appContextConfig.getBookService().getAllBooks(), "books.json");
         serializer.serializeAndWriteToFile(appContextConfig.getOrderService().getAllOrders(), "orders.json");
         serializer.serializeAndWriteToFile(appContextConfig.getRequestService().getAllRequests(), "requests.json");

@@ -24,7 +24,7 @@ public enum DefaultMessages {
             * create-request <book.id> -- to create and save request from a book.id
             * create-order <id1> <id2> ... -- to create and save order from a list of id of books. If book is out_of_stock, also creates ans saves request
             * change-book-status <id> <status> -- to set status on certain book and also delete requests which corresponding with this book. Possible status: available, out_of_stock
-            * change-order-status <order.id> <status> -- to set status of the order to chosen by the user. Possible status: in_process, completed, canceled  
+            * change-order-status <order.id> <status> -- to set status of the order to chosen by the user. Possible status: in_process, completed, canceled
             """),
     SUGGEST_EXIT("""
             You could leave by typing exit
