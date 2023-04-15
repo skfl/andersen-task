@@ -37,7 +37,7 @@ class BookServiceTest {
 
     private final Book testBook2 = Book.builder()
             .name("qwerty2")
-            .status(BookStatus.NOT_AVAILABLE)
+            .status(BookStatus.OUT_OF_STOCK)
             .price(BigDecimal.valueOf(22.22))
             .build();
 
@@ -108,7 +108,7 @@ class BookServiceTest {
 
         bookService.getSortedBooks(BookSort.STATUS);
         assertEquals(BookStatus.AVAILABLE, bookService.getAllBooks().get(0).getStatus());
-        assertEquals(BookStatus.NOT_AVAILABLE, bookService.getAllBooks().get(1).getStatus());
+        assertEquals(BookStatus.OUT_OF_STOCK, bookService.getAllBooks().get(1).getStatus());
     }
 
     @Test
@@ -128,7 +128,7 @@ class BookServiceTest {
         bookService.save(testBook3);
         List<Book> bookList = bookService.getAllBooks();
 
-        assertEquals(bookService.getAllBooks().subList(2, 3), bookService.getBooksOutOfStock(bookList));
+        assertEquals(bookService.getAllBooks().subList(1, 3), bookService.getBooksOutOfStock(bookList));
     }
 
     @Test

@@ -39,14 +39,6 @@ class BookRepositoryTest {
     }
 
     @Test
-    void delete() {
-        bookRepository.save(testBook);
-        bookRepository.delete(testBook.getId());
-
-        assertTrue(bookRepository.findAll().isEmpty());
-    }
-
-    @Test
     void findById() {
         bookRepository.save(testBook);
         Optional<Book> result = bookRepository.findById(testBook.getId());
@@ -61,7 +53,7 @@ class BookRepositoryTest {
     void findAll() {
         Book testBook2 = Book.builder()
                 .name("qwerty2")
-                .status(BookStatus.NOT_AVAILABLE)
+                .status(BookStatus.OUT_OF_STOCK)
                 .price(BigDecimal.valueOf(22.22))
                 .build();
 

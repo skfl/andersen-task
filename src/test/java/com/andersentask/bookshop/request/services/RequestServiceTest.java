@@ -31,17 +31,30 @@ class RequestServiceTest {
                     .firstName("qwerty")
                     .id(1L)
                     .build())
-            .book(Book.builder().name("123").build())
+            .book(Book.builder()
+                    .id(1L)
+                    .name("123")
+                    .build())
             .build();
 
     private final Request testRequest2 = Request.builder()
-            .user(User.builder().firstName("qwerty2").build())
-            .book(Book.builder().name("1234").build())
+            .user(User.builder()
+                    .firstName("qwerty2")
+                    .build())
+            .book(Book.builder()
+                    .id(2L)
+                    .name("1234")
+                    .build())
             .build();
 
     private final Request testRequest3 = Request.builder()
-            .user(User.builder().firstName("qwerty3").build())
-            .book(Book.builder().name("12345").build())
+            .user(User.builder()
+                    .firstName("qwerty3")
+                    .build())
+            .book(Book.builder()
+                    .id(1L)
+                    .name("12345")
+                    .build())
             .build();
 
     @Test
@@ -86,10 +99,16 @@ class RequestServiceTest {
     }
 
     @Test
-        //todo: Refactoring method or some hint needed
     void getNumberOfRequestsOnBook() {
         requestService.saveRequest(testRequest);
+        requestService.saveRequest(testRequest2);
 
+
+        assertEquals(1, requestService.getNumberOfRequestsOnBook(testRequest2.getBook().getId()));
         assertEquals(1, requestService.getNumberOfRequestsOnBook(testRequest.getBook().getId()));
+
+        requestService.saveRequest(testRequest3);
+
+        assertEquals(2, requestService.getNumberOfRequestsOnBook(testRequest.getBook().getId()));
     }
 }

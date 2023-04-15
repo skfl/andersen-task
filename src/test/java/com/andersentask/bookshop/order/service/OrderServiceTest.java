@@ -9,16 +9,17 @@ import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.user.entities.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OrderServiceTest {
 
@@ -128,11 +129,38 @@ class OrderServiceTest {
     }
 
     @Test
-        //todo: Refactoring method or some hint needed
     void getIncomeForPeriod() {
-        orderService.saveOrder(testOrder);
+        Order completedOrder1 = Order.builder()
+                .user(User.builder().firstName("qwerty").build())
+                .orderCost(BigDecimal.valueOf(345.34))
+                .orderStatus(OrderStatus.COMPLETED)
+                .timeOfCompletingOrder(LocalDateTime.of(2023, 1, 1, 2, 2))
+                .booksInOrder(List.of(Book.builder()
+                        .name("qwerty")
+                        .status(BookStatus.AVAILABLE)
+                        .price(BigDecimal.valueOf(12.12))
+                        .build()))
+                .build();
+        Order completedOrder2 = Order.builder()
+                .user(User.builder().firstName("qwerty").build())
+                .orderCost(BigDecimal.valueOf(345.34))
+                .orderStatus(OrderStatus.COMPLETED)
+                .timeOfCompletingOrder(LocalDateTime.of(2023, 2, 2, 2, 2))
+                .booksInOrder(List.of(Book.builder()
+                        .name("qwerty")
+                        .status(BookStatus.AVAILABLE)
+                        .price(BigDecimal.valueOf(12.12))
+                        .build()))
+                .build();
 
-        assertThrows(NoSuchElementException.class, (Executable) orderService.getIncomeForPeriod(LocalDateTime.now(), LocalDateTime.now()));
+        orderService.saveOrder(completedOrder1);
+        orderService.saveOrder(completedOrder2);
+
+
+        assertEquals(BigDecimal.valueOf(345.34), orderService.getIncomeForPeriod(LocalDateTime.of(2023,1,1,1,1), LocalDateTime.of(2023, 2, 1, 1, 1)));
+        assertEquals(BigDecimal.valueOf(690.68), orderService.getIncomeForPeriod(LocalDateTime.of(2023,1,1,1,1), LocalDateTime.of(2023, 3, 1, 1, 1)));
+        assertEquals(BigDecimal.ZERO, orderService.getIncomeForPeriod(LocalDateTime.of(2024,1,1,1,1), LocalDateTime.of(2023, 3, 1, 1, 1)));
+
     }
 
     @Test

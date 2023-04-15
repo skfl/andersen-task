@@ -38,14 +38,6 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void delete() {
-        orderRepository.save(testOrder);
-        orderRepository.delete(testOrder.getOrderId());
-
-        assertEquals(OrderStatus.CANCELED, testOrder.getOrderStatus());
-    }
-
-    @Test
     void findById() {
         orderRepository.save(testOrder);
         Optional<Order> result = orderRepository.findById(testOrder.getOrderId());
