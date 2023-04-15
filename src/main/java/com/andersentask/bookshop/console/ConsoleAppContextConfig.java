@@ -5,8 +5,6 @@ import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.services.RequestService;
-import com.andersentask.bookshop.user.repository.UserRepository;
-import com.andersentask.bookshop.user.service.UserService;
 import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
 import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
 
@@ -15,8 +13,6 @@ import java.math.BigDecimal;
 public class ConsoleAppContextConfig {
 
     private final BookService bookService;
-
-    private final UserService userService;
 
     private final OrderService orderService;
 
@@ -29,7 +25,6 @@ public class ConsoleAppContextConfig {
     public ConsoleAppContextConfig() {
         RepositoryDeserializer deserializer = new RepositoryDeserializer();
         this.bookService = new BookService(deserializer.deserializeAndWriteToBookRepository("books.json"));
-        this.userService = new UserService(new UserRepository());
         this.orderService = new OrderService(deserializer.deserializeAndWriteToOrderRepository("orders.json"));
         this.requestService = new RequestService(deserializer.deserializeAndWriteToRequestRepository("requests.json"));
         this.entityFactory = new EntityFactory();
@@ -64,10 +59,6 @@ public class ConsoleAppContextConfig {
 
     public BookService getBookService() {
         return this.bookService;
-    }
-
-    public UserService getUserService() {
-        return this.userService;
     }
 
     public OrderService getOrderService() {
