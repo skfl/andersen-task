@@ -20,7 +20,9 @@ import java.util.List;
 
 @Slf4j
 public class RepositoryDeserializer {
+
     private final ObjectMapper mapper = new ObjectMapper();
+
     private static final String ERROR_MESSAGE = "Something went wrong file parsing ";
 
     public BookRepository deserializeAndWriteToBookRepository(String filename) {

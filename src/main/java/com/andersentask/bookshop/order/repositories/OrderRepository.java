@@ -43,9 +43,6 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
 
     @Override
     public void delete(Long id) {
-        findById(id).ifPresentOrElse(x -> x.setOrderStatus(OrderStatus.CANCELED), () -> {
-        });
+        findById(id).ifPresent(x -> x.setOrderStatus(OrderStatus.CANCELED));
     }
-
-
 }

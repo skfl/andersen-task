@@ -10,6 +10,7 @@ import java.util.List;
 
 
 public class EntityFactory {
+
     public Request buildRequest(Book book) {
         return Request.builder()
                 .book(book)

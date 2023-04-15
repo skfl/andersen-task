@@ -12,10 +12,15 @@ import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
 import java.math.BigDecimal;
 
 public class ConsoleAppContextConfig {
+
     private final BookService bookService;
+
     private final UserService userService;
+
     private final OrderService orderService;
+
     private final RequestService requestService;
+
     private final EntityFactory entityFactory;
 
     public ConsoleAppContextConfig() {
