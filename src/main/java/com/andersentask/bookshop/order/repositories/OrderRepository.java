@@ -39,8 +39,4 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         orders.add(obj);
         return obj;
     }
-
-    public void cancelOrder(Long id) {
-        findById(id).ifPresent(x -> x.setOrderStatus(OrderStatus.CANCELED));
-    }
 }
