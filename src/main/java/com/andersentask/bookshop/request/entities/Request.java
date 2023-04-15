@@ -21,10 +21,4 @@ public class Request {
     private User user;
 
     private Book book;
-
-    //toDo: to delete (discuss). Specification has no request status
-    private RequestStatus requestStatus;
-    //toDo: to delete (discuss). Specification has no request date
-    private LocalDateTime createdAt;
-
 }

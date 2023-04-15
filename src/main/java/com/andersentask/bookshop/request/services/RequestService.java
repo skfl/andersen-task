@@ -11,6 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class RequestService {
+
     private final RequestRepository requestRepository;
 
     public void saveRequest(Request request) {
@@ -36,6 +37,4 @@ public class RequestService {
                 .filter(x -> x.getId().equals(id))
                 .count();
     }
-
-
 }

@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleAppController {
+
     private final Scanner scanner;
+
     private final UserCommunication userCommunication;
 
     public ConsoleAppController() {

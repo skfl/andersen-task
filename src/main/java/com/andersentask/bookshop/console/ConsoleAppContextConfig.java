@@ -10,10 +10,15 @@ import com.andersentask.bookshop.user.service.UserService;
 import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
 
 public class ConsoleAppContextConfig {
+
     private final BookService bookService;
+
     private final UserService userService;
+
     private final OrderService orderService;
+
     private final RequestService requestService;
+
     private final EntityFactory entityFactory;
 
     public ConsoleAppContextConfig() {

@@ -18,10 +18,14 @@ import java.util.List;
 public class Order {
 
     private Long orderId;
-    private User user;
-    private double orderCost;
-    private OrderStatus orderStatus;
-    private LocalDateTime timeOfCompletingOrder;
-    private List<Book> booksInOrder;
 
+    private User user;
+
+    private double orderCost;
+
+    private OrderStatus orderStatus;
+
+    private LocalDateTime timeOfCompletingOrder;
+
+    private List<Book> booksInOrder;
 }
