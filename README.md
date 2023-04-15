@@ -44,6 +44,10 @@ Implement bookstore console application according next requirements and function
 
 ### This project was created during Andersen java course
 
+## Tags
+Git tags used to mark different stages in projects' lifecycle. You can use them to quickly navigate to and inspect the state.
+* v0.1.0 - console application (Task 1 - 3)
+
 ## Contributors
 
 * <a href="https://github.com/DenisBratuh/" style="text-decoration: none;color: white"> Bratukh Denys </a>
