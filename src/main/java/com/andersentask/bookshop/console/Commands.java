@@ -39,7 +39,7 @@ public class Commands {
     }
 
     private ResultOfOperation.SetBookStatus setBookStatus(Book book, BookStatus bookStatus) {
-        if (BookhasSameStatus(book, bookStatus)) {
+        if (bookhasSameStatus(book, bookStatus)) {
             return ResultOfOperation.SetBookStatus.BOOK_ALREADY_HAS_THIS_STATUS;
         }
         if (bookWillBecomeAvailable(book)) {
@@ -51,7 +51,7 @@ public class Commands {
         return ResultOfOperation.SetBookStatus.BOOK_STATUS_UPDATED;
     }
 
-    private boolean BookhasSameStatus(Book book, BookStatus bookStatus) {
+    private boolean bookhasSameStatus(Book book, BookStatus bookStatus) {
         return book.getStatus() == bookStatus;
     }
 
@@ -96,11 +96,11 @@ public class Commands {
 
     /**
      * Create and save order from a list of id of books
-     * If book is out_of_stock, also create ans save request
+     * If book is out_of_stock, also create and save request
      * Returns result of operation as ENUM:
      * WRONG_BOOK_ID => if the input can be parsed to Long, but there is no such ID for books
      * ORDER_CREATED => if the order was successfully created and saved
-     * ORDER_AND_REQUESTS_CREATED => of the order and requests (n=>1) were successfully created ans saved
+     * ORDER_AND_REQUESTS_CREATED => of the order and requests (n=>1) were successfully created and saved
      *
      * @param ids list of id of books and should be got from user
      * @return the status of method completion as ENUM
@@ -138,7 +138,7 @@ public class Commands {
      * STATUS_UPDATED => if the order status was successfully updated
      *
      * @param id          id of order and should be got from user
-     * @param orderStatus can be completed, canceled or in_proccesing and should be got from user
+     * @param orderStatus can be completed, canceled or in_processing and should be got from user
      * @return the status of method completion as ENUM
      */
     public ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck changeStatusOfOrderIncludingBooksCheck(Long id, OrderStatus orderStatus) {
@@ -156,7 +156,7 @@ public class Commands {
             appContextConfig.getOrderService()
                     .changeStatusOfOrder(order.getOrderId(), orderStatus);
         }
-        return OrderStatusUpdateWasSuccessful(order, orderStatus);
+        return orderStatusUpdateWasSuccessful(order, orderStatus);
     }
 
     private boolean orderHasSameStatus(Order order, OrderStatus orderStatus) {
@@ -169,7 +169,7 @@ public class Commands {
         return orderStatus != OrderStatus.COMPLETED || allBooksAvailable;
     }
 
-    private ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck OrderStatusUpdateWasSuccessful(Order order, OrderStatus orderStatus) {
+    private ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck orderStatusUpdateWasSuccessful(Order order, OrderStatus orderStatus) {
         return order.getOrderStatus() == orderStatus ?
                 ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.STATUS_UPDATED :
                 ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.ORDER_STATUS_CAN_NOT_BE_UPDATED;
