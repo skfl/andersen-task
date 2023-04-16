@@ -17,6 +17,6 @@ public class GetOrderServlet extends JsonServlet {
     Response get(String uri, Map<String, String[]> parameters) {
         return new Response
                 (commands.getOrders(OrderSort.valueOf
-                        (parameters.getOrDefault("sort", new String[]{""})[0].toUpperCase(Locale.ROOT))));
+                        (parameters.getOrDefault("sort", new String[]{"ID"})[0].toUpperCase(Locale.ROOT))));
     }
 }
