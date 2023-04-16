@@ -191,7 +191,7 @@ public class Commands {
      */
     public Map<Long, Long> getBooksAndNumberOfRequests() {
         Map<Long, Long> map = new HashMap<>();
-        List<Book> books = appContextConfig.getRequestService().getAllBooksFromRequests();
+        List<Book> books = appContextConfig.getRequestService().getAllBooksFromAllRequests();
         List<Book> booksDistinctSortedByNumber = books.stream().distinct().sorted(Comparator.comparing(x -> getNumberOfRequestsOnBook(x.getId()).get(), Comparator.reverseOrder())).toList();
         for (Book book : booksDistinctSortedByNumber) {
             map.put(book.getId(), getNumberOfRequestsOnBook(book.getId()).get());

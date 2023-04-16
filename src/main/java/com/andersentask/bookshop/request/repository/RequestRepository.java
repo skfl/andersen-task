@@ -1,5 +1,6 @@
 package com.andersentask.bookshop.request.repository;
 
+import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.request.entities.Request;
 
@@ -27,12 +28,9 @@ public class RequestRepository implements CollectionRepository<Request, Long> {
 
     @Override
     public Optional<Request> findById(Long id) {
-        for (Request request : requests) {
-            if (request.getId().equals(id)) {
-                return Optional.of(request);
-            }
-        }
-        return Optional.empty();
+        return requests.stream()
+                .filter(request -> request.getId().equals(id))
+                .findAny();
     }
 
     @Override
@@ -42,5 +40,11 @@ public class RequestRepository implements CollectionRepository<Request, Long> {
 
     public void delete(Long id) {
         requests.removeIf(request -> request.getId().equals(id));
+    }
+
+    public List<Book> findAllBooksFromAllRequests() {
+        return findAll().stream()
+                .map(Request::getBook)
+                .toList();
     }
 }

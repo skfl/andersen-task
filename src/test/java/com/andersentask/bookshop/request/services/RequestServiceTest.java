@@ -95,7 +95,7 @@ class RequestServiceTest {
 
         List<Book> bookList = requestService.getAllRequests().stream().map(Request::getBook).toList();
 
-        assertEquals(bookList, requestService.getAllBooksFromRequests());
+        assertEquals(bookList, requestService.getAllBooksFromAllRequests());
     }
 
     @Test

@@ -7,7 +7,6 @@ import com.andersentask.bookshop.book.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,36 +28,23 @@ public class BookService {
     }
 
     public Optional<Book> setStatusToBook(Long id, BookStatus bookStatus) {
-        Optional<Book> book = getBookById(id);
-        book.ifPresent(value -> value.setStatus(bookStatus));
-        return book;
+        Optional<Book> optionalBook = getBookById(id);
+        optionalBook.ifPresent(book -> {
+            if (book.getStatus() != bookStatus) {
+                book.setStatus(bookStatus);
+            }
+        });
+        return optionalBook;
     }
 
     public List<Book> getSortedBooks(BookSort bookSort) {
-        List<Book> books = getAllBooks();
-        List<Book> booksToReturn = new ArrayList<>();
-        switch (bookSort) {
-            case NAME -> booksToReturn = books.stream()
-                    .sorted(Comparator.comparing(Book::getName))
-                    .toList();
-            case PRICE -> booksToReturn = books.stream()
-                    .sorted(Comparator.comparing(Book::getPrice))
-                    .toList();
-            case STATUS -> booksToReturn = books.stream()
-                    .sorted(Comparator.comparing(x -> x.getStatus().ordinal()))
-                    .toList();
-            case ID -> booksToReturn = books.stream()
-                    .sorted(Comparator.comparing(Book::getId))
-                    .toList();
-        }
-        return booksToReturn;
+        return bookRepository.getSortedBooks(bookSort);
     }
 
     public List<Book> getBooksByIds(List<Long> ids) {
         List<Book> books = new ArrayList<>();
         for (Long id : ids) {
-            Optional<Book> optionalBook = getBookById(id);
-            optionalBook.ifPresent(books::add);
+            getBookById(id).ifPresent(books::add);
         }
         return books;
     }

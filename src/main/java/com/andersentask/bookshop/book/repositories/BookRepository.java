@@ -1,9 +1,11 @@
 package com.andersentask.bookshop.book.repositories;
 
 import com.andersentask.bookshop.book.entities.Book;
+import com.andersentask.bookshop.book.enums.BookSort;
 import com.andersentask.bookshop.common.CollectionRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,16 +29,39 @@ public class BookRepository implements CollectionRepository<Book, Long> {
 
     @Override
     public Optional<Book> findById(Long id) {
-        for (Book book : books) {
-            if (book.getId().equals(id)) {
-                return Optional.of(book);
-            }
-        }
-        return Optional.empty();
+        return books.stream()
+                .filter(book -> book.getId().equals(id))
+                .findAny();
     }
 
     @Override
     public List<Book> findAll() {
         return this.books;
+    }
+
+    public List<Book> getSortedBooks(BookSort bookSort) {
+        switch (bookSort) {
+            case NAME -> {
+                return books.stream()
+                        .sorted(Comparator.comparing(Book::getName))
+                        .toList();
+            }
+            case PRICE -> {
+                return books.stream()
+                        .sorted(Comparator.comparing(Book::getPrice))
+                        .toList();
+            }
+            case STATUS -> {
+                return books.stream()
+                        .sorted(Comparator.comparing(x -> x.getStatus().ordinal()))
+                        .toList();
+            }
+            case ID -> {
+                return books.stream()
+                        .sorted(Comparator.comparing(Book::getId))
+                        .toList();
+            }
+        }
+        return books;
     }
 }
