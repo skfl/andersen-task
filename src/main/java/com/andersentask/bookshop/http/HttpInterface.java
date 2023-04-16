@@ -1,10 +1,7 @@
 package com.andersentask.bookshop.http;
 
 import com.andersentask.bookshop.console.Commands;
-import com.andersentask.bookshop.http.servlets.CreateOrderServlet;
-import com.andersentask.bookshop.http.servlets.GetBookServlet;
-import com.andersentask.bookshop.http.servlets.GetOrderServlet;
-import com.andersentask.bookshop.http.servlets.GetRequestsServlet;
+import com.andersentask.bookshop.http.servlets.*;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -16,28 +13,58 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class HttpInterface {
     private final Commands commands = new Commands();
     private Server server;
-    ;
 
+    //todo: rework end-points
     private void addServlets(ServletHandler servletHandler) {
         servletHandler
                 .addServletWithMapping(new ServletHolder
                                 (new GetBookServlet(commands)),
-                        "/getbooks");
+                        "/get-books");
 
         servletHandler
                 .addServletWithMapping(new ServletHolder
                                 (new CreateOrderServlet(commands)),
-                        "/createorder");
+                        "/create-order");
 
         servletHandler
                 .addServletWithMapping(new ServletHolder
                                 (new GetOrderServlet(commands)),
-                        "/getorders");
+                        "/get-orders");
 
         servletHandler
                 .addServletWithMapping(new ServletHolder
                                 (new GetRequestsServlet(commands)),
-                        "/getrequests");
+                        "/get-requests");
+
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetNumberOfRequestsOnBookServlet(commands)),
+                        "/get-number-of-request");
+
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetBooksAndNumberOfRequestsServlet(commands)),
+                        "/get-books-and-number-of-requests");
+
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new GetAllBooksFromOrderServlet(commands)),
+                        "/get-all-books-from-order");
+
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new CreateRequestServlet(commands)),
+                        "/create-request");
+
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new ChangeBookStatusServlet(commands)),
+                        "/change-book-status");
+
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new ChangeOrderStatusServlet(commands)),
+                        "/change-order-status");
     }
 
     private void configure() {
