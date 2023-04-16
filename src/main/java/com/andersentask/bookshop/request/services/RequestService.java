@@ -24,14 +24,14 @@ public class RequestService {
         getAllRequests().removeIf(x -> x.getBook().equals(book));
     }
 
-    public List<Book> getAllBooksFromRequests() {
+    public List<Book> getAllBooksFromAllRequests() {
         return getAllRequests().stream()
                 .map(Request::getBook)
                 .toList();
     }
 
     public Long getNumberOfRequestsOnBook(Long id) {
-        return getAllBooksFromRequests().stream()
+        return getAllBooksFromAllRequests().stream()
                 .filter(x -> x.getId().equals(id))
                 .count();
     }

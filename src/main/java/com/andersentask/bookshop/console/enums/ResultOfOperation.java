@@ -27,6 +27,7 @@ public enum ResultOfOperation {
         WRONG_ORDER_ID,
         ORDER_STATUS_CAN_NOT_BE_UPDATED,
         STATUS_UPDATED,
+        ORDER_ALREADY_HAS_THIS_STATUS,
         INCORRECT_ENTRANCE_OF_ORDER_ID_OR_BOOK_STATUS
     }
 
