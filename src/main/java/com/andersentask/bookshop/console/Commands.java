@@ -34,9 +34,9 @@ public class Commands {
 
         Book book = appContextConfig.getBookService()
                 .getBookById(id)
-                .orElseThrow(() -> new RuntimeException("Entity not found"));
+                .orElseThrow(() -> new RuntimeException("Book not found"));
 
-        if (book.getStatus().equals(BookStatus.OUT_OF_STOCK) && bookStatus.equals(BookStatus.AVAILABLE)) {
+        if (book.getStatus() == BookStatus.OUT_OF_STOCK && bookStatus == BookStatus.AVAILABLE) {
             appContextConfig.getRequestService().deleteRequest(book);
         }
 
@@ -109,7 +109,7 @@ public class Commands {
     public void changeStatusOfOrderIncludingBooksCheck(Long id, OrderStatus orderStatus) {
         appContextConfig.getOrderService()
                 .getOrderById(id)
-                .filter(order -> !order.getOrderStatus().equals(orderStatus))
+                .filter(order -> order.getOrderStatus() != orderStatus)
                 .filter(order -> orderStatus != OrderStatus.COMPLETED || appContextConfig.getBookService().allBooksAreAvailable(order.getBooksInOrder()))
                 .ifPresent(order -> appContextConfig.getOrderService().changeStatusOfOrder(order.getOrderId(), orderStatus));
     }
