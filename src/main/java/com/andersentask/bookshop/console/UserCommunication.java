@@ -67,9 +67,9 @@ public class UserCommunication {
         OrderSort orderSort;
         try {
             orderSort = OrderSort.valueOf(input.get(0).toUpperCase());
-            printList(commands.getOrders(orderSort));
+            printList(commands.getSortedOrders(orderSort));
         } catch (RuntimeException e) {
-            printList(commands.getOrders(OrderSort.ID));
+            printList(commands.getSortedOrders(OrderSort.ID));
         }
     }
 
@@ -84,8 +84,7 @@ public class UserCommunication {
         try {
             id = Long.parseLong(input.get(0));
             bookStatus = BookStatus.valueOf(input.get(1).toUpperCase());
-            ResultOfOperation.SetBookStatus result = commands.setStatusToBookAndDeleteCorrespondingRequests(id, bookStatus);
-            log.info(result.toString());
+            commands.setStatusToBookAndDeleteCorrespondingRequests(id, bookStatus);
         } catch (RuntimeException e) {
             log.info(ResultOfOperation.SetBookStatus.INCORRECT_ENTRANCE_OF_BOOK_ID_OR_BOOK_STATUS.toString());
         }
@@ -96,8 +95,7 @@ public class UserCommunication {
             long id;
             try {
                 id = Long.parseLong(input.get(0));
-                ResultOfOperation.CreateRequest result = commands.createRequest(id);
-                log.info(result.toString());
+                commands.createRequest(id);
             } catch (Exception e) {
                 log.info(ResultOfOperation.CreateRequest.INCORRECT_ENTRANCE_OF_BOOK_ID.toString());
             }
@@ -108,8 +106,7 @@ public class UserCommunication {
         List<Long> ids;
         try {
             ids = input.stream().map(Long::parseLong).toList();
-            ResultOfOperation.CreateOrder result = commands.createOrder(ids);
-            log.info(result.toString());
+            commands.createOrder(ids);
         } catch (RuntimeException e) {
             log.info(ResultOfOperation.CreateOrder.INCORRECT_ENTRANCE_OF_BOOK_ID.toString());
         }
@@ -121,9 +118,7 @@ public class UserCommunication {
         try {
             id = Long.parseLong(input.get(0));
             orderStatus = OrderStatus.valueOf(input.get(1).toUpperCase());
-            ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck result =
                     commands.changeStatusOfOrderIncludingBooksCheck(id, orderStatus);
-            log.info(result.toString());
         } catch (RuntimeException e) {
             log.info(ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck
                     .INCORRECT_ENTRANCE_OF_ORDER_ID_OR_BOOK_STATUS.toString());
