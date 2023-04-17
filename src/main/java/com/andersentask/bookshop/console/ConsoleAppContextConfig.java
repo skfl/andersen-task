@@ -7,12 +7,20 @@ import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.services.RequestService;
 import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
 import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
-
-import java.math.BigDecimal;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.math.BigDecimal;
 
 public class ConsoleAppContextConfig {
+
+    public static final String ORG_POSTGRESQL_DRIVER = "org.postgresql.Driver";
+
+    private static final String DB_USER = "postgres";
+
+    private static final String DB_PASSWORD = "qwerty007";
+
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/pcs_test";
 
     private final BookService bookService;
 
@@ -77,5 +85,19 @@ public class ConsoleAppContextConfig {
 
     public RepositorySerializer getSerializer() {
         return serializer;
+    }
+
+    private HikariConfig getHikariConfig() {
+        HikariConfig config = new HikariConfig();
+        config.setUsername(DB_USER);
+        config.setPassword(DB_PASSWORD);
+        config.setDriverClassName(ORG_POSTGRESQL_DRIVER);
+        config.setJdbcUrl(DB_URL);
+        config.setMaximumPoolSize(20);
+        return config;
+    }
+
+    private HikariDataSource getHikariDataSource() {
+        return new HikariDataSource(getHikariConfig());
     }
 }
