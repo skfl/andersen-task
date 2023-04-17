@@ -1,11 +1,11 @@
 package com.andersentask.bookshop;
 
-import com.andersentask.bookshop.console.ConsoleAppController;
+import com.andersentask.bookshop.http.HttpInterface;
 
 public class BookshopApplication {
 
     public static void main(String[] args) {
-        ConsoleAppController consoleAppController = new ConsoleAppController();
-        consoleAppController.run();
+        HttpInterface httpInterface = new HttpInterface();
+        httpInterface.start();
     }
 }
