@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,21 +33,17 @@ public class OrderService {
         Optional<Order> optionalOrder = getOrderById(id);
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
+
             switch (orderStatus) {
                 case COMPLETED -> {
-                    if (order.getOrderStatus().equals(OrderStatus.IN_PROCESS)) {
+                    if (order.getOrderStatus() == OrderStatus.IN_PROCESS) {
                         order.setOrderStatus(OrderStatus.COMPLETED);
                         order.setTimeOfCompletingOrder(LocalDateTime.now());
                     }
                 }
                 case CANCELED -> {
-                    if (order.getOrderStatus().equals(OrderStatus.IN_PROCESS)) {
+                    if (order.getOrderStatus() == OrderStatus.IN_PROCESS) {
                         order.setOrderStatus(OrderStatus.CANCELED);
-                    }
-                }
-                case IN_PROCESS -> {
-                    if (order.getOrderStatus().equals(OrderStatus.CANCELED)) {
-                        order.setOrderStatus(OrderStatus.IN_PROCESS);
                     }
                 }
             }
@@ -57,40 +51,19 @@ public class OrderService {
     }
 
     public List<Order> getSortedOrders(OrderSort orderSort) {
-        List<Order> orders = getAllOrders();
-        List<Order> ordersToReturn = new ArrayList<>();
-        switch (orderSort) {
-            case COST -> ordersToReturn = orders.stream()
-                    .sorted(Comparator.comparing(Order::getOrderCost))
-                    .toList();
-            case COMPLETION_DATE -> ordersToReturn = orders.stream()
-                    .sorted(Comparator.comparing(Order::getTimeOfCompletingOrder).reversed())
-                    .toList();
-            case STATUS -> ordersToReturn = orders.stream()
-                    .sorted(Comparator.comparing(x -> x.getOrderStatus().ordinal()))
-                    .toList();
-            case ID -> ordersToReturn = orders.stream()
-                    .sorted(Comparator.comparing(Order::getOrderId))
-                    .toList();
-        }
-        return ordersToReturn;
+        return orderRepository.getSortedOrders(orderSort);
     }
 
     public BigDecimal getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
         return getAllOrders().stream()
-                .filter(x -> x.getOrderStatus().equals(OrderStatus.COMPLETED))
-                .filter(x -> x.getTimeOfCompletingOrder().isAfter(startOfPeriod) &&
-                        x.getTimeOfCompletingOrder().isBefore(endOfPeriod))
+                .filter(order -> order.getOrderStatus() == OrderStatus.COMPLETED)
+                .filter(order -> order.getTimeOfCompletingOrder().isAfter(startOfPeriod) &&
+                        order.getTimeOfCompletingOrder().isBefore(endOfPeriod))
                 .map(Order::getOrderCost)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<Book> getAllBooksFromOrder(Long id) {
-        List<Book> books = new ArrayList<>();
-        Optional<Order> optionalOrder = getOrderById(id);
-        if (optionalOrder.isPresent()) {
-        books = optionalOrder.get().getBooksInOrder();
-        }
-        return books;
+        return orderRepository.findAllBooksFromOrder(id);
     }
 }

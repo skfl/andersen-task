@@ -103,7 +103,7 @@ class OrderServiceTest {
         assertEquals(OrderStatus.COMPLETED, testOrder2.getOrderStatus());
 
         orderService.changeStatusOfOrder(testOrder3.getOrderId(), OrderStatus.IN_PROCESS);
-        assertEquals(OrderStatus.IN_PROCESS, testOrder3.getOrderStatus());
+        assertEquals(OrderStatus.CANCELED, testOrder3.getOrderStatus());
     }
 
     @Test

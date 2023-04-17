@@ -21,18 +21,14 @@ public class RequestService {
     }
 
     public void deleteRequest(Book book) {
-        getAllRequests().removeIf(x -> x.getBook().equals(book));
+        getAllRequests().removeIf(request -> request.getBook().equals(book));
     }
 
-    public List<Book> getAllBooksFromRequests() {
-        return getAllRequests().stream()
-                .map(Request::getBook)
-                .toList();
+    public List<Book> getAllBooksFromAllRequests() {
+        return requestRepository.findAllBooksFromAllRequests();
     }
 
-    public Long getNumberOfRequestsOnBook(Long id) {
-        return getAllBooksFromRequests().stream()
-                .filter(x -> x.getId().equals(id))
-                .count();
+    public Long getNumberOfRequestsOnBook(Long bookId) {
+        return requestRepository.findNumberOfRequestsOnBook(bookId);
     }
 }
