@@ -14,6 +14,8 @@ public class GetAllBooksFromOrderServlet extends JsonServlet {
 
     @Override
     Response get(String uri, Map<String, String[]> parameters) {
-        return new Response(commands.getAllBooksFromOrder(Long.parseLong(parameters.getOrDefault("orderId", new String[]{""})[0])));
+        return new Response
+                (commands.getAllBooksFromOrder
+                        (Long.parseLong(parameters.getOrDefault("orderId", new String[]{""})[0])));
     }
 }

@@ -14,6 +14,8 @@ public class CreateRequestServlet extends JsonServlet {
 
     @Override
     Response get(String uri, Map<String, String[]> parameters) {
-        return new Response(commands.createRequest(Long.parseLong(parameters.getOrDefault("bookId",new String[]{""})[0])));
+        return new Response
+                (commands.createRequest
+                        (Long.parseLong(parameters.getOrDefault("bookId",new String[]{""})[0])));
     }
 }

@@ -15,8 +15,9 @@ public class CreateOrderServlet extends JsonServlet {
 
     @Override
     Response post(String uri, Map<String, List<String>> body) {
-        return new Response(commands.createOrder(body.get("ids").stream()
-                .map(Long::parseLong)
-                .toList()));
+        return new Response
+                (commands.createOrder(body.get("ids").stream()
+                        .map(Long::parseLong)
+                        .toList()));
     }
 }
