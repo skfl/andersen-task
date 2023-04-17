@@ -40,6 +40,14 @@ Implement bookstore console application according next requirements and function
 * Try to follow ReST guidelines
 * Do not use Spring Framework yet
 
+## Task 5
+
+* Use a proper relational database to store application state (e.g., PostgreSQL, MySQL). You can even decide to use H2
+* To access database use JDBC.
+* To manage connections to database try to use a connection pool (e.g., Hikari)
+* For schema migration look at these tools: Liquibase, Flyway. But you can use even plain SQL files.
+
+
 ### Technical stack: Jetty, JUnit, Mockito, Jackson, Logback, Lombok, Maven
 
 ### This project was created during Andersen java course
