@@ -40,7 +40,7 @@ Implement bookstore console application according next requirements and function
 * Try to follow ReST guidelines
 * Do not use Spring Framework yet
 
-### Technical stack: JUnit, Mockito, Jackson, Logback, Lombok, Maven
+### Technical stack: Jetty, JUnit, Mockito, Jackson, Logback, Lombok, Maven
 
 ### This project was created during Andersen java course
 
