@@ -47,4 +47,10 @@ public class RequestRepository implements CollectionRepository<Request, Long> {
                 .map(Request::getBook)
                 .toList();
     }
+
+    public Long findNumberOfRequestsOnBook(Long bookId) {
+        return findAllBooksFromAllRequests().stream()
+                .filter(book -> book.getId().equals(bookId))
+                .count();
+    }
 }

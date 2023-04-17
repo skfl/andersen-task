@@ -21,7 +21,7 @@ public class RequestService {
     }
 
     public void deleteRequest(Book book) {
-        getAllRequests().removeIf(x -> x.getBook().equals(book));
+        getAllRequests().removeIf(request -> request.getBook().equals(book));
     }
 
     public List<Book> getAllBooksFromAllRequests() {
@@ -29,8 +29,6 @@ public class RequestService {
     }
 
     public Long getNumberOfRequestsOnBook(Long bookId) {
-        return getAllBooksFromAllRequests().stream()
-                .filter(x -> x.getId().equals(bookId))
-                .count();
+        return requestRepository.findNumberOfRequestsOnBook(bookId);
     }
 }

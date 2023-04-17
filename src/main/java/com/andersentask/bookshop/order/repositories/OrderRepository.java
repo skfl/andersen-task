@@ -57,7 +57,7 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
             }
             case STATUS -> {
                 return orders.stream()
-                        .sorted(Comparator.comparing(x -> x.getOrderStatus().ordinal()))
+                        .sorted(Comparator.comparing(order -> order.getOrderStatus().ordinal()))
                         .toList();
             }
             case ID -> {

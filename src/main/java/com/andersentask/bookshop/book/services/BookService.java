@@ -27,36 +27,32 @@ public class BookService {
         return bookRepository.findById(id);
     }
 
-    public Optional<Book> setStatusToBook(Long id, BookStatus bookStatus) {
-        Optional<Book> optionalBook = getBookById(id);
-        optionalBook.ifPresent(book -> {
-            if (book.getStatus() != bookStatus) {
-                book.setStatus(bookStatus);
-            }
-        });
-        return optionalBook;
+    public void setStatusToBook(Long id, BookStatus bookStatus) {
+        getBookById(id)
+                .filter(book -> book.getStatus() != bookStatus)
+                .ifPresent(book -> book.setStatus(bookStatus));
     }
 
     public List<Book> getSortedBooks(BookSort bookSort) {
         return bookRepository.getSortedBooks(bookSort);
     }
 
-    public List<Book> getBooksByIds(List<Long> ids) {
+    public List<Book> getBooksByIds(List<Long> bookIds) {
         List<Book> books = new ArrayList<>();
-        for (Long id : ids) {
-            getBookById(id).ifPresent(books::add);
-        }
+        bookIds.stream()
+                .map(this::getBookById)
+                .forEach(book -> book.ifPresent(books::add));
         return books;
     }
 
     public List<Book> getBooksOutOfStock(List<Book> books) {
         return books.stream()
-                .filter(x -> x.getStatus().equals(BookStatus.OUT_OF_STOCK))
+                .filter(book -> book.getStatus() == BookStatus.OUT_OF_STOCK)
                 .toList();
     }
 
     public boolean allBooksAreAvailable(List<Book> books) {
         return books.stream()
-                .allMatch(x -> x.getStatus().equals(BookStatus.AVAILABLE));
+                .allMatch(book -> book.getStatus() == BookStatus.AVAILABLE);
     }
 }
