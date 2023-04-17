@@ -65,6 +65,11 @@ public class HttpInterface {
                 .addServletWithMapping(new ServletHolder
                                 (new ChangeOrderStatusServlet(commands)),
                         "/change-order-status");
+
+        servletHandler
+                .addServletWithMapping(new ServletHolder
+                                (new ExitServlet(commands)),
+                        "/exit");
     }
 
     private void configure() {
