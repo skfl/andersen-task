@@ -25,10 +25,14 @@ public class RequestService {
     }
 
     public List<Book> getAllBooksFromAllRequests() {
-        return requestRepository.findAllBooksFromAllRequests();
+        return getAllRequests().stream()
+                .map(Request::getBook)
+                .toList();
     }
 
-    public Long getNumberOfRequestsOnBook(Long bookId) {
-        return requestRepository.findNumberOfRequestsOnBook(bookId);
+    public Long getNumberOfRequestsOnBook(Long id) {
+        return getAllBooksFromAllRequests().stream()
+                .filter(x -> x.getId().equals(id))
+                .count();
     }
 }
