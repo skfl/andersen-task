@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-books-table.yaml
+  - include:
+      file: db/changelog/changeset/create-initial-books-data.yaml

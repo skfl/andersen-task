@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-books
+      author: Edward Rogachkov
+      changes:
+        - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                   name: price
+                   type: numeric
+                   constraints:
+                     nullable: false
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

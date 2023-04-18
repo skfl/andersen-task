@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-books-initial-data
+      author: Edward Rogachkov
+      changes:
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Gone with the Wind
+              - column:
+                  name: price
+                  value: 123
+              - column:
+                  name: status
+                  value: AVAILABLE
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Jane Eyre
+              - column:
+                  name: price
+                  value: 264
+              - column:
+                  name: status
+                  value: AVAILABLE
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: Pride and Prejudice
+              - column:
+                  name: price
+                  value: 1128
+              - column:
+                  name: status
+                  value: OUT_OF_STOCK
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: To Kill a Mockingbird
+              - column:
+                  name: price
+                  value: 923
+              - column:
+                  name: status
+                  value: OUT_OF_STOCK
