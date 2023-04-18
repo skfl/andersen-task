@@ -16,7 +16,6 @@ import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +49,7 @@ public class ConsoleAppContextConfig {
         liquibase();
         this.bookService = new BookService(new BookRepository(dataSource));
         this.orderService = new OrderService(new OrderRepository());
-        this.requestService = new RequestService(new RequestRepository());
+        this.requestService = new RequestService(new RequestRepository(dataSource));
         this.entityFactory = new EntityFactory();
     }
 

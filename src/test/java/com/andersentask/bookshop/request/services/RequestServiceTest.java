@@ -22,7 +22,7 @@ class RequestServiceTest {
 
     @BeforeEach
     void setUp() {
-        requestRepository = new RequestRepository();
+        requestRepository = new RequestRepository(dataSource);
         requestService = new RequestService(requestRepository);
     }
 

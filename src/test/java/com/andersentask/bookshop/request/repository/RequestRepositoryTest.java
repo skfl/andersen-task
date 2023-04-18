@@ -19,7 +19,7 @@ class RequestRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        requestRepository = new RequestRepository();
+        requestRepository = new RequestRepository(dataSource);
     }
 
     private final Request testRequest = Request.builder()
