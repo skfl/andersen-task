@@ -8,7 +8,6 @@ import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.request.entities.Request;
-import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -258,10 +257,6 @@ public class Commands {
      * if the user exits from the program by typing "exit"
      */
     public void exit() {
-        RepositorySerializer serializer = appContextConfig.getSerializer();
-        serializer.serializeAndWriteToFile(appContextConfig.getBookService().getAllBooks(), "books.json");
-        serializer.serializeAndWriteToFile(appContextConfig.getOrderService().getAllOrders(), "orders.json");
-        serializer.serializeAndWriteToFile(appContextConfig.getRequestService().getAllRequests(), "requests.json");
         System.exit(0);
     }
 }
