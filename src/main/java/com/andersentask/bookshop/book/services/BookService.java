@@ -28,9 +28,10 @@ public class BookService {
     }
 
     public void setStatusToBook(Long id, BookStatus bookStatus) {
-        getBookById(id)
-                .filter(book -> book.getStatus() != bookStatus)
-                .ifPresent(book -> book.setStatus(bookStatus));
+        Book bookToUpdate = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Can't find book with such id while updating"));
+        bookToUpdate.setStatus(bookStatus);
+        bookRepository.update(bookToUpdate);
     }
 
     public List<Book> getSortedBooks(BookSort bookSort) {
