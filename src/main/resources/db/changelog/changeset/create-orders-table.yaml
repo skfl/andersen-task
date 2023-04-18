@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-orders
+      author: Ulad Sachkouski
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user
+                  type: int
+              - column:
+                  name: cost
+                  type: numeric
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: time_of_completing
+                  type: datetime
+              - column:
+                  name: book_id
+                  type: int
+                  constraints:
+                    foreignKeyName: books.id
+                    nullable: false
+
+
