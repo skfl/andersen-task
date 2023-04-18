@@ -6,8 +6,7 @@ import com.andersentask.bookshop.user.entities.User;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,15 +15,15 @@ import java.util.Optional;
 @Slf4j
 public class RequestRepository {
 
+    private static final String SQL_INSERT = "insert into requests(id) values (?)";
+    private static final String SQL_SELECT_BY_ID = "select * from requests where id = ?";
+    private static final String SQL_SELECT_ALL = "select * from requests";
+
     Request requestToMap(ResultSet resultSet) {
         try {
             Long id = resultSet.getLong("id");
-            User user = (User) resultSet.getObject("user");
-            Book book = (Book) resultSet.getObject("book");
             return Request.builder()
                     .id(id)
-                    .user(user)
-                    .book(book)
                     .build();
         } catch (SQLException e) {
             log.error(e.getMessage());
@@ -39,20 +38,57 @@ public class RequestRepository {
     }
 
     public Request save(Request request) {
-
+        try(Connection connection = dataSource.getConnection();) {
+            PreparedStatement statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
+            statement.setLong(1, request.getId());
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows != 1) {
+                throw new SQLException("Can't insert request");
+            }
+            try(ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return findById(generatedKeys.getLong("id"))
+                            .orElseThrow(() -> new IllegalArgumentException("Something goes wrong while request insertion"));
+                } else {
+                    throw new SQLException("Can't get it");
+                }
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
 
-
-    @Override
     public Optional<Request> findById(Long id) {
-        return requests.stream()
-                .filter(request -> request.getId().equals(id))
-                .findAny();
+        try(Connection connection = dataSource.getConnection();
+        PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
+            statement.setLong(1, id);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(requestToMap(resultSet));
+                }
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    @Override
     public List<Request> findAll() {
-        return this.requests;
+       List<Request> requests = new ArrayList<>();
+       try(Connection connection = dataSource.getConnection();
+       PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL)) {
+           try(ResultSet resultSet = statement.executeQuery()) {
+               while (resultSet.next()) {
+                   requests.add(requestToMap(resultSet));
+               }
+           }
+           return requests;
+       } catch (SQLException e) {
+           log.error(e.getMessage());
+           throw new IllegalArgumentException(e);
+       }
     }
 
     public void delete(Long id) {
