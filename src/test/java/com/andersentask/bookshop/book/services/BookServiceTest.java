@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +22,13 @@ class BookServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+    @Mock
+    private DataSource dataSource;
     private BookService bookService;
 
     @BeforeEach
     void setUp() {
-        bookRepository = new BookRepository();
+        bookRepository = new BookRepository(dataSource);
         bookService = new BookService(bookRepository);
     }
 
