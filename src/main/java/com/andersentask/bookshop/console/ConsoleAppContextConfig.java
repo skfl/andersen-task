@@ -4,6 +4,7 @@ import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.book.repositories.BookRepository;
 import com.andersentask.bookshop.book.services.BookService;
+import com.andersentask.bookshop.order.repositories.OrderMapper;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.repository.RequestRepository;
@@ -35,8 +36,6 @@ public class ConsoleAppContextConfig {
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/bookstore";
 
-    private final BookRepository bookRepository;
-
     private final BookService bookService;
 
     private final OrderService orderService;
@@ -50,9 +49,8 @@ public class ConsoleAppContextConfig {
     public ConsoleAppContextConfig() {
         dataSource = new HikariDataSource(getHikariConfig());
         liquibase();
-        this.bookRepository = new BookRepository(dataSource);
-        this.bookService = new BookService(bookRepository);
-        this.orderService = new OrderService(new OrderRepository(dataSource,bookRepository));
+        this.bookService = new BookService(new BookRepository(dataSource));
+        this.orderService = new OrderService(new OrderRepository(dataSource,bookService));
         this.requestService = new RequestService(new RequestRepository());
         this.entityFactory = new EntityFactory();
     }
