@@ -10,9 +10,21 @@ import com.andersentask.bookshop.request.repository.RequestRepository;
 import com.andersentask.bookshop.request.services.RequestService;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import liquibase.Contexts;
+import liquibase.LabelExpression;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
+@Slf4j
 public class ConsoleAppContextConfig {
 
     public static final String ORG_POSTGRESQL_DRIVER = "org.postgresql.Driver";
@@ -35,13 +47,15 @@ public class ConsoleAppContextConfig {
 
     public ConsoleAppContextConfig() {
         dataSource = new HikariDataSource(getHikariConfig());
+        liquibase();
         this.bookService = new BookService(new BookRepository(dataSource));
         this.orderService = new OrderService(new OrderRepository());
         this.requestService = new RequestService(new RequestRepository());
         this.entityFactory = new EntityFactory();
-        setupBookService();
     }
 
+    @Deprecated
+    //todo: delete before merge feature/add-database to main
     private void setupBookService() {
         if (bookService.getAllBooks().isEmpty()) {
             this.bookService.save(Book.builder()
@@ -95,5 +109,19 @@ public class ConsoleAppContextConfig {
         config.setJdbcUrl(DB_URL);
         config.setMaximumPoolSize(20);
         return config;
+    }
+
+    private void liquibase(){
+        try (Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(dataSource.getConnection()))) {
+            Liquibase liquibase = new liquibase.Liquibase("db/changelog/db.changelog-master.yaml", new ClassLoaderResourceAccessor(), database);
+            liquibase.update(new Contexts(), new LabelExpression());
+        }catch (SQLException e){
+            log.error(e.getMessage());
+            throw new IllegalArgumentException("Can't apply liquibase");
+        } catch (LiquibaseException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
+
     }
 }
