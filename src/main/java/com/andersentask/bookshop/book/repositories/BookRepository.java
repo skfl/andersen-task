@@ -113,15 +113,15 @@ public class BookRepository {
 
     public List<Book> getSortedBooks(BookSort bookSort) {
         List<Book> sortedBooks = new ArrayList<>();
-        String sql_sort = SQL_SELECT_BY_ID;
+        String sqlSort = SQL_SELECT_BY_ID;
         switch (bookSort) {
-            case ID -> sql_sort = SQL_SELECT_SORTED_ID;
-            case NAME -> sql_sort = SQL_SELECT_SORTED_NAME;
-            case PRICE -> sql_sort = SQL_SELECT_SORTED_PRICE;
-            case STATUS -> sql_sort = SQL_SELECT_SORTED_STATUS;
+            case ID -> sqlSort = SQL_SELECT_SORTED_ID;
+            case NAME -> sqlSort = SQL_SELECT_SORTED_NAME;
+            case PRICE -> sqlSort = SQL_SELECT_SORTED_PRICE;
+            case STATUS -> sqlSort = SQL_SELECT_SORTED_STATUS;
         }
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql_sort)) {
+             PreparedStatement statement = connection.prepareStatement(sqlSort)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     sortedBooks.add(bookMapper.apply(resultSet));
