@@ -2,11 +2,12 @@ package com.andersentask.bookshop.console;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookStatus;
+import com.andersentask.bookshop.book.repositories.BookRepository;
 import com.andersentask.bookshop.book.services.BookService;
+import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.order.service.OrderService;
+import com.andersentask.bookshop.request.repository.RequestRepository;
 import com.andersentask.bookshop.request.services.RequestService;
-import com.andersentask.bookshop.utils.serialization.RepositoryDeserializer;
-import com.andersentask.bookshop.utils.serialization.RepositorySerializer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -18,9 +19,9 @@ public class ConsoleAppContextConfig {
 
     private static final String DB_USER = "postgres";
 
-    private static final String DB_PASSWORD = "qwerty007";
+    private static final String DB_PASSWORD = "31150616";
 
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/pcs_test";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/bookstore";
 
     private final BookService bookService;
 
@@ -30,15 +31,14 @@ public class ConsoleAppContextConfig {
 
     private final EntityFactory entityFactory;
 
-    private final RepositorySerializer serializer;
+    private final HikariDataSource dataSource;
 
     public ConsoleAppContextConfig() {
-        RepositoryDeserializer deserializer = new RepositoryDeserializer();
-        this.bookService = new BookService(deserializer.deserializeAndWriteToBookRepository("books.json"));
-        this.orderService = new OrderService(deserializer.deserializeAndWriteToOrderRepository("orders.json"));
-        this.requestService = new RequestService(deserializer.deserializeAndWriteToRequestRepository("requests.json"));
+        dataSource = new HikariDataSource(getHikariConfig());
+        this.bookService = new BookService(new BookRepository(dataSource));
+        this.orderService = new OrderService(new OrderRepository());
+        this.requestService = new RequestService(new RequestRepository());
         this.entityFactory = new EntityFactory();
-        this.serializer = new RepositorySerializer();
         setupBookService();
     }
 
@@ -83,8 +83,8 @@ public class ConsoleAppContextConfig {
         return entityFactory;
     }
 
-    public RepositorySerializer getSerializer() {
-        return serializer;
+    public void closeDataSource(){
+        dataSource.close();
     }
 
     private HikariConfig getHikariConfig() {
@@ -95,9 +95,5 @@ public class ConsoleAppContextConfig {
         config.setJdbcUrl(DB_URL);
         config.setMaximumPoolSize(20);
         return config;
-    }
-
-    private HikariDataSource getHikariDataSource() {
-        return new HikariDataSource(getHikariConfig());
     }
 }
