@@ -21,7 +21,7 @@ public class RequestService {
     }
 
     public void deleteRequest(Book book) {
-        getAllRequests().removeIf(request -> request.getBook().equals(book));
+        requestRepository.delete(book);
     }
 
     public List<Book> getAllBooksFromAllRequests() {

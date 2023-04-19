@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-requests
+      author: Anton Kliuchnikau
+      changes:
+        - createTable:
+            tableName: requests
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: book_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: books.id
+                    nullable: false

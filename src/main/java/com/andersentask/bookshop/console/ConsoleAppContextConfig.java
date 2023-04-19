@@ -30,7 +30,7 @@ public class ConsoleAppContextConfig {
 
     private static final String DB_USER = "postgres";
 
-    private static final String DB_PASSWORD = "31150616";
+    private static final String DB_PASSWORD = "123";
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/bookstore";
 
