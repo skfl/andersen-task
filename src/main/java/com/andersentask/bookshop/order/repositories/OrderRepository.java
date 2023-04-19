@@ -90,7 +90,7 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
     }
 
     private Order findOrder(ResultSet resultSet, Long orderId, Connection connection) {
-        Order order = OrderMapper.orderMapper.apply(resultSet);
+        Order order = OrderMapper.mapper.apply(resultSet);
         Long numberOfBooksInOrder = countBooksInOneOrder(orderId, connection);
         List<Book> booksInOrder = findBooks(resultSet, numberOfBooksInOrder);
         order.setBooksInOrder(booksInOrder);
@@ -103,7 +103,8 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
             var resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getLong("count");
-            } return 0L;
+            }
+            return 0L;
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
@@ -143,7 +144,7 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
 
             List<Book> booksInOrder = obj.getBooksInOrder();
             int indexNumberForStatement = 4;
-            setFieldsOfStatement(obj, statement,indexNumberForStatement);
+            setFieldsOfStatement(obj, statement, indexNumberForStatement);
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows != 1) {
@@ -153,16 +154,13 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
                 if (generatedKeys.next()) {
                     Long orderId = generatedKeys.getLong("id");
                     saveBookIds(orderId, booksInOrder);
-
                     return findById(orderId).orElseThrow();
                 } else {
                     throw new SQLException();
                 }
             }
-
         } catch (SQLException e) {
             log.error(e.getMessage());
-            System.out.println(e.getMessage());
             throw new IllegalArgumentException(e);
         }
     }
@@ -179,7 +177,7 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
             statement.setTimestamp(4, Timestamp.valueOf(obj.getTimeOfCompletingOrder()));
         }
         if (indexNumberOfStatement == 5) {
-            statement.setLong(5,obj.getOrderId());
+            statement.setLong(5, obj.getOrderId());
         }
     }
 
@@ -206,7 +204,7 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
              PreparedStatement statement = connection.prepareStatement(OrderSQLCommands.SQL_UPDATE)) {
 
             int indexNumberForStatement = 5;
-            setFieldsOfStatement(order, statement,indexNumberForStatement);
+            setFieldsOfStatement(order, statement, indexNumberForStatement);
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows != 1) {

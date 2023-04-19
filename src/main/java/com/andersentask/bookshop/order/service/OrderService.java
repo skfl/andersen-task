@@ -44,10 +44,10 @@ public class OrderService {
         return orderToUpdate;
     }
 
-    private LocalDateTime getCurrentTime(){
+    private LocalDateTime getCurrentTime() {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         String nowTime = LocalDateTime.now().format(dateFormat);
-        return LocalDateTime.parse(nowTime,dateFormat);
+        return LocalDateTime.parse(nowTime, dateFormat);
     }
 
     private boolean fromInProcessToCompleted(Order orderToUpdate, OrderStatus orderStatus) {
@@ -66,7 +66,7 @@ public class OrderService {
     }
 
     public BigDecimal getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
-        return orderRepository.findIncomeForPeriod(startOfPeriod,endOfPeriod);
+        return orderRepository.findIncomeForPeriod(startOfPeriod, endOfPeriod);
     }
 
     public List<Book> getAllBooksFromOrder(Long id) {
