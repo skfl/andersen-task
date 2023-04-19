@@ -20,7 +20,6 @@ public class RequestRepository {
     private static final String SQL_SELECT_BY_ID = "select * from requests where id = ?";
     private static final String SQL_SELECT_ALL = "select * from requests";
     private static final String SQL_DELETE_BY_ID = "delete from requests where id = ?";
-    private static final String SQL_SELECT_ALL_BOOKS_FROM_ALL_REQUESTS = "select book from requests where book is not null";
 
     Request requestToMap(ResultSet resultSet) {
         try {
