@@ -1,6 +1,5 @@
 package com.andersentask.bookshop.order.repositories;
 
-import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
@@ -26,8 +23,11 @@ public class OrderMapper {
             Long orderId = resultSet.getLong("id");
             BigDecimal orderCost = resultSet.getBigDecimal("cost");
             OrderStatus orderStatus = OrderStatus.valueOf(resultSet.getString("status"));
-            LocalDateTime timeOfCompletingOrder = resultSet.getTimestamp("time_of_completing")
-                    .toLocalDateTime();
+            LocalDateTime timeOfCompletingOrder = null;
+            if (resultSet.getTimestamp("time_of_completing") != null) {
+                timeOfCompletingOrder = resultSet.getTimestamp("time_of_completing")
+                        .toLocalDateTime();
+            }
             return Order.builder()
                     .orderId(orderId)
                     .orderCost(orderCost)

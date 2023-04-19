@@ -14,8 +14,10 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: user
-                  type: int
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: true
               - column:
                   name: cost
                   type: numeric
@@ -29,11 +31,7 @@ databaseChangeLog:
               - column:
                   name: time_of_completing
                   type: datetime
-              - column:
-                  name: book_id
-                  type: int
                   constraints:
-                    foreignKeyName: books.id
-                    nullable: false
+                    nullable: true
 
 

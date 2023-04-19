@@ -152,7 +152,7 @@ public class Commands {
             return ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.ORDER_ALREADY_HAS_THIS_STATUS;
         }
         if (orderStatusNotToBeCompletedOrAllBooksAvailable(order, orderStatus)) {
-            appContextConfig.getOrderService()
+            order = appContextConfig.getOrderService()
                     .changeStatusOfOrder(order.getOrderId(), orderStatus);
         }
         return orderStatusUpdateWasSuccessful(order, orderStatus);

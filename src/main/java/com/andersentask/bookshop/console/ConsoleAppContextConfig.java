@@ -4,7 +4,6 @@ import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.book.repositories.BookRepository;
 import com.andersentask.bookshop.book.services.BookService;
-import com.andersentask.bookshop.order.repositories.OrderMapper;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.repository.RequestRepository;
@@ -17,7 +16,6 @@ import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +48,7 @@ public class ConsoleAppContextConfig {
         dataSource = new HikariDataSource(getHikariConfig());
         liquibase();
         this.bookService = new BookService(new BookRepository(dataSource));
-        this.orderService = new OrderService(new OrderRepository(dataSource,bookService));
+        this.orderService = new OrderService(new OrderRepository(dataSource, bookService));
         this.requestService = new RequestService(new RequestRepository());
         this.entityFactory = new EntityFactory();
     }
@@ -98,7 +96,7 @@ public class ConsoleAppContextConfig {
         return entityFactory;
     }
 
-    public void closeDataSource(){
+    public void closeDataSource() {
         dataSource.close();
     }
 
@@ -112,11 +110,11 @@ public class ConsoleAppContextConfig {
         return config;
     }
 
-    private void liquibase(){
+    private void liquibase() {
         try (Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(dataSource.getConnection()))) {
             Liquibase liquibase = new liquibase.Liquibase("db/changelog/db.changelog-master.yaml", new ClassLoaderResourceAccessor(), database);
             liquibase.update(new Contexts(), new LabelExpression());
-        }catch (SQLException e){
+        } catch (SQLException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException("Can't apply liquibase");
         } catch (LiquibaseException e) {

@@ -8,13 +8,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: order_id
-                  type: int
+                  type: bigint
                   constraints:
                     foreignKeyName: order.id
                     nullable: false
               - column:
                   name: book_id
-                  type: int
+                  type: bigint
                   constraints:
                     foreignKeyName: book.id
                     nullable: false

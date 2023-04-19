@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,17 +30,24 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public void changeStatusOfOrder(Long orderId, OrderStatus orderStatus) {
+    public Order changeStatusOfOrder(Long orderId, OrderStatus orderStatus) {
         Order orderToUpdate = orderRepository.findById(orderId).orElseThrow();
         if (fromInProcessToCompleted(orderToUpdate, orderStatus)) {
             orderToUpdate.setOrderStatus(OrderStatus.COMPLETED);
-            orderToUpdate.setTimeOfCompletingOrder(LocalDateTime.now());
+            orderToUpdate.setTimeOfCompletingOrder(getCurrentTime());
             orderRepository.update(orderToUpdate);
         }
         if (fromInProcessToCanceled(orderToUpdate, orderStatus)) {
             orderToUpdate.setOrderStatus(OrderStatus.CANCELED);
             orderRepository.update(orderToUpdate);
         }
+        return orderToUpdate;
+    }
+
+    private LocalDateTime getCurrentTime(){
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String nowTime = LocalDateTime.now().format(dateFormat);
+        return LocalDateTime.parse(nowTime,dateFormat);
     }
 
     private boolean fromInProcessToCompleted(Order orderToUpdate, OrderStatus orderStatus) {

@@ -5,7 +5,6 @@ import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
-import com.andersentask.bookshop.order.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -102,7 +101,9 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         try (PreparedStatement statement = connection.prepareStatement(OrderBooksSQLCommands.SQL_COUNT_BY_ID)) {
             statement.setLong(1, orderId);
             var resultSet = statement.executeQuery();
-            return resultSet.getLong("count");
+            if (resultSet.next()) {
+                return resultSet.getLong("count");
+            } return 0L;
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
@@ -141,8 +142,8 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
                      , Statement.RETURN_GENERATED_KEYS)) {
 
             List<Book> booksInOrder = obj.getBooksInOrder();
-
-            setFieldsOfStatement(obj, statement);
+            int indexNumberForStatement = 4;
+            setFieldsOfStatement(obj, statement,indexNumberForStatement);
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows != 1) {
@@ -161,14 +162,25 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
 
         } catch (SQLException e) {
             log.error(e.getMessage());
+            System.out.println(e.getMessage());
             throw new IllegalArgumentException(e);
         }
     }
 
-    private void setFieldsOfStatement(Order obj, PreparedStatement statement) throws SQLException {
-        statement.setBigDecimal(1, obj.getOrderCost());
-        statement.setString(2, obj.getOrderStatus().toString());
-        statement.setTimestamp(3, Timestamp.valueOf(obj.getTimeOfCompletingOrder()));
+    private void setFieldsOfStatement(Order obj, PreparedStatement statement, int indexNumberOfStatement) throws SQLException {
+        statement.setLong(1, 0L);
+        if (obj.getUser() != null) {
+            statement.setLong(1, obj.getUser().getId());
+        }
+        statement.setBigDecimal(2, obj.getOrderCost());
+        statement.setString(3, obj.getOrderStatus().toString());
+        statement.setTimestamp(4, null);
+        if (obj.getTimeOfCompletingOrder() != null) {
+            statement.setTimestamp(4, Timestamp.valueOf(obj.getTimeOfCompletingOrder()));
+        }
+        if (indexNumberOfStatement == 5) {
+            statement.setLong(5,obj.getOrderId());
+        }
     }
 
     private void saveBookIds(Long orderId, List<Book> booksInOrder) {
@@ -189,17 +201,18 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         }
     }
 
-    public void update (Order  order){
+    public void update(Order order) {
         try (Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(OrderSQLCommands.SQL_UPDATE)){
+             PreparedStatement statement = connection.prepareStatement(OrderSQLCommands.SQL_UPDATE)) {
 
-            setFieldsOfStatement(order,statement);
+            int indexNumberForStatement = 5;
+            setFieldsOfStatement(order, statement,indexNumberForStatement);
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows != 1) {
                 throw new SQLException();
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
         }
@@ -207,22 +220,16 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
 
     public BigDecimal findIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement
-                        (OrderSQLCommands.SQL_SELECT_COST_OF_COMPLETED_WITHIN_PERIOD)) {
-            statement.setTimestamp(1,Timestamp.valueOf(startOfPeriod));
-            statement.setTimestamp(2,Timestamp.valueOf(endOfPeriod));
+             PreparedStatement statement = connection.prepareStatement
+                     (OrderSQLCommands.SQL_SELECT_COST_OF_COMPLETED_WITHIN_PERIOD)) {
+            statement.setTimestamp(1, Timestamp.valueOf(startOfPeriod));
+            statement.setTimestamp(2, Timestamp.valueOf(endOfPeriod));
             var resultSet = statement.executeQuery();
             return resultSet.getBigDecimal("total_cost");
-            } catch (SQLException e) {
-                log.error(e.getMessage());
-                throw new IllegalArgumentException(e);
-            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
-
-
-
-
-
-
 
 }
