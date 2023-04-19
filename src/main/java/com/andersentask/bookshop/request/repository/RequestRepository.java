@@ -10,18 +10,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Slf4j
 public class RequestRepository {
 
-    private static final String SQL_COUNT_BY_BOOK_ID = "select count() as count from requests where book_id =?";
-    BookService bookService;
-    private static final String SQL_INSERT = "insert into requests(id, user_id, book_id) values (?, ?, ?)";
+    private static final String SQL_COUNT_BY_BOOK_ID = "select count(*) as count from requests where book_id =?";
+    private static final String SQL_INSERT = "insert into requests(user_id, book_id) values (?, ?)";
     private static final String SQL_SELECT_BY_ID = "select * from requests where id = ?";
     private static final String SQL_SELECT_ALL = "select * from requests";
     private static final String SQL_DELETE_BY_ID = "delete from requests where id = ?";
-
-    Request requestToMap(ResultSet resultSet) {
+    private final DataSource dataSource;
+    private BookService bookService;
+    private final Function<ResultSet, Request> requestMapper = resultSet -> {
         try {
             Long id = resultSet.getLong("id");
             Long bookId = resultSet.getLong("book_id");
@@ -32,25 +33,24 @@ public class RequestRepository {
                     .build();
         } catch (SQLException e) {
             log.error(e.getMessage());
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
-    }
+    };
 
-    private final DataSource dataSource;
 
-    public RequestRepository(DataSource dataSource) {
+    public RequestRepository(DataSource dataSource, BookService bookService) {
         this.dataSource = dataSource;
+        this.bookService = bookService;
     }
 
     public Request save(Request request) {
-        try (Connection connection = dataSource.getConnection();) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
-            statement.setLong(1, request.getId());
-            statement.setLong(2, 0L);
+            statement.setLong(1, 0L);
             if (request.getUser() != null) {
-                statement.setLong(2, request.getUser().getId());
+                statement.setLong(1, request.getUser().getId());
             }
-            statement.setLong(3, request.getBook().getId());
+            statement.setLong(2, request.getBook().getId());
             int affectedRows = statement.executeUpdate();
             if (affectedRows != 1) {
                 throw new SQLException("Can't insert request");
@@ -75,7 +75,7 @@ public class RequestRepository {
             statement.setLong(1, requestId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return Optional.of(requestToMap(resultSet));
+                    return Optional.of(requestMapper.apply(resultSet));
                 }
                 return Optional.empty();
             }
@@ -91,7 +91,7 @@ public class RequestRepository {
              PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    requests.add(requestToMap(resultSet));
+                    requests.add(requestMapper.apply(resultSet));
                 }
             }
             return requests;
@@ -114,8 +114,9 @@ public class RequestRepository {
 
     public Long findNumberOfRequestsOnBook(Long bookId) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_COUNT_BY_BOOK_ID);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement statement = connection.prepareStatement(SQL_COUNT_BY_BOOK_ID)) {
+            statement.setLong(1, bookId);
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getLong("count");
             }

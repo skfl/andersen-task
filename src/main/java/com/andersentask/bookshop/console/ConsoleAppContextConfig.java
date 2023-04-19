@@ -30,7 +30,7 @@ public class ConsoleAppContextConfig {
 
     private static final String DB_USER = "postgres";
 
-    private static final String DB_PASSWORD = "123";
+    private static final String DB_PASSWORD = "123321";
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/bookstore";
 
@@ -49,7 +49,7 @@ public class ConsoleAppContextConfig {
         liquibase();
         this.bookService = new BookService(new BookRepository(dataSource));
         this.orderService = new OrderService(new OrderRepository());
-        this.requestService = new RequestService(new RequestRepository(dataSource));
+        this.requestService = new RequestService(new RequestRepository(dataSource,bookService));
         this.entityFactory = new EntityFactory();
     }
 
