@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-order_books
+      author: Ulad Sachkouski
+      changes:
+        - createTable:
+            tableName: order_books
+            columns:
+              - column:
+                  name: order_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: order.id
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: book.id
+                    nullable: false
