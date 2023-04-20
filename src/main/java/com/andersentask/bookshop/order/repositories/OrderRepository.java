@@ -2,7 +2,6 @@ package com.andersentask.bookshop.order.repositories;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.services.BookService;
-import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import lombok.AllArgsConstructor;
@@ -18,13 +17,12 @@ import java.util.Optional;
 
 @Slf4j
 @AllArgsConstructor
-public class OrderRepository implements CollectionRepository<Order, Long> {
+public class OrderRepository {
 
     private final DataSource dataSource;
 
     private final BookService bookService;
 
-    @Override
     public Optional<Order> findById(Long orderId) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(OrderSQLCommands.SQL_SELECT_BY_ID)) {
@@ -42,7 +40,6 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         }
     }
 
-    @Override
     public List<Order> findAll() {
         List<Order> orders = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
@@ -136,7 +133,6 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         }
     }
 
-    @Override
     public Order save(Order obj) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(OrderSQLCommands.SQL_INSERT
