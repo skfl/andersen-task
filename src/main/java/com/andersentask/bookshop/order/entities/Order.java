@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -26,7 +26,7 @@ public class Order {
 
     private OrderStatus orderStatus;
 
-    private LocalDateTime timeOfCompletingOrder;
+    private Timestamp timeOfCompletingOrder;
 
     private List<Book> booksInOrder;
 }

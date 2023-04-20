@@ -174,7 +174,7 @@ public class OrderRepository implements CollectionRepository<Order, Long> {
         statement.setString(3, obj.getOrderStatus().toString());
         statement.setTimestamp(4, null);
         if (obj.getTimeOfCompletingOrder() != null) {
-            statement.setTimestamp(4, Timestamp.valueOf(obj.getTimeOfCompletingOrder()));
+            statement.setTimestamp(4, obj.getTimeOfCompletingOrder());
         }
         if (indexNumberOfStatement == 5) {
             statement.setLong(5, obj.getOrderId());

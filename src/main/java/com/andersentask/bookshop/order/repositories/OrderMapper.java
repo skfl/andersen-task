@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -19,10 +19,9 @@ class OrderMapper {
             Long orderId = resultSet.getLong("id");
             BigDecimal orderCost = resultSet.getBigDecimal("cost");
             OrderStatus orderStatus = OrderStatus.valueOf(resultSet.getString("status"));
-            LocalDateTime timeOfCompletingOrder = null;
+            Timestamp timeOfCompletingOrder = null;
             if (resultSet.getTimestamp("time_of_completing") != null) {
-                timeOfCompletingOrder = resultSet.getTimestamp("time_of_completing")
-                        .toLocalDateTime();
+                timeOfCompletingOrder = resultSet.getTimestamp("time_of_completing");
             }
             return Order.builder()
                     .orderId(orderId)
@@ -39,6 +38,5 @@ class OrderMapper {
 
     private OrderMapper() {
     }
-
 
 }
