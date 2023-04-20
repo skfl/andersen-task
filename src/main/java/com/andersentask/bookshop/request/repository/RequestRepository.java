@@ -10,33 +10,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Slf4j
 public class RequestRepository {
 
-    private static final String SQL_COUNT_BY_BOOK_ID = "select count(*) as count from requests where book_id =?";
-    private static final String SQL_INSERT = "insert into requests(user_id, book_id) values (?, ?)";
-    private static final String SQL_SELECT_BY_ID = "select * from requests where id = ?";
-    private static final String SQL_SELECT_ALL = "select * from requests";
-    private static final String SQL_DELETE_BY_ID = "delete from requests where id = ?";
     private final DataSource dataSource;
-    private BookService bookService;
-    private final Function<ResultSet, Request> requestMapper = resultSet -> {
-        try {
-            Long id = resultSet.getLong("id");
-            Long bookId = resultSet.getLong("book_id");
-            Book book = bookService.getBookById(bookId).orElseThrow();
-            return Request.builder()
-                    .id(id)
-                    .book(book)
-                    .build();
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-            throw new IllegalArgumentException(e);
-        }
-    };
-
+    private final BookService bookService;
 
     public RequestRepository(DataSource dataSource, BookService bookService) {
         this.dataSource = dataSource;
@@ -45,7 +24,7 @@ public class RequestRepository {
 
     public Request save(Request request) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, 0L);
             if (request.getUser() != null) {
                 statement.setLong(1, request.getUser().getId());
@@ -71,11 +50,11 @@ public class RequestRepository {
 
     public Optional<Request> findById(Long requestId) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID)) {
+             PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_SELECT_BY_ID)) {
             statement.setLong(1, requestId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return Optional.of(requestMapper.apply(resultSet));
+                    return Optional.of(buildRequestAndsetBook(resultSet));
                 }
                 return Optional.empty();
             }
@@ -88,10 +67,10 @@ public class RequestRepository {
     public List<Request> findAll() {
         List<Request> requests = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL)) {
+             PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_SELECT_ALL)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    requests.add(requestMapper.apply(resultSet));
+                    requests.add(buildRequestAndsetBook(resultSet));
                 }
             }
             return requests;
@@ -101,9 +80,22 @@ public class RequestRepository {
         }
     }
 
+    private Request buildRequestAndsetBook(ResultSet resultSet) {
+        try {
+            Request request = RequestMapper.mapper.apply(resultSet);
+            Book bookInRequest = bookService.getBookById(resultSet.getLong("book_id"))
+                    .orElseThrow();
+            request.setBook(bookInRequest);
+            return request;
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+    }
+
     public void delete(Book book) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_BY_ID)) {
+             PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_DELETE_BY_ID)) {
             statement.setLong(1, book.getId());
             statement.executeQuery();
         } catch (SQLException e) {
@@ -114,7 +106,7 @@ public class RequestRepository {
 
     public Long findNumberOfRequestsOnBook(Long bookId) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_COUNT_BY_BOOK_ID)) {
+             PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_COUNT_BY_BOOK_ID)) {
             statement.setLong(1, bookId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
