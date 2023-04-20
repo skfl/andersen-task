@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Deprecated
 public class UserService {
 
     private final UserRepository userRepository;

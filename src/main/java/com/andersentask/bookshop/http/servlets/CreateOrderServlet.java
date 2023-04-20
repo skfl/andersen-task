@@ -1,6 +1,6 @@
 package com.andersentask.bookshop.http.servlets;
 
-import com.andersentask.bookshop.console.Commands;
+import com.andersentask.bookshop.broker.Commands;
 
 import java.util.List;
 import java.util.Map;

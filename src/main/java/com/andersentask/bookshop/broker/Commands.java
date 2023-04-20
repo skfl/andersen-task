@@ -1,9 +1,10 @@
-package com.andersentask.bookshop.console;
+package com.andersentask.bookshop.broker;
 
+import com.andersentask.bookshop.AppContextConfig;
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookSort;
 import com.andersentask.bookshop.book.enums.BookStatus;
-import com.andersentask.bookshop.console.enums.ResultOfOperation;
+import com.andersentask.bookshop.broker.enums.ResultOfOperation;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;
@@ -15,7 +16,7 @@ import java.util.*;
 
 public class Commands {
 
-    private final ConsoleAppContextConfig appContextConfig = new ConsoleAppContextConfig();
+    private final AppContextConfig appContextConfig = new AppContextConfig();
 
     /**
      * Method set new status to book

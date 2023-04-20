@@ -1,7 +1,8 @@
-package com.andersentask.bookshop.console;
+package com.andersentask.bookshop;
 
 import com.andersentask.bookshop.book.repositories.BookRepository;
 import com.andersentask.bookshop.book.services.BookService;
+import com.andersentask.bookshop.broker.EntityFactory;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.repository.RequestRepository;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.sql.SQLException;
 
 @Slf4j
-public class ConsoleAppContextConfig {
+public class AppContextConfig {
 
     public static final String ORG_POSTGRESQL_DRIVER = "org.postgresql.Driver";
 
@@ -41,7 +42,7 @@ public class ConsoleAppContextConfig {
 
     private final HikariDataSource dataSource;
 
-    public ConsoleAppContextConfig() {
+    public AppContextConfig() {
         dataSource = new HikariDataSource(getHikariConfig());
         liquibase();
         this.bookService = new BookService(new BookRepository(dataSource));
@@ -64,10 +65,6 @@ public class ConsoleAppContextConfig {
 
     public EntityFactory getEntityFactory() {
         return entityFactory;
-    }
-
-    public void closeDataSource() {
-        dataSource.close();
     }
 
     private HikariConfig getHikariConfig() {

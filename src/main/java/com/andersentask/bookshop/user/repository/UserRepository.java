@@ -1,13 +1,13 @@
 package com.andersentask.bookshop.user.repository;
 
-import com.andersentask.bookshop.common.CollectionRepository;
 import com.andersentask.bookshop.user.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserRepository implements CollectionRepository<User, Long> {
+@Deprecated
+public class UserRepository {
 
     private final List<User> users;
 
@@ -18,21 +18,18 @@ public class UserRepository implements CollectionRepository<User, Long> {
         this.users = new ArrayList<>();
     }
 
-    @Override
     public User save(User user) {
         user.setId(id++);
         users.add(user);
         return user;
     }
 
-    @Override
     public Optional<User> findById(Long id) {
         return users.stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst();
     }
 
-    @Override
     public List<User> findAll() {
         return users;
     }

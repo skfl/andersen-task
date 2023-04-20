@@ -1,6 +1,7 @@
 package com.andersentask.bookshop.book.repositories;
 
 public class BookSQLCommands {
+
     static final String SQL_SELECT_ALL = "select id, name, status, price from books";
 
     static final String SQL_SELECT_SORTED_ID = "select id, name, status, price from books order by id";

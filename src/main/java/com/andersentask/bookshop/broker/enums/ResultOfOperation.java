@@ -1,4 +1,4 @@
-package com.andersentask.bookshop.console.enums;
+package com.andersentask.bookshop.broker.enums;
 
 public enum ResultOfOperation {
     ;

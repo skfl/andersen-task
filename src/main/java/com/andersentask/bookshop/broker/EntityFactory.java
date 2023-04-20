@@ -1,4 +1,4 @@
-package com.andersentask.bookshop.console;
+package com.andersentask.bookshop.broker;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.order.entities.Order;

@@ -6,6 +6,7 @@ public class OrderSQLCommands {
             " from orders " +
             "left join order_books " +
             "on orders.id = order_books.order_id";
+
     static String SQL_SELECT_BY_ID = SQL_SELECT_ALL +
             " where id = ?";
 
@@ -27,5 +28,4 @@ public class OrderSQLCommands {
 
     static String SQL_INSERT = "insert into orders(user_id,cost,status,time_of_completing) " +
             "values (?, ?, ?, ?)";
-
 }

@@ -22,6 +22,6 @@ class RequestMapper {
         }
     };
 
-    private RequestMapper(){
+    private RequestMapper() {
     }
 }

@@ -1,7 +1,7 @@
 package com.andersentask.bookshop.http.servlets;
 
 import com.andersentask.bookshop.book.enums.BookSort;
-import com.andersentask.bookshop.console.Commands;
+import com.andersentask.bookshop.broker.Commands;
 
 import java.util.Locale;
 import java.util.Map;
