@@ -13,8 +13,6 @@ class RequestMapper {
     static final Function<ResultSet, Request> mapper = resultSet -> {
         try {
             Long id = resultSet.getLong("id");
-            Long bookId = resultSet.getLong("book_id");
-//            Book book = bookService.getBookById(bookId).orElseThrow();
             return Request.builder()
                     .id(id)
                     .build();
@@ -23,4 +21,7 @@ class RequestMapper {
             throw new IllegalArgumentException(e);
         }
     };
+
+    private RequestMapper(){
+    }
 }

@@ -97,7 +97,7 @@ public class RequestRepository {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_DELETE_BY_ID)) {
             statement.setLong(1, book.getId());
-            statement.executeQuery();
+            statement.executeUpdate();
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
