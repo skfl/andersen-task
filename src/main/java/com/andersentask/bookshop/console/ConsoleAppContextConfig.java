@@ -1,7 +1,5 @@
 package com.andersentask.bookshop.console;
 
-import com.andersentask.bookshop.book.entities.Book;
-import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.book.repositories.BookRepository;
 import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
@@ -20,7 +18,6 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 
 @Slf4j
@@ -51,33 +48,6 @@ public class ConsoleAppContextConfig {
         this.requestService = new RequestService(new RequestRepository(dataSource, bookService));
         this.orderService = new OrderService(new OrderRepository(dataSource, bookService));
         this.entityFactory = new EntityFactory();
-    }
-
-    @Deprecated
-    //todo: delete before merge feature/add-database to main
-    private void setupBookService() {
-        if (bookService.getAllBooks().isEmpty()) {
-            this.bookService.save(Book.builder()
-                    .price(BigDecimal.valueOf(123.0))
-                    .name("Gone with the Wind")
-                    .status(BookStatus.AVAILABLE)
-                    .build());
-            this.bookService.save(Book.builder()
-                    .price(BigDecimal.valueOf(264.0))
-                    .name("Jane Eyre")
-                    .status(BookStatus.AVAILABLE)
-                    .build());
-            this.bookService.save(Book.builder()
-                    .price(BigDecimal.valueOf(1128.0))
-                    .name("Pride and Prejudice")
-                    .status(BookStatus.OUT_OF_STOCK)
-                    .build());
-            this.bookService.save(Book.builder()
-                    .price(BigDecimal.valueOf(923.0))
-                    .name("To Kill a Mockingbird")
-                    .status(BookStatus.OUT_OF_STOCK)
-                    .build());
-        }
     }
 
     public BookService getBookService() {
@@ -111,8 +81,11 @@ public class ConsoleAppContextConfig {
     }
 
     private void liquibase() {
-        try (Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(dataSource.getConnection()))) {
-            Liquibase liquibase = new liquibase.Liquibase("db/changelog/db.changelog-master.yaml", new ClassLoaderResourceAccessor(), database);
+        try (Database database = DatabaseFactory.getInstance()
+                .findCorrectDatabaseImplementation(new JdbcConnection(dataSource.getConnection()))) {
+            Liquibase liquibase = new liquibase
+                    .Liquibase
+                    ("db/changelog/db.changelog-master.yaml", new ClassLoaderResourceAccessor(), database);
             liquibase.update(new Contexts(), new LabelExpression());
         } catch (SQLException e) {
             log.error(e.getMessage());
@@ -121,6 +94,5 @@ public class ConsoleAppContextConfig {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
         }
-
     }
 }
