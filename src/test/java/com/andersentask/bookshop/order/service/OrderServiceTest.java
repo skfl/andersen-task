@@ -10,54 +10,55 @@ import com.andersentask.bookshop.user.entities.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Spy;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class OrderServiceTest {
-
-    @Mock
-    private OrderRepository orderRepository;
-    private OrderService orderService;
-
-    @BeforeEach
-    void setUp() {
-        orderRepository = new OrderRepository();
-        orderService = new OrderService(orderRepository);
-    }
 
     private final Order testOrder = Order.builder()
             .user(User.builder().firstName("qwerty").build())
             .orderCost(BigDecimal.valueOf(345.34))
             .orderStatus(OrderStatus.COMPLETED)
-            .timeOfCompletingOrder(LocalDateTime.now())
+            .timeOfCompletingOrder(Timestamp.valueOf(LocalDateTime.now()))
             .booksInOrder(List.of(Book.builder()
                     .name("qwerty")
                     .status(BookStatus.AVAILABLE)
                     .price(BigDecimal.valueOf(12.12))
                     .build()))
             .build();
-
     private final Order testOrder2 = Order.builder()
             .user(User.builder().firstName("qwerty2").build())
             .orderCost(BigDecimal.valueOf(3456.34))
             .orderStatus(OrderStatus.IN_PROCESS)
-            .timeOfCompletingOrder(LocalDateTime.now())
+            .timeOfCompletingOrder(Timestamp.valueOf(LocalDateTime.now()))
             .build();
-
     private final Order testOrder3 = Order.builder()
             .user(User.builder().firstName("qwerty3").build())
             .orderCost(BigDecimal.valueOf(3106.34))
             .orderStatus(OrderStatus.CANCELED)
-            .timeOfCompletingOrder(LocalDateTime.now())
+            .timeOfCompletingOrder(Timestamp.valueOf(LocalDateTime.now()))
             .build();
+    @Mock
+    private OrderRepository orderRepository;
+    private OrderService orderService;
+    @Spy
+    private DataSource dataSource;
+    @Spy
+    private BookService bookService;
+
+    @BeforeEach
+    void setUp() {
+        orderRepository = new OrderRepository(dataSource, bookService);
+        orderService = new OrderService(orderRepository);
+    }
 
     @Test
     void saveOrder() {
@@ -116,8 +117,8 @@ class OrderServiceTest {
         assertEquals(2L, orderService.getAllOrders().get(1).getOrderId());
 
         orderService.getSortedOrders(OrderSort.COMPLETION_DATE);
-        assertNotEquals(LocalDateTime.now(), orderService.getAllOrders().get(0).getTimeOfCompletingOrder());
-        assertNotEquals(LocalDateTime.now(), orderService.getAllOrders().get(1).getTimeOfCompletingOrder());
+        assertNotEquals(Timestamp.valueOf(LocalDateTime.now()), orderService.getAllOrders().get(0).getTimeOfCompletingOrder());
+        assertNotEquals(Timestamp.valueOf(LocalDateTime.now()), orderService.getAllOrders().get(1).getTimeOfCompletingOrder());
 
         orderService.getSortedOrders(OrderSort.COST);
         assertEquals(BigDecimal.valueOf(345.34), orderService.getAllOrders().get(0).getOrderCost());
@@ -134,7 +135,7 @@ class OrderServiceTest {
                 .user(User.builder().firstName("qwerty").build())
                 .orderCost(BigDecimal.valueOf(345.34))
                 .orderStatus(OrderStatus.COMPLETED)
-                .timeOfCompletingOrder(LocalDateTime.of(2023, 1, 1, 2, 2))
+                .timeOfCompletingOrder(Timestamp.valueOf(LocalDateTime.of(2023, 1, 1, 2, 2)))
                 .booksInOrder(List.of(Book.builder()
                         .name("qwerty")
                         .status(BookStatus.AVAILABLE)
@@ -145,7 +146,7 @@ class OrderServiceTest {
                 .user(User.builder().firstName("qwerty").build())
                 .orderCost(BigDecimal.valueOf(345.34))
                 .orderStatus(OrderStatus.COMPLETED)
-                .timeOfCompletingOrder(LocalDateTime.of(2023, 2, 2, 2, 2))
+                .timeOfCompletingOrder(Timestamp.valueOf(LocalDateTime.of(2023, 1, 1, 2, 2)))
                 .booksInOrder(List.of(Book.builder()
                         .name("qwerty")
                         .status(BookStatus.AVAILABLE)
@@ -157,9 +158,9 @@ class OrderServiceTest {
         orderService.saveOrder(completedOrder2);
 
 
-        assertEquals(BigDecimal.valueOf(345.34), orderService.getIncomeForPeriod(LocalDateTime.of(2023,1,1,1,1), LocalDateTime.of(2023, 2, 1, 1, 1)));
-        assertEquals(BigDecimal.valueOf(690.68), orderService.getIncomeForPeriod(LocalDateTime.of(2023,1,1,1,1), LocalDateTime.of(2023, 3, 1, 1, 1)));
-        assertEquals(BigDecimal.ZERO, orderService.getIncomeForPeriod(LocalDateTime.of(2024,1,1,1,1), LocalDateTime.of(2023, 3, 1, 1, 1)));
+        assertEquals(BigDecimal.valueOf(345.34), orderService.getIncomeForPeriod(LocalDateTime.of(2023, 1, 1, 1, 1), LocalDateTime.of(2023, 2, 1, 1, 1)));
+        assertEquals(BigDecimal.valueOf(690.68), orderService.getIncomeForPeriod(LocalDateTime.of(2023, 1, 1, 1, 1), LocalDateTime.of(2023, 3, 1, 1, 1)));
+        assertEquals(BigDecimal.ZERO, orderService.getIncomeForPeriod(LocalDateTime.of(2024, 1, 1, 1, 1), LocalDateTime.of(2023, 3, 1, 1, 1)));
 
     }
 

@@ -1,6 +1,6 @@
 package com.andersentask.bookshop.http;
 
-import com.andersentask.bookshop.console.Commands;
+import com.andersentask.bookshop.broker.Commands;
 import com.andersentask.bookshop.http.servlets.*;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Connector;
@@ -65,11 +65,6 @@ public class HttpInterface {
                 .addServletWithMapping(new ServletHolder
                                 (new ChangeOrderStatusServlet(commands)),
                         "/change-order-status");
-
-        servletHandler
-                .addServletWithMapping(new ServletHolder
-                                (new ExitServlet(commands)),
-                        "/exit");
     }
 
     private void configure() {

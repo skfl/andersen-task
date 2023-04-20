@@ -38,5 +38,4 @@ class OrderMapper {
 
     private OrderMapper() {
     }
-
 }

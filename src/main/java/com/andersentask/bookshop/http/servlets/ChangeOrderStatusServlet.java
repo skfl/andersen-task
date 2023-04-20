@@ -1,6 +1,6 @@
 package com.andersentask.bookshop.http.servlets;
 
-import com.andersentask.bookshop.console.Commands;
+import com.andersentask.bookshop.broker.Commands;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 
 import java.util.List;

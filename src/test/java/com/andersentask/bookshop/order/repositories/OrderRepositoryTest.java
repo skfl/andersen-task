@@ -14,18 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class OrderRepositoryTest {
 
-    private OrderRepository orderRepository;
-
-    @BeforeEach
-    void setUp() {
-        orderRepository = new OrderRepository();
-    }
-
     private final Order testOrder = Order.builder()
             .user(User.builder().firstName("qwerty").build())
             .orderCost(BigDecimal.valueOf(345.34))
             .orderStatus(OrderStatus.COMPLETED)
             .build();
+    private OrderRepository orderRepository;
+    @Mock
+    private DataSource dataSource;
+    @Mock
+    private BookService bookService;
+
+    @BeforeEach
+    void setUp() {
+        orderRepository = new OrderRepository(dataSource, bookService);
+    }
 
     @Test
     void save() {
