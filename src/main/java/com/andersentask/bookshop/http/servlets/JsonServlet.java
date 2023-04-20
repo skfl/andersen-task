@@ -7,13 +7,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 abstract class JsonServlet extends HttpServlet {
 
-    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm"))
+            .findAndRegisterModules();
 
     @Override
     protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

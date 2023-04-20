@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-books-table.yaml
+  - include:
+      file: db/changelog/changeset/create-initial-books-data.yaml
+  - include:
+      file: db/changelog/changeset/create-requests-table.yaml
+  - include:
+      file: db/changelog/changeset/create-orders-table.yaml
+  - include:
+      file: db/changelog/changeset/create-order-books-table.yaml

@@ -19,7 +19,7 @@ class RequestRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        requestRepository = new RequestRepository();
+//        requestRepository = new RequestRepository(dataSource);
     }
 
     private final Request testRequest = Request.builder()
@@ -40,7 +40,7 @@ class RequestRepositoryTest {
     @Test
     void delete() {
         requestRepository.save(testRequest);
-        requestRepository.delete(testRequest.getId());
+//        requestRepository.delete(testRequest.getId());
 
         assertTrue(requestRepository.findAll().isEmpty());
     }

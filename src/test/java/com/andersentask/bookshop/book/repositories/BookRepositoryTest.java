@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +17,12 @@ class BookRepositoryTest {
 
     @Mock
     private BookRepository bookRepository;
+    @Mock
+    private DataSource dataSource;
 
     @BeforeEach
     void setUp() {
-        bookRepository = new BookRepository();
+        bookRepository = new BookRepository(dataSource);
     }
 
     private final Book testBook = Book.builder()

@@ -2,66 +2,116 @@ package com.andersentask.bookshop.book.repositories;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookSort;
-import com.andersentask.bookshop.common.CollectionRepository;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class BookRepository implements CollectionRepository<Book, Long> {
+@Slf4j
+public class BookRepository {
 
-    private final List<Book> books;
+    private final DataSource dataSource;
 
-    private Long id;
-
-    public BookRepository() {
-        this.books = new ArrayList<>();
-        this.id = 1L;
+    public BookRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    @Override
-    public Book save(Book obj) {
-        obj.setId(id++);
-        books.add(obj);
-        return obj;
-    }
-
-    @Override
-    public Optional<Book> findById(Long id) {
-        return books.stream()
-                .filter(book -> book.getId().equals(id))
-                .findAny();
-    }
-
-    @Override
     public List<Book> findAll() {
-        return this.books;
+        List<Book> books = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(BookSQLCommands.SQL_SELECT_ALL)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    books.add(BookMapper.bookMapper.apply(resultSet));
+                }
+            }
+            return books;
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public Book save(Book book) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(BookSQLCommands.SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, book.getName());
+            statement.setString(2, book.getStatus().toString());
+            statement.setBigDecimal(3, book.getPrice());
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows != 1) {
+                throw new SQLException("Can't insert book");
+            }
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return findById(generatedKeys.getLong("id"))
+                            .orElseThrow(() -> new IllegalArgumentException("Something goes wrong while book insertion"));
+                } else {
+                    throw new SQLException("Can't get id");
+                }
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public Optional<Book> findById(Long bookId) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(BookSQLCommands.SQL_SELECT_BY_ID)) {
+            statement.setLong(1, bookId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(BookMapper.bookMapper.apply(resultSet));
+                }
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public List<Book> getSortedBooks(BookSort bookSort) {
+        List<Book> sortedBooks = new ArrayList<>();
+        String sqlSort = BookSQLCommands.SQL_SELECT_BY_ID;
         switch (bookSort) {
-            case NAME -> {
-                return books.stream()
-                        .sorted(Comparator.comparing(Book::getName))
-                        .toList();
-            }
-            case PRICE -> {
-                return books.stream()
-                        .sorted(Comparator.comparing(Book::getPrice))
-                        .toList();
-            }
-            case STATUS -> {
-                return books.stream()
-                        .sorted(Comparator.comparing(x -> x.getStatus().ordinal()))
-                        .toList();
-            }
-            case ID -> {
-                return books.stream()
-                        .sorted(Comparator.comparing(Book::getId))
-                        .toList();
-            }
+            case ID -> sqlSort = BookSQLCommands.SQL_SELECT_SORTED_ID;
+            case NAME -> sqlSort = BookSQLCommands.SQL_SELECT_SORTED_NAME;
+            case PRICE -> sqlSort = BookSQLCommands.SQL_SELECT_SORTED_PRICE;
+            case STATUS -> sqlSort = BookSQLCommands.SQL_SELECT_SORTED_STATUS;
         }
-        return books;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sqlSort)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    sortedBooks.add(BookMapper.bookMapper.apply(resultSet));
+                }
+            }
+            return sortedBooks;
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public void update(Book book) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(BookSQLCommands.SQL_UPDATE)) {
+            statement.setString(1, book.getName());
+            statement.setString(2, book.getStatus().toString());
+            statement.setBigDecimal(3, book.getPrice());
+            statement.setLong(4, book.getId());
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows != 1) {
+                throw new SQLException("Can't update book");
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
 }
