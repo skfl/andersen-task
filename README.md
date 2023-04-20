@@ -48,7 +48,7 @@ Implement bookstore console application according next requirements and function
 * For schema migration look at these tools: Liquibase, Flyway. But you can use even plain SQL files.
 
 
-### Technical stack: Jetty, JUnit, Mockito, Jackson, Logback, Lombok, Maven
+### Technical stack: Jetty, Liquibase, PostgreSQL, HikariCP, JUnit, Mockito, Jackson, Logback, Lombok, Maven
 
 ### This project was created during Andersen java course
 
