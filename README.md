@@ -47,13 +47,19 @@ Implement bookstore console application according next requirements and function
 * To manage connections to database try to use a connection pool (e.g., Hikari)
 * For schema migration look at these tools: Liquibase, Flyway. But you can use even plain SQL files.
 
+## Task 6
+
+* To access database use JPA and Hibernate.
 
 ### Technical stack: Jetty, Liquibase, PostgreSQL, HikariCP, JUnit, Mockito, Jackson, Logback, Lombok, Maven
 
 ### This project was created during Andersen java course
 
 ## Tags
-Git tags used to mark different stages in projects' lifecycle. You can use them to quickly navigate to and inspect the state.
+
+Git tags used to mark different stages in projects' lifecycle. You can use them to quickly navigate to and inspect the
+state.
+
 * v0.1.0 - console application (Task 1 - 3)
 
 ## Contributors
