@@ -6,7 +6,6 @@ import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.broker.EntityFactory;
 import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.services.RequestService;
-import com.zaxxer.hikari.HikariConfig;
 import jakarta.persistence.EntityManager;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
