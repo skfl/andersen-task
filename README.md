@@ -51,7 +51,7 @@ Implement bookstore console application according next requirements and function
 
 * To access database use JPA and Hibernate.
 
-### Technical stack: Jetty, Liquibase, PostgreSQL, HikariCP, JUnit, Mockito, Jackson, Logback, Lombok, Maven
+### Technical stack: Jetty, Hibernate, Liquibase, PostgreSQL, HikariCP, JUnit, Mockito, Jackson, Logback, Lombok, Maven
 
 ### This project was created during Andersen java course
 
