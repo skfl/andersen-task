@@ -13,4 +13,7 @@ public class BookJPQLQueries {
     static final String SELECT_SORTED_BY_STATUS = "select b from Book b order by b.status";
 
     static final String SELECT_SORTED_BY_NAME = "select b from Book b order by b.name";
+
+    private BookJPQLQueries(){
+    }
 }
