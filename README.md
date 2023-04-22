@@ -61,6 +61,7 @@ Git tags used to mark different stages in projects' lifecycle. You can use them 
 state.
 
 * v0.1.0 - console application (Task 1 - 3)
+* v0.2.0 - http application with db (Task 4 - 5)
 
 ## Contributors
 
