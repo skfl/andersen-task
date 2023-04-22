@@ -7,9 +7,6 @@ databaseChangeLog:
             tableName: books
             columns:
               - column:
-                  name: id
-                  value: 1
-              - column:
                   name: name
                   value: Gone with the Wind
               - column:
@@ -21,9 +18,6 @@ databaseChangeLog:
         - insert:
             tableName: books
             columns:
-              - column:
-                  name: id
-                  value: 2
               - column:
                   name: name
                   value: Jane Eyre
@@ -37,9 +31,6 @@ databaseChangeLog:
             tableName: books
             columns:
               - column:
-                  name: id
-                  value: 3
-              - column:
                   name: name
                   value: Pride and Prejudice
               - column:
@@ -51,9 +42,6 @@ databaseChangeLog:
         - insert:
             tableName: books
             columns:
-              - column:
-                  name: id
-                  value: 4
               - column:
                   name: name
                   value: To Kill a Mockingbird
