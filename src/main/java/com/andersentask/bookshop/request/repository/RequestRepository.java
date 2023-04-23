@@ -3,7 +3,6 @@ package com.andersentask.bookshop.request.repository;
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.request.entities.Request;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +20,7 @@ public class RequestRepository {
     }
 
     public Request save(Request request) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         entityManager.persist(request);
-        transaction.commit();
         return request;
     }
 
@@ -40,12 +36,9 @@ public class RequestRepository {
     }
 
     public void delete(Book book) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         Query query = entityManager.createQuery(RequestJPQLQueries.SQL_DELETE_BY_ID);
         query.setParameter("book",book);
         query.executeUpdate();
-        transaction.commit();
     }
 
     public Long findNumberOfRequestsOnBook(Book book) {

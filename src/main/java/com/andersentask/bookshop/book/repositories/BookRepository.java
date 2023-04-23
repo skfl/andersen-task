@@ -24,6 +24,7 @@ public class BookRepository {
         return query.getResultList();
     }
 
+    //toDo: maybe delete this method? We have no such method in commands
     public Book save(Book book) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -51,13 +52,10 @@ public class BookRepository {
     }
 
     public void update(Book book) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         Book bookToUpdate = entityManager.getReference(Book.class, book.getId());
         bookToUpdate.setStatus(book.getStatus());
         bookToUpdate.setName(book.getName());
         bookToUpdate.setPrice(book.getPrice());
         entityManager.merge(bookToUpdate);
-        transaction.commit();
     }
 }

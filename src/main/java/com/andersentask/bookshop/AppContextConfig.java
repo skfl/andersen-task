@@ -34,16 +34,14 @@ public class AppContextConfig {
     private final BookService bookService;
 
     private final OrderService orderService;
-
-    private  RequestService requestService;
-
     private final EntityFactory entityFactory;
-
     private final SessionFactory sessionFactory;
+    private final EntityManager entityManager;
+    private RequestService requestService;
 
     public AppContextConfig() {
         sessionFactory = getHibernateSessionFactory();
-        EntityManager entityManager =  sessionFactory.createEntityManager();
+        this.entityManager = sessionFactory.createEntityManager();
         liquibase();
         this.bookService = new BookService(new BookRepository(entityManager));
         this.requestService = new RequestService(new RequestRepository(entityManager));
@@ -66,6 +64,8 @@ public class AppContextConfig {
     public EntityFactory getEntityFactory() {
         return entityFactory;
     }
+
+    public EntityManager getEntityManager() {return entityManager; }
 
     private void liquibase() {
         sessionFactory.getCurrentSession().beginTransaction();

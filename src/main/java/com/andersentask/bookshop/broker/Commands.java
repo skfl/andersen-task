@@ -9,6 +9,7 @@ import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.request.entities.Request;
+import jakarta.persistence.EntityTransaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,12 +43,17 @@ public class Commands {
         if (bookhasSameStatus(book, bookStatus)) {
             return ResultOfOperation.SetBookStatus.BOOK_ALREADY_HAS_THIS_STATUS;
         }
+        EntityTransaction transaction = appContextConfig.getEntityManager().getTransaction();
+        transaction.begin();
+
         if (bookWillBecomeAvailable(book)) {
             appContextConfig.getRequestService()
                     .deleteRequest(book);
         }
         appContextConfig.getBookService()
                 .setStatusToBook(book.getId(), bookStatus);
+
+        transaction.commit();
         return ResultOfOperation.SetBookStatus.BOOK_STATUS_UPDATED;
     }
 
@@ -113,17 +119,25 @@ public class Commands {
         }
         Order order = appContextConfig.getEntityFactory()
                 .buildOrder(booksToOrder);
-        appContextConfig.getOrderService().saveOrder(order);
-        return createRequestIfOrderHasOutOfStockBooks(booksToOrder);
+
+        return createOrderAndRequestsIfOrderHasOutOfStockBooks(order, booksToOrder);
     }
 
-    private ResultOfOperation.CreateOrder createRequestIfOrderHasOutOfStockBooks(List<Book> booksToOrder) {
+    private ResultOfOperation.CreateOrder createOrderAndRequestsIfOrderHasOutOfStockBooks(Order order, List<Book> booksToOrder) {
+        EntityTransaction transaction = appContextConfig.getEntityManager().getTransaction();
+        transaction.begin();
+
+        appContextConfig.getOrderService().saveOrder(order);
         List<Book> booksToRequest = appContextConfig.getBookService()
                 .getBooksOutOfStock(booksToOrder);
         if (!booksToRequest.isEmpty()) {
             booksToRequest.forEach(this::createRequestFromBook);
+
+            transaction.commit();
             return ResultOfOperation.CreateOrder.ORDER_AND_REQUESTS_CREATED;
         }
+
+        transaction.commit();
         return ResultOfOperation.CreateOrder.ORDER_CREATED;
     }
 
@@ -153,8 +167,13 @@ public class Commands {
             return ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.ORDER_ALREADY_HAS_THIS_STATUS;
         }
         if (orderStatusNotToBeCompletedOrAllBooksAvailable(order, orderStatus)) {
+            EntityTransaction transaction = appContextConfig.getEntityManager().getTransaction();
+            transaction.begin();
+
             order = appContextConfig.getOrderService()
                     .changeStatusOfOrder(order.getOrderId(), orderStatus);
+
+            transaction.commit();
         }
         return orderStatusUpdateWasSuccessful(order, orderStatus);
     }
@@ -253,11 +272,4 @@ public class Commands {
                 .getAllRequests();
     }
 
-    /**
-     * write to file updated information on books, orders and requests,
-     * if the user exits from the program by typing "exit"
-     */
-    public void exit() {
-        System.exit(0);
-    }
 }

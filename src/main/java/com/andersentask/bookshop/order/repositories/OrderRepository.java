@@ -4,7 +4,6 @@ import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,16 +49,11 @@ public class OrderRepository {
     }
 
     public Order save(Order order) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         entityManager.persist(order);
-        transaction.commit();
         return order;
     }
 
     public void update(Order order) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         Order orderToUpdate = entityManager.getReference(Order.class, order.getOrderId());
         orderToUpdate.setOrderCost(order.getOrderCost());
         orderToUpdate.setTimeOfCompletingOrder(order.getTimeOfCompletingOrder());
@@ -67,7 +61,6 @@ public class OrderRepository {
         orderToUpdate.setUserId(order.getUserId());
         orderToUpdate.setBooks(order.getBooks());
         entityManager.merge(orderToUpdate);
-        transaction.commit();
     }
 
     public BigDecimal findIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
