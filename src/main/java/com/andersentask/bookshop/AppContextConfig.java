@@ -4,6 +4,8 @@ import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.repositories.BookRepository;
 import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.broker.EntityFactory;
+import com.andersentask.bookshop.order.entities.Order;
+import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.services.RequestService;
 import jakarta.persistence.EntityManager;
@@ -29,7 +31,7 @@ public class AppContextConfig {
 
     private final BookService bookService;
 
-    private OrderService orderService;
+    private final OrderService orderService;
 
     private  RequestService requestService;
 
@@ -43,7 +45,7 @@ public class AppContextConfig {
         liquibase();
         this.bookService = new BookService(new BookRepository(entityManager));
 //        this.requestService = new RequestService(new RequestRepository(dataSource, bookService));
-//        this.orderService = new OrderService(new OrderRepository(dataSource, bookService));
+        this.orderService = new OrderService(new OrderRepository(entityManager));
         this.entityFactory = new EntityFactory();
     }
 
@@ -89,16 +91,17 @@ public class AppContextConfig {
         properties.put(AvailableSettings.DRIVER, "org.postgresql.Driver");
         properties.put(AvailableSettings.URL, "jdbc:postgresql://localhost:5432/bookstore");
         properties.put(AvailableSettings.USER, "postgres");
-        properties.put(AvailableSettings.PASS, "31150616");
+        properties.put(AvailableSettings.PASS, "123321");
         properties.put(AvailableSettings.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
         properties.put(AvailableSettings.SHOW_SQL, "true");
         properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-        properties.put(AvailableSettings.HBM2DDL_AUTO, "none");
+//        properties.put(AvailableSettings.HBM2DDL_AUTO, "none");
         properties.put(AvailableSettings.CONNECTION_PROVIDER, "com.zaxxer.hikari.hibernate.HikariConnectionProvider");
         properties.put(AvailableSettings.POOL_SIZE, 20);
 
         configuration.setProperties(properties);
         configuration.addAnnotatedClass(Book.class);
+        configuration.addAnnotatedClass(Order.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties()).build();

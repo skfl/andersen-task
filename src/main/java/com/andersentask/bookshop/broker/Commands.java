@@ -165,7 +165,7 @@ public class Commands {
 
     private boolean orderStatusNotToBeCompletedOrAllBooksAvailable(Order order, OrderStatus orderStatus) {
         boolean allBooksAvailable = appContextConfig.getBookService()
-                .allBooksAreAvailable(order.getBooksInOrder());
+                .allBooksAreAvailable(order.getBooks());
         return orderStatus != OrderStatus.COMPLETED || allBooksAvailable;
     }
 
