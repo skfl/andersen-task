@@ -13,6 +13,7 @@ databaseChangeLog:
                     foreignKeyName: fk_orders_books_order
                     referencedTableName: orders
                     referencedColumnNames: id
+                    nullable: false
               - column:
                   name: book_id
                   type: bigint
@@ -20,3 +21,4 @@ databaseChangeLog:
                     foreignKeyName: fk_orders_books_book
                     referencedTableName: books
                     referencedColumnNames: id
+                    nullable: false

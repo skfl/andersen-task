@@ -199,7 +199,7 @@ public class Commands {
         return appContextConfig.getBookService()
                 .getBookById(id)
                 .map(book -> appContextConfig.getRequestService()
-                        .getNumberOfRequestsOnBook(book.getId()));
+                        .getNumberOfRequestsOnBook(book));
     }
 
     /**

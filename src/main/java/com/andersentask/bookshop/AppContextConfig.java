@@ -7,6 +7,8 @@ import com.andersentask.bookshop.broker.EntityFactory;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.repositories.OrderRepository;
 import com.andersentask.bookshop.order.service.OrderService;
+import com.andersentask.bookshop.request.entities.Request;
+import com.andersentask.bookshop.request.repository.RequestRepository;
 import com.andersentask.bookshop.request.services.RequestService;
 import jakarta.persistence.EntityManager;
 import liquibase.Contexts;
@@ -44,7 +46,7 @@ public class AppContextConfig {
         EntityManager entityManager =  sessionFactory.createEntityManager();
         liquibase();
         this.bookService = new BookService(new BookRepository(entityManager));
-//        this.requestService = new RequestService(new RequestRepository(dataSource, bookService));
+        this.requestService = new RequestService(new RequestRepository(entityManager));
         this.orderService = new OrderService(new OrderRepository(entityManager));
         this.entityFactory = new EntityFactory();
     }
@@ -95,13 +97,13 @@ public class AppContextConfig {
         properties.put(AvailableSettings.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
         properties.put(AvailableSettings.SHOW_SQL, "true");
         properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-//        properties.put(AvailableSettings.HBM2DDL_AUTO, "none");
         properties.put(AvailableSettings.CONNECTION_PROVIDER, "com.zaxxer.hikari.hibernate.HikariConnectionProvider");
         properties.put(AvailableSettings.POOL_SIZE, 20);
 
         configuration.setProperties(properties);
         configuration.addAnnotatedClass(Book.class);
         configuration.addAnnotatedClass(Order.class);
+        configuration.addAnnotatedClass(Request.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties()).build();
