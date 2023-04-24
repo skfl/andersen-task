@@ -2,18 +2,7 @@ package com.andersentask.bookshop.order.entities;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.order.enums.OrderStatus;;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,7 +38,7 @@ public class Order {
     @Column(name = "time_of_completing")
     private Timestamp timeOfCompletingOrder;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "orders_books",
             joinColumns = @JoinColumn(name = "order_id"),
