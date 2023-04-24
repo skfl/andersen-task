@@ -2,6 +2,7 @@ package com.andersentask.bookshop.order.service;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookStatus;
+import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;

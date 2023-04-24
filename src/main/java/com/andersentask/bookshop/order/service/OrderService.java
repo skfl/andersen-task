@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +53,6 @@ public class OrderService {
         return orderToUpdate.getOrderStatus() == OrderStatus.IN_PROCESS
                 && orderStatus == OrderStatus.CANCELED;
     }
-
 
     public List<Order> getSortedOrders(OrderSort orderSort) {
         return orderRepository.findSortedOrders(orderSort);

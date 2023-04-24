@@ -2,11 +2,11 @@ package com.andersentask.bookshop.book.repositories;
 
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookStatus;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -15,21 +15,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookRepositoryTest {
 
+
     @Mock
+    private EntityManager entityManager;
+
     private BookRepository bookRepository;
-    @Mock
-    private DataSource dataSource;
-
-    @BeforeEach
-    void setUp() {
-        bookRepository = new BookRepository(dataSource);
-    }
-
     private final Book testBook = Book.builder()
             .name("qwerty")
             .status(BookStatus.AVAILABLE)
             .price(BigDecimal.valueOf(12.12))
             .build();
+
+    @BeforeEach
+    void setUp() {
+        bookRepository = new BookRepository(entityManager);
+    }
 
     @Test
     void save() {

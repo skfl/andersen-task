@@ -20,7 +20,7 @@ public class EntityFactory {
         return Order.builder()
                 .orderCost(getCostOfListOfBooks(books))
                 .orderStatus(OrderStatus.IN_PROCESS)
-                .booksInOrder(books)
+                .books(books)
                 .build();
     }
 

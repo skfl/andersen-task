@@ -1,125 +1,49 @@
 package com.andersentask.bookshop.request.repository;
 
 import com.andersentask.bookshop.book.entities.Book;
-import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.request.entities.Request;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 public class RequestRepository {
 
-    private final DataSource dataSource;
-    private final BookService bookService;
+    private final EntityManager entityManager;
 
-    public RequestRepository(DataSource dataSource, BookService bookService) {
-        this.dataSource = dataSource;
-        this.bookService = bookService;
+    public RequestRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     public Request save(Request request) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
-            statement.setLong(1, 0L);
-            if (request.getUser() != null) {
-                statement.setLong(1, request.getUser().getId());
-            }
-            statement.setLong(2, request.getBook().getId());
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 1) {
-                throw new SQLException("Can't insert request");
-            }
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return findById(generatedKeys.getLong("id"))
-                            .orElseThrow(() -> new IllegalArgumentException("Something goes wrong while request insertion"));
-                } else {
-                    throw new SQLException("Can't get it");
-                }
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-            throw new IllegalArgumentException(e);
-        }
+        entityManager.persist(request);
+        return request;
     }
 
     public Optional<Request> findById(Long requestId) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_SELECT_BY_ID)) {
-            statement.setLong(1, requestId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return Optional.of(buildRequestAndsetBook(resultSet));
-                }
-                return Optional.empty();
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-            throw new IllegalArgumentException(e);
-        }
+        TypedQuery<Request> query = entityManager.createQuery(RequestJPQLQueries.SQL_SELECT_BY_ID,Request.class);
+        query.setParameter("id",requestId);
+        return query.getResultStream().findFirst();
     }
 
     public List<Request> findAll() {
-        List<Request> requests = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_SELECT_ALL)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    requests.add(buildRequestAndsetBook(resultSet));
-                }
-            }
-            return requests;
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    private Request buildRequestAndsetBook(ResultSet resultSet) {
-        try {
-            Request request = RequestMapper.mapper.apply(resultSet);
-            Book bookInRequest = bookService.getBookById(resultSet.getLong("book_id"))
-                    .orElseThrow();
-            request.setBook(bookInRequest);
-            return request;
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
-
+        TypedQuery<Request> query = entityManager.createQuery(RequestJPQLQueries.SQL_SELECT_ALL,Request.class);
+        return query.getResultList();
     }
 
     public void delete(Book book) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_DELETE_BY_ID)) {
-            statement.setLong(1, book.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-            throw new IllegalArgumentException(e);
-        }
+        Query query = entityManager.createQuery(RequestJPQLQueries.SQL_DELETE_BY_ID);
+        query.setParameter("book",book);
+        query.executeUpdate();
     }
 
-    public Long findNumberOfRequestsOnBook(Long bookId) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(RequestSQLCommands.SQL_COUNT_BY_BOOK_ID)) {
-            statement.setLong(1, bookId);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getLong("count");
-            }
-            return 0L;
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-            throw new IllegalArgumentException(e);
-        }
+    public Long findNumberOfRequestsOnBook(Book book) {
+        TypedQuery<Long> query = entityManager.createQuery(RequestJPQLQueries.SQL_COUNT_BY_BOOK_ID,Long.class);
+        query.setParameter("book", book);
+        return query.getSingleResult();
     }
 }

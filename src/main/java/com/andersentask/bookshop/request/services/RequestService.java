@@ -30,7 +30,7 @@ public class RequestService {
                 .toList();
     }
 
-    public Long getNumberOfRequestsOnBook(Long id) {
-        return requestRepository.findNumberOfRequestsOnBook(id);
+    public Long getNumberOfRequestsOnBook(Book book) {
+        return requestRepository.findNumberOfRequestsOnBook(book);
     }
 }
