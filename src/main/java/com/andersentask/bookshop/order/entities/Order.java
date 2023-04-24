@@ -38,7 +38,7 @@ public class Order {
     @Column(name = "time_of_completing")
     private Timestamp timeOfCompletingOrder;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "orders_books",
             joinColumns = @JoinColumn(name = "order_id"),
