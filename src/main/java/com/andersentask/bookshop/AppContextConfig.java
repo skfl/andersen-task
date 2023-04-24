@@ -34,10 +34,14 @@ public class AppContextConfig {
     private final BookService bookService;
 
     private final OrderService orderService;
+
     private final EntityFactory entityFactory;
+
     private final SessionFactory sessionFactory;
+
     private final EntityManager entityManager;
-    private RequestService requestService;
+
+    private final RequestService requestService;
 
     public AppContextConfig() {
         sessionFactory = getHibernateSessionFactory();
@@ -65,7 +69,9 @@ public class AppContextConfig {
         return entityFactory;
     }
 
-    public EntityManager getEntityManager() {return entityManager; }
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 
     private void liquibase() {
         sessionFactory.getCurrentSession().beginTransaction();
@@ -88,14 +94,13 @@ public class AppContextConfig {
     private SessionFactory getHibernateSessionFactory() {
 
         Configuration configuration = new Configuration();
-
         Properties properties = new Properties();
         properties.put(AvailableSettings.DRIVER, "org.postgresql.Driver");
         properties.put(AvailableSettings.URL, "jdbc:postgresql://localhost:5432/bookstore");
         properties.put(AvailableSettings.USER, "postgres");
-        properties.put(AvailableSettings.PASS, "123321");
+        properties.put(AvailableSettings.PASS, "31150616");
         properties.put(AvailableSettings.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
-        properties.put(AvailableSettings.SHOW_SQL, "true");
+        properties.put(AvailableSettings.HBM2DDL_AUTO, "none");
         properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, "thread");
         properties.put(AvailableSettings.CONNECTION_PROVIDER, "com.zaxxer.hikari.hibernate.HikariConnectionProvider");
         properties.put(AvailableSettings.POOL_SIZE, 20);

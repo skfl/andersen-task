@@ -40,7 +40,7 @@ public class Commands {
     }
 
     private ResultOfOperation.SetBookStatus setBookStatus(Book book, BookStatus bookStatus) {
-        if (bookhasSameStatus(book, bookStatus)) {
+        if (bookHasSameStatus(book, bookStatus)) {
             return ResultOfOperation.SetBookStatus.BOOK_ALREADY_HAS_THIS_STATUS;
         }
         EntityTransaction transaction = appContextConfig.getEntityManager().getTransaction();
@@ -57,7 +57,7 @@ public class Commands {
         return ResultOfOperation.SetBookStatus.BOOK_STATUS_UPDATED;
     }
 
-    private boolean bookhasSameStatus(Book book, BookStatus bookStatus) {
+    private boolean bookHasSameStatus(Book book, BookStatus bookStatus) {
         return book.getStatus() == bookStatus;
     }
 
