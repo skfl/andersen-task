@@ -5,12 +5,14 @@ import com.andersentask.bookshop.book.enums.BookSort;
 import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.book.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Service
 public class BookService {
 
     private final BookRepository bookRepository;
@@ -31,11 +33,12 @@ public class BookService {
         Book bookToUpdate = bookRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Can't find book with such id while updating"));
         bookToUpdate.setStatus(bookStatus);
-        bookRepository.update(bookToUpdate);
+        bookRepository.save(bookToUpdate);
     }
 
     public List<Book> getSortedBooks(BookSort bookSort) {
-        return bookRepository.getSortedBooks(bookSort);
+//        return bookRepository.getSortedBooks(bookSort);
+        return null;
     }
 
     public List<Book> getBooksByIds(List<Long> bookIds) {

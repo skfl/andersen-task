@@ -1,24 +1,38 @@
 package com.andersentask.bookshop.broker;
 
-import com.andersentask.bookshop.AppContextConfig;
 import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookSort;
 import com.andersentask.bookshop.book.enums.BookStatus;
+import com.andersentask.bookshop.book.services.BookService;
 import com.andersentask.bookshop.broker.enums.ResultOfOperation;
 import com.andersentask.bookshop.order.entities.Order;
 import com.andersentask.bookshop.order.enums.OrderSort;
 import com.andersentask.bookshop.order.enums.OrderStatus;
+import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.entities.Request;
+import com.andersentask.bookshop.request.services.RequestService;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Service
+@RequiredArgsConstructor
 public class Commands {
 
-    private final AppContextConfig appContextConfig = new AppContextConfig();
+    private final RequestService requestService;
 
+    private final OrderService orderService;
+
+    private final BookService bookService;
+
+    private final EntityFactory entityFactory;
+
+    private final EntityManager entityManager;
     /**
      * Method set new status to book
      * Returns result of operation:
@@ -33,7 +47,7 @@ public class Commands {
      * @return the status of method completion as ENUM
      */
     public ResultOfOperation.SetBookStatus setStatusToBookAndDeleteCorrespondingRequests(Long bookId, BookStatus bookStatus) {
-        return appContextConfig.getBookService()
+        return bookService
                 .getBookById(bookId)
                 .map(book -> setBookStatus(book, bookStatus))
                 .orElse(ResultOfOperation.SetBookStatus.WRONG_BOOK_ID);
@@ -43,14 +57,14 @@ public class Commands {
         if (bookHasSameStatus(book, bookStatus)) {
             return ResultOfOperation.SetBookStatus.BOOK_ALREADY_HAS_THIS_STATUS;
         }
-        EntityTransaction transaction = appContextConfig.getEntityManager().getTransaction();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
         if (bookWillBecomeAvailable(book)) {
-            appContextConfig.getRequestService()
+            requestService
                     .deleteRequest(book);
         }
-        appContextConfig.getBookService()
+        bookService
                 .setStatusToBook(book.getId(), bookStatus);
 
         transaction.commit();
@@ -75,16 +89,16 @@ public class Commands {
      * @return the status of method completion as ENUM
      */
     public ResultOfOperation.CreateRequest createRequest(Long bookId) {
-        return appContextConfig.getBookService()
+        return bookService
                 .getBookById(bookId)
                 .map(this::createRequestFromBook)
                 .orElse(ResultOfOperation.CreateRequest.WRONG_BOOK_ID);
     }
 
     private ResultOfOperation.CreateRequest createRequestFromBook(Book book) {
-        Request request = appContextConfig.getEntityFactory()
+        Request request = entityFactory
                 .buildRequest(book);
-        appContextConfig.getRequestService()
+        requestService
                 .saveRequest(request);
         return ResultOfOperation.CreateRequest.REQUEST_CREATED;
     }
@@ -97,7 +111,7 @@ public class Commands {
      * @return books, optionally sorted by entered param
      */
     public List<Book> getSortedBooks(BookSort bookSort) {
-        return appContextConfig.getBookService().getSortedBooks(bookSort);
+        return bookService.getSortedBooks(bookSort);
     }
 
     /**
@@ -112,23 +126,23 @@ public class Commands {
      * @return the status of method completion as ENUM
      */
     public ResultOfOperation.CreateOrder createOrder(List<Long> ids) {
-        List<Book> booksToOrder = appContextConfig.getBookService()
+        List<Book> booksToOrder = bookService
                 .getBooksByIds(ids);
         if (booksToOrder.size() != ids.size()) {
             return ResultOfOperation.CreateOrder.WRONG_BOOK_ID;
         }
-        Order order = appContextConfig.getEntityFactory()
+        Order order = entityFactory
                 .buildOrder(booksToOrder);
 
         return createOrderAndRequestsIfOrderHasOutOfStockBooks(order, booksToOrder);
     }
 
     private ResultOfOperation.CreateOrder createOrderAndRequestsIfOrderHasOutOfStockBooks(Order order, List<Book> booksToOrder) {
-        EntityTransaction transaction = appContextConfig.getEntityManager().getTransaction();
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
-        appContextConfig.getOrderService().saveOrder(order);
-        List<Book> booksToRequest = appContextConfig.getBookService()
+        orderService.saveOrder(order);
+        List<Book> booksToRequest = bookService
                 .getBooksOutOfStock(booksToOrder);
         if (!booksToRequest.isEmpty()) {
             booksToRequest.forEach(this::createRequestFromBook);
@@ -156,7 +170,7 @@ public class Commands {
      * @return the status of method completion as ENUM
      */
     public ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck changeStatusOfOrderIncludingBooksCheck(Long id, OrderStatus orderStatus) {
-        return appContextConfig.getOrderService()
+        return orderService
                 .getOrderById(id)
                 .map(order -> changeStatusOfOrder(order, orderStatus))
                 .orElse(ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.WRONG_ORDER_ID);
@@ -167,10 +181,10 @@ public class Commands {
             return ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.ORDER_ALREADY_HAS_THIS_STATUS;
         }
         if (orderStatusNotToBeCompletedOrAllBooksAvailable(order, orderStatus)) {
-            EntityTransaction transaction = appContextConfig.getEntityManager().getTransaction();
+            EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
 
-            order = appContextConfig.getOrderService()
+            order = orderService
                     .changeStatusOfOrder(order.getOrderId(), orderStatus);
 
             transaction.commit();
@@ -183,7 +197,7 @@ public class Commands {
     }
 
     private boolean orderStatusNotToBeCompletedOrAllBooksAvailable(Order order, OrderStatus orderStatus) {
-        boolean allBooksAvailable = appContextConfig.getBookService()
+        boolean allBooksAvailable = bookService
                 .allBooksAreAvailable(order.getBooks());
         return orderStatus != OrderStatus.COMPLETED || allBooksAvailable;
     }
@@ -202,7 +216,7 @@ public class Commands {
      * @return orders, optionally sorted by entered param
      */
     public List<Order> getOrders(OrderSort orderSort) {
-        return appContextConfig.getOrderService()
+        return orderService
                 .getSortedOrders(orderSort);
     }
 
@@ -214,11 +228,11 @@ public class Commands {
      * @param id id of the book and should be got from user
      * @return number of the request on the precise book
      */
+    //todo: return Long instead of Optional<Long>
     public Optional<Long> getNumberOfRequestsOnBook(Long id) {
-        return appContextConfig.getBookService()
+        return bookService
                 .getBookById(id)
-                .map(book -> appContextConfig.getRequestService()
-                        .getNumberOfRequestsOnBook(book));
+                .map(requestService::getNumberOfRequestsOnBook);
     }
 
     /**
@@ -228,7 +242,7 @@ public class Commands {
      */
     public Map<Long, Long> getBooksAndNumberOfRequests() {
         Map<Long, Long> map = new HashMap<>();
-        appContextConfig.getRequestService()
+        requestService
                 .getAllBooksFromAllRequests()
                 .stream()
                 .distinct()
@@ -247,7 +261,7 @@ public class Commands {
      * @return income for the chosen period
      */
     public BigDecimal getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
-        return appContextConfig.getOrderService()
+        return orderService
                 .getIncomeForPeriod(startOfPeriod, endOfPeriod);
     }
 
@@ -258,7 +272,7 @@ public class Commands {
      * @return books from the chosen order
      */
     public List<Book> getAllBooksFromOrder(Long id) {
-        return appContextConfig.getOrderService()
+        return orderService
                 .getAllBooksFromOrder(id);
     }
 
@@ -268,7 +282,7 @@ public class Commands {
      * @return requests
      */
     public List<Request> getAllRequests() {
-        return appContextConfig.getRequestService()
+        return requestService
                 .getAllRequests();
     }
 
