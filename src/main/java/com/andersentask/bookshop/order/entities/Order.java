@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -23,20 +25,20 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long orderId;
+    private Long id;
 
     @Column(name = "user_id")
     private Long userId;
 
     @Column (name = "cost")
-    private BigDecimal orderCost;
+    private BigDecimal cost;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     @Column(name = "time_of_completing")
-    private Timestamp timeOfCompletingOrder;
+    private Timestamp time;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
@@ -44,5 +46,6 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
+    @Fetch(FetchMode.JOIN)
     private List<Book> books;
 }
