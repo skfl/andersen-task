@@ -24,7 +24,7 @@ public class RequestController {
                 , HttpStatus.OK);
     }
 
-    @GetMapping("map")
+    @GetMapping("quantity-of-requests")
     public ResponseEntity<Map<Long, Long>> getBooksAndNumberOfRequests() {
         return new ResponseEntity<>(commands.getBooksAndNumberOfRequests(),
                 HttpStatus.OK);
@@ -39,9 +39,9 @@ public class RequestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("book/{id}")
-    public ResponseEntity<Long> getNumberOfRequestsOnBook(@PathVariable Long id) {
-        return new ResponseEntity<>(commands.getNumberOfRequestsOnBook(id),
+    @GetMapping("book/{bookId}")
+    public ResponseEntity<Long> getNumberOfRequestsOnBook(@PathVariable Long bookId) {
+        return new ResponseEntity<>(commands.getNumberOfRequestsOnBook(bookId),
                 HttpStatus.OK);
     }
 }

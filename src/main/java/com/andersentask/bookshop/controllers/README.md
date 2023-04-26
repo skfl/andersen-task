@@ -2,22 +2,22 @@
 
 ### End-points
 
-*     /get-books  ( /get-books?sort=price )
+*     /book/all?sort=xx  ( xx => id, name, price, status )
 
-*     /create-order ( request format: {"ids":["1","2"]} )
+*     /book/{bookId}/status  ( request format: {"status":"xx"} , xx => out_of_stock, available)
 
-*     /get-orders ( /get-orders?sort=cost )
+*     /request/all
 
-*     /get-requests
+*     /request/new ( request format: {"bookId":"1"} )
 
-*     /get-number-of-request ( /get-number-of-request?bookId=3 )
+*     /request/book/{bookId} 
 
-*     /get-books-and-number-of-requests
+*     /request/quantity-of-requests
 
-*     /get-all-books-from-order ( /get-all-books-from-order?orderId=1 )
+*     /order/all?sort=xx  ( xx => id, cost, status, time )
 
-*     /create-request ( /create-request?bookId=4 )
+*     /order/{orderId}
 
-*     /change-book-status  ( request format: {"bookId":["1"],"status":["OUT_OF_STOCK"]})
+*     /order/new ( request format: {"bookIds":["1","2"]} )
 
-*     /change-order-status ( request format: {"orderId":["1"],"status":["CANCELED"]} )
+*     /order/{orderId}/status ( request format: {"status":"xx"} , xx => canceled, completed )

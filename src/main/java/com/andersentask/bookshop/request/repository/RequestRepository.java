@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request,Long> {
+
     void removeByBook(Book book);
     Long countByBook(Book book);
 }
