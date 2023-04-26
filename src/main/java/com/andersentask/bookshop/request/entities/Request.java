@@ -23,7 +23,7 @@ public class Request {
     @Column(name = "user_id")
     private Long userId;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 }

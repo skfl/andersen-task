@@ -23,7 +23,7 @@ public class RequestService {
     }
 
     public void deleteRequest(Book book) {
-        requestRepository.delete(book);
+        requestRepository.removeByBook(book);
     }
 
     public List<Book> getAllBooksFromAllRequests() {
@@ -33,6 +33,6 @@ public class RequestService {
     }
 
     public Long getNumberOfRequestsOnBook(Book book) {
-        return requestRepository.findNumberOfRequestsOnBook(book);
+        return requestRepository.countByBook(book);
     }
 }

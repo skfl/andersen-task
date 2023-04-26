@@ -11,8 +11,7 @@ import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.entities.Request;
 import com.andersentask.bookshop.request.services.RequestService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +45,8 @@ public class Commands {
      * @param bookStatus bookStatus of the book and got from user
      * @return the status of method completion as ENUM
      */
+
+    @Transactional
     public ResultOfOperation.SetBookStatus setStatusToBookAndDeleteCorrespondingRequests(Long bookId, BookStatus bookStatus) {
         return bookService
                 .getBookById(bookId)
@@ -54,29 +55,11 @@ public class Commands {
     }
 
     private ResultOfOperation.SetBookStatus setBookStatus(Book book, BookStatus bookStatus) {
-        if (bookHasSameStatus(book, bookStatus)) {
+        if (book.getStatus() == bookStatus) {
             return ResultOfOperation.SetBookStatus.BOOK_ALREADY_HAS_THIS_STATUS;
         }
-//        EntityTransaction transaction = entityManager.getTransaction();
-//        transaction.begin();
-
-        if (bookWillBecomeAvailable(book)) {
-            requestService
-                    .deleteRequest(book);
-        }
-        bookService
-                .setStatusToBook(book.getId(), bookStatus);
-
-//        transaction.commit();
+        bookService.setStatusToBook(book.getId(), bookStatus);
         return ResultOfOperation.SetBookStatus.BOOK_STATUS_UPDATED;
-    }
-
-    private boolean bookHasSameStatus(Book book, BookStatus bookStatus) {
-        return book.getStatus() == bookStatus;
-    }
-
-    private boolean bookWillBecomeAvailable(Book book) {
-        return book.getStatus() == BookStatus.OUT_OF_STOCK;
     }
 
     /**
@@ -228,11 +211,11 @@ public class Commands {
      * @param id id of the book and should be got from user
      * @return number of the request on the precise book
      */
-    //todo: return Long instead of Optional<Long>
-    public Optional<Long> getNumberOfRequestsOnBook(Long id) {
+    public Long getNumberOfRequestsOnBook(Long id) {
         return bookService
                 .getBookById(id)
-                .map(requestService::getNumberOfRequestsOnBook);
+                .map(requestService::getNumberOfRequestsOnBook)
+                .orElse(0L);
     }
 
     /**
@@ -246,10 +229,10 @@ public class Commands {
                 .getAllBooksFromAllRequests()
                 .stream()
                 .distinct()
-                .sorted(Comparator.comparing(book -> getNumberOfRequestsOnBook(book.getId()).orElse(0L),
+                .sorted(Comparator.comparing(book -> getNumberOfRequestsOnBook(book.getId()),
                         Comparator.reverseOrder()))
                 .forEachOrdered(book -> map.put(book.getId(),
-                        getNumberOfRequestsOnBook(book.getId()).orElse(0L)));
+                        getNumberOfRequestsOnBook(book.getId())));
         return map;
     }
 
