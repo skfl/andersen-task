@@ -32,7 +32,7 @@ public class Commands {
 
     private final EntityFactory entityFactory;
 
-    private final EntityManager entityManager;
+
     /**
      * Method set new status to book
      * Returns result of operation:
@@ -57,8 +57,8 @@ public class Commands {
         if (bookHasSameStatus(book, bookStatus)) {
             return ResultOfOperation.SetBookStatus.BOOK_ALREADY_HAS_THIS_STATUS;
         }
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+//        EntityTransaction transaction = entityManager.getTransaction();
+//        transaction.begin();
 
         if (bookWillBecomeAvailable(book)) {
             requestService
@@ -67,7 +67,7 @@ public class Commands {
         bookService
                 .setStatusToBook(book.getId(), bookStatus);
 
-        transaction.commit();
+//        transaction.commit();
         return ResultOfOperation.SetBookStatus.BOOK_STATUS_UPDATED;
     }
 
@@ -138,8 +138,8 @@ public class Commands {
     }
 
     private ResultOfOperation.CreateOrder createOrderAndRequestsIfOrderHasOutOfStockBooks(Order order, List<Book> booksToOrder) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+//        EntityTransaction transaction = entityManager.getTransaction();
+//        transaction.begin();
 
         orderService.saveOrder(order);
         List<Book> booksToRequest = bookService
@@ -147,11 +147,11 @@ public class Commands {
         if (!booksToRequest.isEmpty()) {
             booksToRequest.forEach(this::createRequestFromBook);
 
-            transaction.commit();
+//            transaction.commit();
             return ResultOfOperation.CreateOrder.ORDER_AND_REQUESTS_CREATED;
         }
 
-        transaction.commit();
+//        transaction.commit();
         return ResultOfOperation.CreateOrder.ORDER_CREATED;
     }
 
@@ -181,13 +181,13 @@ public class Commands {
             return ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.ORDER_ALREADY_HAS_THIS_STATUS;
         }
         if (orderStatusNotToBeCompletedOrAllBooksAvailable(order, orderStatus)) {
-            EntityTransaction transaction = entityManager.getTransaction();
-            transaction.begin();
+//            EntityTransaction transaction = entityManager.getTransaction();
+//            transaction.begin();
 
             order = orderService
                     .changeStatusOfOrder(order.getOrderId(), orderStatus);
 
-            transaction.commit();
+//            transaction.commit();
         }
         return orderStatusUpdateWasSuccessful(order, orderStatus);
     }

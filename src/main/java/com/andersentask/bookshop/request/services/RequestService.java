@@ -4,10 +4,12 @@ import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.request.entities.Request;
 import com.andersentask.bookshop.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class RequestService {
 
     private final RequestRepository requestRepository;
