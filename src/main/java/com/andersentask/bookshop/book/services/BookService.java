@@ -42,12 +42,11 @@ public class BookService {
                 bookSort.toString().toLowerCase(Locale.ROOT)));
     }
 
-    //toDo: re-write with classic loop
     public List<Book> getBooksByIds(List<Long> bookIds) {
         List<Book> books = new ArrayList<>();
-        bookIds.stream()
-                .map(this::getBookById)
-                .forEach(book -> book.ifPresent(books::add));
+        for (Long bookId: bookIds){
+            getBookById(bookId).ifPresent(books::add);
+        }
         return books;
     }
 
