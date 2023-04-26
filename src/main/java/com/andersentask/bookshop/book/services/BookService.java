@@ -5,10 +5,12 @@ import com.andersentask.bookshop.book.enums.BookSort;
 import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.book.repositories.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -17,16 +19,8 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    public Book save(Book book) {
-        return bookRepository.save(book);
-    }
-
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
-    }
-
-    public Optional<Book> getBookById(Long id) {
-        return bookRepository.findById(id);
+    public Optional<Book> getBookById(Long bookId) {
+        return bookRepository.findById(bookId);
     }
 
     public void setStatusToBook(Long id, BookStatus bookStatus) {
@@ -37,8 +31,8 @@ public class BookService {
     }
 
     public List<Book> getSortedBooks(BookSort bookSort) {
-//        return bookRepository.getSortedBooks(bookSort);
-        return null;
+        return bookRepository.findAll(Sort.by(Sort.Direction.ASC,
+                bookSort.toString().toLowerCase(Locale.ROOT)));
     }
 
     public List<Book> getBooksByIds(List<Long> bookIds) {
