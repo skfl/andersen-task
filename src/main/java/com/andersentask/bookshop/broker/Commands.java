@@ -11,13 +11,13 @@ import com.andersentask.bookshop.order.enums.OrderStatus;
 import com.andersentask.bookshop.order.service.OrderService;
 import com.andersentask.bookshop.request.entities.Request;
 import com.andersentask.bookshop.request.services.RequestService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +45,6 @@ public class Commands {
      * @param bookStatus bookStatus of the book and got from user
      * @return the status of method completion as ENUM
      */
-
-    @Transactional
     public ResultOfOperation.SetBookStatus setStatusToBookAndDeleteCorrespondingRequests(Long bookId, BookStatus bookStatus) {
         return bookService
                 .getBookById(bookId)
@@ -79,10 +77,8 @@ public class Commands {
     }
 
     private ResultOfOperation.CreateRequest createRequestFromBook(Book book) {
-        Request request = entityFactory
-                .buildRequest(book);
-        requestService
-                .saveRequest(request);
+        Request request = entityFactory.buildRequest(book);
+        requestService.saveRequest(request);
         return ResultOfOperation.CreateRequest.REQUEST_CREATED;
     }
 
@@ -109,32 +105,20 @@ public class Commands {
      * @return the status of method completion as ENUM
      */
     public ResultOfOperation.CreateOrder createOrder(List<Long> ids) {
-        List<Book> booksToOrder = bookService
-                .getBooksByIds(ids);
+        List<Book> booksToOrder = bookService.getBooksByIds(ids);
         if (booksToOrder.size() != ids.size()) {
             return ResultOfOperation.CreateOrder.WRONG_BOOK_ID;
         }
-        Order order = entityFactory
-                .buildOrder(booksToOrder);
-
+        Order order = entityFactory.buildOrder(booksToOrder);
         return createOrderAndRequestsIfOrderHasOutOfStockBooks(order, booksToOrder);
     }
 
     private ResultOfOperation.CreateOrder createOrderAndRequestsIfOrderHasOutOfStockBooks(Order order, List<Book> booksToOrder) {
-//        EntityTransaction transaction = entityManager.getTransaction();
-//        transaction.begin();
-
         orderService.saveOrder(order);
-        List<Book> booksToRequest = bookService
-                .getBooksOutOfStock(booksToOrder);
+        List<Book> booksToRequest = bookService.getBooksOutOfStock(booksToOrder);
         if (!booksToRequest.isEmpty()) {
-            booksToRequest.forEach(this::createRequestFromBook);
-
-//            transaction.commit();
             return ResultOfOperation.CreateOrder.ORDER_AND_REQUESTS_CREATED;
         }
-
-//        transaction.commit();
         return ResultOfOperation.CreateOrder.ORDER_CREATED;
     }
 
@@ -164,29 +148,22 @@ public class Commands {
             return ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.ORDER_ALREADY_HAS_THIS_STATUS;
         }
         if (orderStatusNotToBeCompletedOrAllBooksAvailable(order, orderStatus)) {
-//            EntityTransaction transaction = entityManager.getTransaction();
-//            transaction.begin();
-
-            order = orderService
-                    .changeStatusOfOrder(order.getOrderId(), orderStatus);
-
-//            transaction.commit();
+            order = orderService.changeStatusOfOrder(order.getId(), orderStatus);
         }
         return orderStatusUpdateWasSuccessful(order, orderStatus);
     }
 
     private boolean orderHasSameStatus(Order order, OrderStatus orderStatus) {
-        return order.getOrderStatus() == orderStatus;
+        return order.getStatus() == orderStatus;
     }
 
     private boolean orderStatusNotToBeCompletedOrAllBooksAvailable(Order order, OrderStatus orderStatus) {
-        boolean allBooksAvailable = bookService
-                .allBooksAreAvailable(order.getBooks());
+        boolean allBooksAvailable = bookService.allBooksAreAvailable(order.getBooks());
         return orderStatus != OrderStatus.COMPLETED || allBooksAvailable;
     }
 
     private ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck orderStatusUpdateWasSuccessful(Order order, OrderStatus orderStatus) {
-        return order.getOrderStatus() == orderStatus ?
+        return order.getStatus() == orderStatus ?
                 ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.STATUS_UPDATED :
                 ResultOfOperation.ChangeStatusOfOrderIncludingBooksCheck.ORDER_STATUS_CAN_NOT_BE_UPDATED;
     }
@@ -198,9 +175,8 @@ public class Commands {
      * @param orderSort can be cost, completion_date or status and should be got from user
      * @return orders, optionally sorted by entered param
      */
-    public List<Order> getOrders(OrderSort orderSort) {
-        return orderService
-                .getSortedOrders(orderSort);
+    public List<Order> getSortedOrders(OrderSort orderSort) {
+        return orderService.getSortedOrders(orderSort);
     }
 
     /**
@@ -225,8 +201,7 @@ public class Commands {
      */
     public Map<Long, Long> getBooksAndNumberOfRequests() {
         Map<Long, Long> map = new HashMap<>();
-        requestService
-                .getAllBooksFromAllRequests()
+        requestService.getAllBooksFromAllRequests()
                 .stream()
                 .distinct()
                 .sorted(Comparator.comparing(book -> getNumberOfRequestsOnBook(book.getId()),
@@ -237,26 +212,14 @@ public class Commands {
     }
 
     /**
-     * return the income for the chosen period (order should have completed status)
+     * return order by Order id
      *
-     * @param startOfPeriod start of the period
-     * @param endOfPeriod   end of the period
-     * @return income for the chosen period
+     * @param orderId id of the order and should be got from user
+     * @return Order object
      */
-    public BigDecimal getIncomeForPeriod(LocalDateTime startOfPeriod, LocalDateTime endOfPeriod) {
-        return orderService
-                .getIncomeForPeriod(startOfPeriod, endOfPeriod);
-    }
-
-    /**
-     * return all books from the order by order id
-     *
-     * @param id id of the order and should be got from user
-     * @return books from the chosen order
-     */
-    public List<Book> getAllBooksFromOrder(Long id) {
-        return orderService
-                .getAllBooksFromOrder(id);
+    public Order getOrderById(Long orderId) {
+        return orderService.getOrderById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("No order with such ID"));
     }
 
     /**
@@ -265,8 +228,7 @@ public class Commands {
      * @return requests
      */
     public List<Request> getAllRequests() {
-        return requestService
-                .getAllRequests();
+        return requestService.getAllRequests();
     }
 
 }

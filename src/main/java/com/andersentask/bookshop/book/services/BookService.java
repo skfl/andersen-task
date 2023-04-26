@@ -4,9 +4,7 @@ import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.book.enums.BookSort;
 import com.andersentask.bookshop.book.enums.BookStatus;
 import com.andersentask.bookshop.book.repositories.BookRepository;
-import com.andersentask.bookshop.request.repository.RequestRepository;
 import com.andersentask.bookshop.request.services.RequestService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,7 @@ public class BookService {
 
     public void setStatusToBook(Long id, BookStatus bookStatus) {
         Book bookToUpdate = bookRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Can't find book with such id while updating"));
+                .orElseThrow(() -> new IllegalArgumentException("Can't find book with such id"));
         bookToUpdate.setStatus(bookStatus);
         bookRepository.save(bookToUpdate);
         if (bookStatus == BookStatus.AVAILABLE) {
@@ -44,6 +42,7 @@ public class BookService {
                 bookSort.toString().toLowerCase(Locale.ROOT)));
     }
 
+    //toDo: re-write with classic loop
     public List<Book> getBooksByIds(List<Long> bookIds) {
         List<Book> books = new ArrayList<>();
         bookIds.stream()
