@@ -4,10 +4,12 @@ import com.andersentask.bookshop.book.entities.Book;
 import com.andersentask.bookshop.request.entities.Request;
 import com.andersentask.bookshop.request.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class RequestService {
 
     private final RequestRepository requestRepository;
@@ -21,7 +23,7 @@ public class RequestService {
     }
 
     public void deleteRequest(Book book) {
-        requestRepository.delete(book);
+        requestRepository.removeByBook(book);
     }
 
     public List<Book> getAllBooksFromAllRequests() {
@@ -31,6 +33,6 @@ public class RequestService {
     }
 
     public Long getNumberOfRequestsOnBook(Book book) {
-        return requestRepository.findNumberOfRequestsOnBook(book);
+        return requestRepository.countByBook(book);
     }
 }
